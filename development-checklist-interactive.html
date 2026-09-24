@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>PikPok Development Checklist</title>
+  <style>
+    :root {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #f3f5f8;
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header {
+      background: #171c36;
+      color: white;
+      padding: 28px max(20px, calc((100vw - 1050px) / 2));
+    }
+    header h1 { margin: 0 0 8px; font-size: 25px; }
+    header p { margin: 0; color: #c6cbe0; max-width: 760px; line-height: 1.5; }
+    main { max-width: 1050px; margin: 24px auto 60px; padding: 0 18px; }
+    .panel, .section, details {
+      background: white;
+      border: 1px solid #e0e4eb;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #18233a0a;
+    }
+    .panel { padding: 18px; margin-bottom: 16px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input[type="file"] { max-width: 100%; }
+    button, .button {
+      border: 0;
+      border-radius: 8px;
+      background: #20284b;
+      color: white;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    button.secondary { background: #e9edf4; color: #20284b; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    .hint, #filename, #saveStatus { color: #687286; font-size: 13px; }
+    #filename { margin-top: 10px; }
+    .progress-row { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 16px; }
+    progress { width: min(360px, 100%); height: 12px; accent-color: #3867d6; }
+    .count { font-weight: 650; }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 14px; }
+    nav button { background: #e6eaf1; color: #35405a; }
+    nav button[aria-pressed="true"] { background: #26345f; color: white; }
+    .section { padding: 18px; margin: 12px 0; }
+    .section h2 { margin: 0 0 13px; font-size: 18px; }
+    .task {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 11px 8px;
+      border-top: 1px solid #eef0f4;
+      line-height: 1.45;
+      cursor: pointer;
+    }
+    .task input { width: 18px; height: 18px; margin: 1px 0 0; flex: 0 0 auto; accent-color: #3867d6; cursor: pointer; }
+    .task span { flex: 1; }
+    .task.done span { color: #737c8d; text-decoration: line-through; }
+    .owner {
+      display: inline-block;
+      margin: 0 0 7px 30px;
+      color: #687286;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    details { margin-top: 18px; padding: 14px 16px; }
+    summary { cursor: pointer; font-weight: 650; }
+    .table-wrap { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+    th, td { text-align: left; vertical-align: top; padding: 9px; border-bottom: 1px solid #e8ebf0; }
+    th { background: #f5f7fa; }
+    #empty { background: white; border: 1px dashed #c9cfda; border-radius: 12px; padding: 26px; color: #687286; text-align: center; }
+    .notice { margin-top: 10px; line-height: 1.5; font-size: 13px; color: #687286; }
+    @media (max-width: 600px) {
+      header { padding: 22px 18px; }
+      header h1 { font-size: 21px; }
+      .section { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PikPok development checklist</h1>
+    <p>Load the Markdown checklist, click tasks to update them, and download a checked-off copy when you are done. Your progress is also saved in this browser.</p>
+  </header>
+  <main>
+    <section class="panel" aria-label="Checklist controls">
+      <div class="toolbar">
+        <label class="button" for="fileInput">Load Markdown checklist</label>
+        <input id="fileInput" type="file" accept=".md,text/markdown,text/plain">
+        <button id="downloadButton" disabled>Download updated Markdown</button>
+        <button id="resetButton" class="secondary" disabled>Reset to loaded file</button>
+      </div>
+      <div id="filename">Choose development-checklist-two-teammates.md to begin.</div>
+      <div class="progress-row">
+        <progress id="progressBar" max="100" value="0"></progress>
+        <span class="count" id="progressText">0 of 0 complete</span>
+        <span class="hint" id="saveStatus"></span>
+      </div>
+      <p class="notice">The checklist is read locally in your browser. Checked states are saved in this browser; download the updated Markdown to keep or share the checked-off version.</p>
+    </section>
+
+    <details id="dependencyDetails">
+      <summary>Task dependencies and recommended order</summary>
+      <div class="table-wrap" id="dependencyTable"></div>
+    </details>
+
+    <nav id="filters" aria-label="Filter tasks">
+      <button data-filter="All" aria-pressed="true">All</button>
+      <button data-filter="Teammate A" aria-pressed="false">Teammate A</button>
+      <button data-filter="Teammate B" aria-pressed="false">Teammate B</button>
+      <button data-filter="Shared" aria-pressed="false">Shared</button>
+      <button data-filter="Dependencies" aria-pressed="false">Other dependencies</button>
+    </nav>
+    <div id="empty">Load the Markdown checklist to see the interactive tasks.</div>
+    <div id="taskList"></div>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const taskList = document.getElementById("taskList");
+    const empty = document.getElementById("empty");
+    const downloadButton = document.getElementById("downloadButton");
+    const resetButton = document.getElementById("resetButton");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const filenameLabel = document.getElementById("filename");
+    const saveStatus = document.getElementById("saveStatus");
+    const dependencyTable = document.getElementById("dependencyTable");
+
+    let sourceLines = [];
+    let originalLines = [];
+    let tasks = [];
+    let savedChecks = {};
+    let storageKey = "";
+    let currentFilter = "All";
+
+    function classifyTask(line, heading) {
+      const text = line.replace(/^\s*-\s+\[[ xX]\]\s+/, "");
+      if (heading.indexOf("Inputs required from other workstreams") >= 0) return "Dependencies";
+      if (/^(SH-|API-)/.test(text) || /\bBoth:/.test(text) || /^(Puzzle source|Puzzle owner|Difficulty owner|AI owner|Product\/team)/.test(text)) return "Shared";
+      if (/^Teammate A:/.test(text) || heading.indexOf("Teammate A") >= 0 || /^A\d+\./.test(heading)) return "Teammate A";
+      if (/^Teammate B:/.test(text) || heading.indexOf("Teammate B") >= 0 || /^B\d+\./.test(heading)) return "Teammate B";
+      if (heading.indexOf("Implementation order") >= 0) return "Shared";
+      if (heading.indexOf("Integration milestones") >= 0) return "Shared";
+      if (heading.indexOf("First prototype completion") >= 0) return "Shared";
+      if (heading.indexOf("Decisions to carry") >= 0) return "Shared";
+      return "Shared";
+    }
+
+    function parseChecklist(markdown) {
+      sourceLines = markdown.split(/\r?\n/);
+      originalLines = sourceLines.slice();
+      tasks = [];
+      let heading = "Checklist";
+      const occurrences = {};
+
+      sourceLines.forEach(function(line, index) {
+        const headingMatch = line.match(/^#{1,6}\s+(.+)$/);
+        if (headingMatch) heading = headingMatch[1].trim();
+        const taskMatch = line.match(/^(\s*)-\s+\[([ xX])\]\s+(.*)$/);
+        if (!taskMatch) return;
+
+        const text = taskMatch[3].trim();
+        const owner = classifyTask(line, heading);
+        const baseKey = owner + "|" + heading + "|" + text;
+        occurrences[baseKey] = (occurrences[baseKey] || 0) + 1;
+        const key = baseKey + "|" + occurrences[baseKey];
+        const fromMarkdown = taskMatch[2].toLowerCase() === "x";
+        const checked = Object.prototype.hasOwnProperty.call(savedChecks, key)
+          ? Boolean(savedChecks[key])
+          : fromMarkdown;
+
+        tasks.push({
+          lineIndex: index,
+          heading: heading,
+          text: text,
+          owner: owner,
+          key: key,
+          checked: checked
+        });
+      });
+    }
+
+    function renderDependencies() {
+      const start = sourceLines.findIndex(function(line) {
+        return line.indexOf("| Task group | Can start after |") >= 0;
+      });
+      if (start < 0) {
+        dependencyTable.textContent = "No dependency table was found in this Markdown file.";
+        return;
+      }
+      const rows = [];
+      for (let i = start; i < sourceLines.length && sourceLines[i].trim().startsWith("|"); i++) {
+        const cells = sourceLines[i].split("|").slice(1, -1).map(function(cell) { return cell.trim(); });
+        if (cells.length && !cells[0].match(/^[-:]+$/)) rows.push(cells);
+      }
+      if (!rows.length) {
+        dependencyTable.textContent = "No dependency rows were found.";
+        return;
+      }
+      const table = document.createElement("table");
+      rows.forEach(function(row, rowIndex) {
+        const tr = document.createElement("tr");
+        row.forEach(function(value) {
+          const cell = document.createElement(rowIndex === 0 ? "th" : "td");
+          cell.textContent = value;
+          tr.appendChild(cell);
+        });
+        table.appendChild(tr);
+      });
+      dependencyTable.replaceChildren(table);
+    }
+
+    function updateProgress() {
+      const complete = tasks.filter(function(task) { return task.checked; }).length;
+      const total = tasks.length;
+      const percent = total ? Math.round((complete / total) * 100) : 0;
+      progressBar.value = percent;
+      progressText.textContent = complete + " of " + total + " complete (" + percent + "%)";
+    }
+
+    function persist() {
+      savedChecks = {};
+      tasks.forEach(function(task) { savedChecks[task.key] = task.checked; });
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(savedChecks));
+        saveStatus.textContent = "Saved in this browser";
+      } catch (error) {
+        saveStatus.textContent = "Browser storage unavailable; download your updated file to save progress.";
+      }
+    }
+
+    function updateSourceLine(task) {
+      const oldLine = sourceLines[task.lineIndex];
+      sourceLines[task.lineIndex] = oldLine.replace(/\[([ xX])\]/, task.checked ? "[x]" : "[ ]");
+    }
+
+    function renderTasks() {
+      taskList.replaceChildren();
+      const visible = tasks.filter(function(task) {
+        return currentFilter === "All" || task.owner === currentFilter;
+      });
+      empty.hidden = visible.length > 0;
+      empty.textContent = tasks.length
+        ? "No tasks in this filter."
+        : "No Markdown task checkboxes were found in that file.";
+      const groups = new Map();
+      visible.forEach(function(task) {
+        if (!groups.has(task.heading)) groups.set(task.heading, []);
+        groups.get(task.heading).push(task);
+      });
+      groups.forEach(function(groupTasks, title) {
+        const section = document.createElement("section");
+        section.className = "section";
+        const heading = document.createElement("h2");
+        heading.textContent = title;
+        section.appendChild(heading);
+
+        groupTasks.forEach(function(task) {
+          const label = document.createElement("label");
+          label.className = "task" + (task.checked ? " done" : "");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.checked;
+          checkbox.addEventListener("change", function() {
+            task.checked = checkbox.checked;
+            updateSourceLine(task);
+            persist();
+            updateProgress();
+            renderTasks();
+          });
+          const text = document.createElement("span");
+          text.textContent = task.text;
+          label.append(checkbox, text);
+          section.appendChild(label);
+        });
+        taskList.appendChild(section);
+      });
+    }
+
+    fileInput.addEventListener("change", async function() {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const markdown = await file.text();
+      storageKey = "pikpok-checklist:" + file.name;
+      savedChecks = {};
+      try {
+        savedChecks = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      } catch (error) {
+        savedChecks = {};
+      }
+      parseChecklist(markdown);
+      filenameLabel.textContent = "Loaded: " + file.name;
+      downloadButton.disabled = false;
+      resetButton.disabled = false;
+      renderDependencies();
+      updateProgress();
+      renderTasks();
+      if (!saveStatus.textContent) saveStatus.textContent = "Progress saves automatically in this browser";
+    });
+
+    document.getElementById("filters").addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-filter]");
+      if (!button) return;
+      currentFilter = button.dataset.filter;
+      document.querySelectorAll("#filters button").forEach(function(item) {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      renderTasks();
+    });
+
+    downloadButton.addEventListener("click", function() {
+      const blob = new Blob([sourceLines.join("\n")], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const baseName = fileInput.files[0].name.replace(/\.md$/i, "");
+      link.href = url;
+      link.download = baseName + "-checked.md";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+    });
+
+    resetButton.addEventListener("click", function() {
+      sourceLines = originalLines.slice();
+      try { localStorage.removeItem(storageKey); } catch (error) {}
+      savedChecks = {};
+      parseChecklist(sourceLines.join("\n"));
+      saveStatus.textContent = "Reset to the loaded Markdown file";
+      updateProgress();
+      renderTasks();
+    });
+  </script>
+</body>
+</html>
