@@ -4,7 +4,7 @@
 
 This document complements [technical-architecture.md](technical-architecture.md).
 
-The architecture document explains the logical components and their connections. This document proposes concrete technologies and describes how to implement the first prototype.
+The architecture document explains the logical components and their connections. This document proposes concrete technologies and describes how to implement the prototype.
 
 The recommendations are optimized for:
 
@@ -35,8 +35,9 @@ The exact dependency versions and hosting providers should be selected when deve
 | Persistent database | PostgreSQL | Relational data plus flexible JSONB puzzle content. | Recommended |
 | Database access | Prisma ORM | TypeScript schema, migrations, relations, and JSON support. | Recommended |
 | Queue/cache | Redis | Fast per-user lists and recent-puzzle tracking. | Required |
-| Authentication | Simple account flow; provider TBD | Keeps the first version understandable. | Open decision |
+| Authentication | Simple account flow; provider TBD | Keeps the prototype understandable. | Open decision |
 | Difficulty integration | Backend adapter to an independent module/service | Keeps Glicko and selection logic separate. | Required boundary |
+| Puzzle archive | Separate append-only dataset or object-storage-backed archive | Preserves every puzzle snapshot without expanding the 3,000-record live catalog. | Required boundary; provider TBD |
 | Dynamic hints | Backend adapter to an AI boundary | Allows AI work to be added later. | Intentionally blank |
 | Local development | Docker Compose or equivalent | Reproducible database and Redis setup. | Recommended |
 
@@ -63,17 +64,20 @@ PostgreSQL
     ├── XP and streak records
     └── Leaderboard source data
 
+Puzzle archive dataset
+    └── Immutable snapshots for every puzzle content version
+
 Redis
     ├── Per-user puzzle queues
     ├── Recently shown puzzle IDs
     └── Optional leaderboard cache
 
 Independent integrations
-    ├── Difficulty module / Glicko selection
+    ├── Difficulty module / Glicko-2 + Thompson Sampling selection
     └── AI modules / dynamic hints
 ~~~
 
-Use one central backend with clear internal modules. Do not create a separate microservice for every feature during the prototype. The difficulty module and AI modules can be independent behind adapters, but the feed, attempts, gamification, and storage operations can remain in one backend.
+Use one central backend with clear internal modules. Do not create a separate microservice for every feature during the prototype. The difficulty module and AI modules can be independent behind adapters, while the feed, attempts, gamification, and storage operations remain in one backend.
 
 ## 4. Client recommendation
 
@@ -114,7 +118,7 @@ src/app/
 ├── (auth)/
 │   ├── sign-in.tsx
 │   ├── create-account.tsx
-│   └── age.tsx
+│   └── audience.tsx
 └── (tabs)/
     ├── _layout.tsx
     ├── feed.tsx
@@ -534,7 +538,7 @@ Route handlers should call services. They should not contain database queries, R
 
 ### 6.1 REST/JSON
 
-Use REST/JSON for the first version because it is:
+Use REST/JSON for the prototype because it is:
 
 - Easy to inspect from a browser or command line.
 - Simple for the client.
@@ -614,7 +618,7 @@ Dynamic hint:
 
 ### 7.1 PostgreSQL plus JSONB
 
-Use PostgreSQL for the first prototype.
+Use PostgreSQL for the prototype.
 
 Keep frequently queried values in normal columns:
 
@@ -623,7 +627,7 @@ Keep frequently queried values in normal columns:
 - Content version.
 - Rotation timestamp.
 - Puzzle type when finalized.
-- Age constraints when finalized.
+- Audience categories when finalized.
 - Created/updated timestamps.
 - Attempt result.
 - User XP.
@@ -651,7 +655,7 @@ A separate NoSQL database for puzzles plus SQL for user traffic is possible, but
 - More complicated local development.
 - More complicated integration tests.
 
-For exactly 3,000 current puzzle records and a small prototype, one PostgreSQL database with JSONB is simpler. A separate puzzle store can be added later if the data volume or access pattern requires it.
+For exactly 3,000 current puzzle records and a small prototype, one PostgreSQL database with JSONB is simpler for live traffic. The required puzzle archive is a separate append-only history dataset, not a second live puzzle database or feed source.
 
 ### 7.3 Prisma
 
@@ -676,6 +680,12 @@ enum AttemptResult {
   SKIPPED
 }
 
+enum AudienceCategory {
+  CHILDREN
+  TEENS
+  ADHD
+}
+
 enum HintType {
   STATIC
   DYNAMIC
@@ -683,7 +693,7 @@ enum HintType {
 
 model User {
   id            String        @id @default(uuid())
-  age           Int?
+  audienceCategory AudienceCategory
   displayName   String?
   authSubject   String        @unique
   totalXp       Int           @default(0)
@@ -701,8 +711,9 @@ model Puzzle {
   id             String       @id
   contentVersion Int          @default(1)
   type           String?
+  domain         String?
   difficulty     Json?
-  ageMetadata    Json?
+  audienceCategories AudienceCategory[] @default([])
   content        Json
   verification   Json
   staticHints    Json?
@@ -711,6 +722,7 @@ model Puzzle {
   attempts       Attempt[]
 
   @@index([type])
+  @@index([domain])
   @@index([nextRotationAt])
   @@index([updatedAt])
 }
@@ -775,6 +787,31 @@ model DailyPuzzleCompletion {
 ~~~
 
 The schema is illustrative and should be adjusted after the puzzle format and authentication method are finalized.
+
+### 7.4.1 Puzzle archive dataset
+
+The live PostgreSQL catalog contains exactly 3,000 current puzzle rows. It must not grow when content rotates. Before changing a live row, the rotation process writes an immutable archive snapshot to the separate archive dataset.
+
+Each archive record should contain:
+
+- stable puzzle ID;
+- content_version;
+- content, answer options, canonical solution, and static hints;
+- domain, configured difficulty, and audience categories;
+- created_at, archived_at, and rotation metadata;
+- a source or operation identifier for traceability.
+
+The archive may be implemented as an append-only dataset or object-storage-backed files; the provider and format remain open. It is used for history, auditing, analysis, and future work. It is not read by the feed, Redis queue, or stale-submission verification path.
+
+### 7.4.2 Difficulty state persistence
+
+The independent difficulty module needs durable state for its complete algorithm. If it runs inside the same backend deployment, keep these tables or an equivalent module-owned schema separate from the core application tables:
+
+- UserDomainRating: user_id, domain, rating, rating_deviation, volatility, cold_start_category, and updated_at.
+- PuzzleVersionBandStats: puzzle_id, content_version, alpha, beta, interaction_count, and updated_at.
+- Optional selection/calibration records for auditing exploration and safety decisions.
+
+The key for puzzle statistics is the pair of stable puzzle ID and content_version. A content rotation therefore starts new alpha/beta evidence while preserving the stable ID. A stale or rejected interaction never updates either state.
 
 ### 7.5 Protecting the solution
 
@@ -895,16 +932,21 @@ The feed module should depend on an interface rather than a particular difficult
 ~~~ts
 export type DifficultySelectionRequest = {
   userId: string;
-  age?: number;
+  audienceCategory: 'CHILDREN' | 'TEENS' | 'ADHD';
   batchSize: number;
   recentPuzzleIds: string[];
+  recentAttemptOutcomes?: Array<{ puzzleId: string; result: 'correct' | 'incorrect' | 'skipped' }>;
+  recentSkipOutcomes?: Array<{ puzzleId: string; occurredAt: string }>;
   rotationGeneration?: string;
+  currentUserContext?: Record<string, unknown>;
+  audienceConstraints?: string[];
 };
 
 export type DifficultySelectionResponse = {
   selectionId: string;
   userId: string;
   orderedPuzzleIds: string[];
+  selectionGeneration?: string;
   expiresAt?: string;
 };
 
@@ -912,11 +954,14 @@ export type DifficultyOutcomeEvent = {
   userId: string;
   puzzleId: string;
   contentVersion: number;
+  domain: string;
   result: 'correct' | 'incorrect' | 'skipped';
+  outcomeScore?: number;
   elapsedTimeMs?: number;
-  staticHintUsed: boolean;
-  dynamicHintUsed: boolean;
-  occurredAt: string;
+  hintTierUsed?: 'none' | 'static' | 'dynamic';
+  attemptCount?: number;
+  abandonedMs?: number;
+  submittedAt: string;
 };
 
 export interface DifficultyClient {
@@ -928,21 +973,35 @@ export interface DifficultyClient {
 }
 ~~~
 
-The difficulty implementation can later be an HTTP service, an internal process, or another module. The feed coordinator should not change as long as this contract remains stable.
+The difficulty implementation can be an HTTP service, an internal process, or another module. The feed coordinator should not change as long as this contract remains stable.
 
 ### 9.2 Inputs required by the difficulty module
 
 The core backend should be able to provide:
 
 - User ID.
-- User age.
+- User audience category.
 - Requested batch size.
 - Recently shown puzzle IDs.
 - Recent verified outcomes.
 - Rotation generation or queue-refresh generation.
-- Eligibility filters once age and puzzle metadata are finalized.
+- Eligibility filters once audience-category and puzzle metadata are finalized.
 
-The Glicko state representation belongs to the difficulty workstream. The main backend should not depend on private Glicko fields unless they are explicitly made part of the contract.
+The difficulty workstream implements Glicko-2 for every user and domain, including rating, rating deviation, volatility, category/domain cold starts, target difficulty, calibration, exploration, domain diversity, safety ceilings/floors, and younger-user streak protection. The main backend sends outcome events without depending on private mathematical fields.
+
+The difficulty module should maintain:
+
+- one Glicko-2 state per user and domain, with rating, rating deviation, and volatility;
+- category/domain-specific cold-start priors;
+- a target difficulty derived from the user's current rating;
+- Thompson Sampling candidates selected from the target range;
+- alpha and beta statistics keyed by puzzle ID plus contentVersion, so a rotated content version has independent evidence;
+- a difficulty floor and ceiling;
+- domain-diversity limits within each requested batch;
+- streak-protection rules for children and teens;
+- calibration and controlled exploration behavior.
+
+Every accepted correct, incorrect, or skipped interaction updates the relevant user-domain state and the selected content-version statistics. A stale or rejected submission must not update difficulty.
 
 ### 9.3 Outputs required from the difficulty module
 
@@ -972,19 +1031,22 @@ After an attempt or skip is accepted by the database, the backend should send an
   "userId": "user-id",
   "puzzleId": "puzzle-id",
   "contentVersion": 1,
+  "domain": "math",
   "result": "correct",
+  "outcomeScore": 1,
   "elapsedTimeMs": 9200,
-  "staticHintUsed": false,
-  "dynamicHintUsed": false,
-  "occurredAt": "2026-09-16T12:00:00Z"
+  "hintTierUsed": "none",
+  "attemptCount": 1,
+  "abandonedMs": null,
+  "submittedAt": "2026-09-16T12:00:00Z"
 }
 ~~~
 
 The notification should happen after the database commit. If it fails, it can be retried without undoing the recorded attempt.
 
-### 9.5 Difficulty stub
+### 9.5 Unavailable-module fallback
 
-Before the real difficulty module is available, implement a deterministic stub:
+If the independent difficulty module is temporarily unavailable, the backend may use a non-personalized fallback only to preserve feed availability:
 
 ~~~text
 selectBatch(userId, batchSize):
@@ -994,7 +1056,7 @@ selectBatch(userId, batchSize):
     return the first batchSize IDs
 ~~~
 
-This allows client, queue, answer, XP, and leaderboard development to continue independently.
+This fallback is not a replacement for Glicko-2 or Thompson Sampling. Normal operation uses the complete independent difficulty module and sends accepted outcomes to it.
 
 ## 10. AI integration boundary
 
@@ -1083,8 +1145,9 @@ The database contains exactly 3,000 current puzzle records. The seed process sho
 2. Validate required fields.
 3. Assign stable IDs.
 4. Insert exactly 3,000 current records.
-5. Validate the stable IDs and difficulty values.
-6. Report invalid records without silently inserting them.
+5. Write an immutable archive snapshot for each initial record.
+6. Validate the stable IDs and difficulty values.
+7. Report invalid records without silently inserting them.
 
 ### 11.2 Flexible seed format
 
@@ -1099,12 +1162,13 @@ Because puzzle formats are not finalized, use a flexible source format:
   "content": {},
   "verification": {},
   "staticHints": [],
-  "ageMetadata": {},
+  "audienceCategories": ["CHILDREN", "TEENS", "ADHD"],
+  "domain": null,
   "nextRotationAt": null
 }
 ~~~
 
-The values for type, content, verification, age metadata, and difficulty metadata are intentionally open.
+The values for type, content, verification, domain, audience categories, and difficulty metadata are intentionally open.
 
 ### 11.3 Catalog update workflow
 
@@ -1113,16 +1177,20 @@ Select a puzzle by stable ID when its rotation time arrives
     ↓
 Validate replacement content
     ↓
+Write the current live snapshot to the append-only archive dataset keyed by puzzle ID and contentVersion
+    ↓
 Update content, solution, and hints in one database transaction
     ↓
-Keep ID and difficulty unchanged
+    Keep ID, configured difficulty, domain, and audience categories unchanged
     ↓
 Increment content version and pending refresh count
+
+If the live update fails after the archive write, keep the immutable snapshot and retry the rotation idempotently; never delete an archive snapshot.
     ↓
 After five updates, refresh queue metadata lazily
 ~~~
 
-For the first prototype, this can be a command-line seed/update script. A complete administrator dashboard can be added later.
+For the prototype, this can be a command-line seed/update script. A complete administrator dashboard can be added later.
 
 ### 11.4 Fixed-size content rotation
 
@@ -1141,7 +1209,7 @@ Recommended behavior:
 
 If replacement content arrives with a new upstream/source identifier, map it to the selected existing catalog ID. Do not insert a 3,001st record or change the application puzzle ID.
 
-If a user has already loaded an older content version, an answer submission for that version is rejected as an expired puzzle. The old content is not retained.
+If a user has already loaded an older content version, an answer submission for that version is rejected as an expired puzzle. The old content is not retained in the live database; its immutable snapshot is retained in the separate archive dataset.
 
 ## 12. Answer verification
 
@@ -1500,7 +1568,7 @@ The leaderboard response should contain only:
 It should not expose:
 
 - Email.
-- Exact age.
+- Audience category.
 - Authentication identity.
 - Puzzle answers.
 - Private attempt details.
@@ -1578,11 +1646,11 @@ Client development server
 Backend API
 PostgreSQL
 Redis
-Difficulty stub
-AI stub returning unavailable
+Independent difficulty module or unavailable-module fallback
+AI adapter returning unavailable
 ~~~
 
-The stubs allow the main application to be developed before the real difficulty and AI modules are ready.
+The fallback adapter allows the main application to remain available if the independent difficulty module is temporarily unavailable. Normal operation uses the complete difficulty module; AI remains behind its blank boundary.
 
 ### 16.2 Repository layout
 
@@ -1609,6 +1677,7 @@ REDIS_URL
 AUTH_SECRET
 CLIENT_API_URL
 DIFFICULTY_SERVICE_URL
+PUZZLE_ARCHIVE_URL
 AI_SERVICE_URL
 QUEUE_BATCH_SIZE
 QUEUE_REFILL_THRESHOLD
@@ -1627,9 +1696,11 @@ Provide these names in a checked-in environment example file, but do not commit 
 2. Start Redis.
 3. Apply database migrations.
 4. Seed sample puzzles.
-5. Start the difficulty stub.
+5. Start the difficulty module or its documented local adapter.
 6. Start the backend API.
 7. Start the Expo client.
+
+The archive dataset must be reachable by the rotation worker before content rotation is enabled.
 ~~~
 
 ## 17. Testing strategy
@@ -1797,7 +1868,7 @@ Do not add these unless requirements change:
 
 - Implement the selected simple authentication method.
 - Create the user model.
-- Store age and basic profile data.
+- Store the selected audience category and basic profile data.
 - Protect authenticated operations.
 
 ### Phase 3 — Puzzle catalog
@@ -1808,9 +1879,9 @@ Do not add these unless requirements change:
 - Implement catalog reads by ID.
 - Remove verification data from client responses.
 
-### Phase 4 — Feed without personalization
+### Phase 4 — Feed and difficulty integration
 
-- Implement the difficulty stub.
+- Connect the complete Glicko-2 and Thompson Sampling difficulty client, including category eligibility and outcome events.
 - Implement batch feed API.
 - Implement client feed rendering.
 - Implement local batch state.
@@ -1850,15 +1921,17 @@ Do not add these unless requirements change:
 
 ### Phase 9 — Difficulty integration
 
-- Replace the stub with the real difficulty client.
+- Verify the complete difficulty client and its fallback behavior.
 - Confirm the batch-selection contract.
 - Send verified outcomes after attempts.
-- Test Glicko updates and fallback behavior.
+- Test Glicko-2 updates, content-version alpha/beta isolation, Thompson selection, and fallback behavior.
 
 ### Phase 10 — Catalog updates
 
 - Add content rotation by existing puzzle ID.
 - Track content versions and rotation timestamps.
+- Write an immutable archive snapshot before each live content replacement.
+- Start independent alpha/beta statistics for each new puzzle content version.
 - Implement the fixed rotation interval.
 - Refresh queue metadata after five updates.
 - Test stale-content rejection.
@@ -1876,7 +1949,7 @@ Queue:        Redis lists per user
 Recent IDs:   Redis set or sorted set with expiry
 Leaderboard:  PostgreSQL first, Redis cache later if needed
 Auth:         Simple account flow, exact provider TBD
-Difficulty:   Independent adapter/service, Glicko implementation external
+Difficulty:   Independent adapter/service, complete Glicko-2 + Thompson Sampling design external
 AI:           Blank adapter boundary, implementation external
 Local setup:  Docker Compose or equivalent
 ~~~

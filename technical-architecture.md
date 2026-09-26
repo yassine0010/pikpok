@@ -22,7 +22,7 @@ This is a logical architecture. It intentionally does not choose implementation 
 
 - Mobile-first client experience.
 - User account and simple profile.
-- User age as profile information.
+- A simple audience category: children, teens, or ADHD users.
 - Main puzzle feed.
 - Batch puzzle delivery.
 - Per-user puzzle queue.
@@ -32,7 +32,7 @@ This is a logical architecture. It intentionally does not choose implementation 
 - Static hints stored with puzzles.
 - Dynamic-hint integration boundary.
 - Independent difficulty module integration boundary.
-- Glicko-related user state integration requirement.
+- Independent Glicko-2 and Thompson Sampling difficulty-selection integration boundary.
 - XP, daily puzzle, streak, statistics, and global leaderboard.
 - Redis queue behavior.
 - Fixed-size puzzle-content rotation and queue synchronization.
@@ -49,8 +49,7 @@ The following areas are deliberately not designed in this document:
 - AI training or evaluation.
 - Dynamic-hint generation logic.
 - AI deployment framework.
-- Difficulty algorithm implementation.
-- Exact Glicko implementation and parameter tuning.
+- Exact Glicko-2 calibration values, Thompson priors, and safety thresholds.
 - Exact puzzle types and puzzle interaction formats.
 - Exact answer-validation rules for every future puzzle type.
 - Client framework.
@@ -93,7 +92,7 @@ The first interface is expected to contain:
 
 There is no Library section in the current scope. The share button and fast-forward button shown in the reference UI are removed from the current scope.
 
-The user must have an account. The profile should remain simple and currently requires the user’s age. The exact authentication method is undecided.
+The user must have an account. The profile should remain simple and currently requires one audience category: CHILDREN, TEENS, or ADHD. The exact authentication method is undecided.
 
 The application is intended for a small prototype. The architecture should therefore stay simple while keeping clean boundaries so the project can evolve later.
 
@@ -112,10 +111,11 @@ flowchart LR
     Hints["Hint coordinator"]
     Game["XP, streak, stats, leaderboard module"]
 
-    Store[("Persistent database<br/>Users, puzzles, attempts, XP, stats")]
+    Store[("Persistent database<br/>Users, 3000 current puzzles, attempts, XP, stats")]
+    Archive[("Puzzle archive dataset<br/>All puzzle snapshots")]
     Redis[("Redis<br/>Per-user puzzle queues and queue state")]
 
-    Difficulty["Difficulty module<br/>Independent / Glicko-owned state"]
+    Difficulty["Audience and difficulty module<br/>Independent Glicko-2 + Thompson Sampling"]
     AI["AI modules<br/>Internal design blank"]
 
     Client -->|Account, profile, feed, answer, stats| API
@@ -132,12 +132,13 @@ flowchart LR
     Feed -.->|Request ordered batch of IDs| Difficulty
     Queue --> Redis
     Catalog --> Store
+    Catalog --> Archive
     Attempts --> Store
     Hints --> Catalog
     Hints -.->|Dynamic hint boundary| AI
     Game --> Store
 
-    Queue -.->|Load puzzle IDs into user queue| Difficulty
+    Queue -.->|Request category-compatible IDs| Difficulty
 ```
 
 ### 4.1 Architectural shape
@@ -146,9 +147,10 @@ The recommended shape is:
 
 - One central backend for the main application.
 - Internal backend modules for feed delivery, accounts, attempts, hints, and gamification.
-- A separate logical difficulty module because it owns personalized selection and Glicko-related state.
+- A separate logical audience/difficulty module because it owns audience eligibility, Glicko-2 skill state, and difficulty-based puzzle selection.
 - Separate AI module boundaries, with their implementation intentionally omitted.
 - One persistent database for the prototype, capable of storing flexible puzzle content.
+- A separate append-only puzzle archive dataset for current and previous puzzle snapshots.
 - Redis as the fast per-user queue and queue-state store.
 
 This is not a commitment to a specific programming framework. The backend may later be implemented with the team’s chosen technology.
@@ -207,7 +209,7 @@ Responsibilities:
 - Authenticate the user using the authentication method selected later.
 - Maintain a stable user identifier.
 - Store basic profile information.
-- Store the user’s age.
+- Store one audience category: children, teens, or ADHD users.
 - Provide the backend with the identity required to locate the user’s queue and history.
 
 The profile remains intentionally small for the prototype. Possible fields include:
@@ -215,7 +217,7 @@ The profile remains intentionally small for the prototype. Possible fields inclu
 - `user_id`
 - `display_name` or username
 - Authentication identity
-- `age`
+- `audience_category`
 - Account creation timestamp
 - Profile update timestamp
 
@@ -229,7 +231,7 @@ Responsibilities:
 
 - Receive a feed request from the backend API.
 - Determine whether the user already has enough queued puzzle IDs.
-- Ask the difficulty module for a new ordered batch when necessary.
+- Ask the audience/difficulty module for a new ordered batch when necessary.
 - Put selected IDs into the user’s queue.
 - Reserve or remove IDs from the queue when constructing a response.
 - Load the complete puzzle records from the catalog.
@@ -248,7 +250,7 @@ The queue manager owns the delivery queue for each user, subject to confirmation
 Recommended ownership:
 
 - The central backend owns queue lifecycle and delivery.
-- The difficulty module chooses which IDs should be added.
+- The audience/difficulty module chooses which IDs should be added.
 - Redis stores the fast queue state.
 
 This separates selection from delivery. The difficulty module can change its algorithm without forcing the client to understand queue internals.
@@ -282,9 +284,10 @@ Responsibilities:
 - Increment the content version whenever content changes.
 - Provide static hints associated with the current content.
 - Keep the canonical solution available to the backend for verification.
+- Write an immutable snapshot to the puzzle archive whenever a puzzle is created or its content is rotated.
 - Trigger queue metadata synchronization after every configured number of content updates.
 
-The database contains exactly 3,000 current puzzles. It does not keep retired, expired, or historical puzzle records.
+The live database contains exactly 3,000 current puzzles. Historical snapshots are stored in the separate puzzle archive dataset. The archive is not used to serve feed cards or verify expired submissions.
 
 ### 5.7 Attempt and answer module
 
@@ -334,13 +337,32 @@ The internal dynamic-hint process is outside the scope of this document.
 
 ### 5.9 Difficulty module
 
-The difficulty module is independent from the core backend and owns the logic for selecting puzzles according to user performance.
+The difficulty module is independent from the core backend and owns Glicko-2 and Thompson Sampling selection.
 
-The team expects to use Glicko or a related rating approach, but the exact implementation belongs to that module.
+The audience eligibility layer is intentionally small:
 
-The module should maintain or access per-user state that allows the rating to be updated continuously. The core backend must provide the module with the events and context it needs.
+- A user has one selected audience category: CHILDREN, TEENS, or ADHD.
+- Each puzzle declares the audience categories that may receive it.
+- The module filters by audience category before applying difficulty selection.
+- The category is an eligibility and safety input; it does not replace the user's skill rating.
 
-The difficulty module should not need to own complete puzzle delivery. It should return a selection result to the backend.
+The complete difficulty-selection design is:
+
+- Maintain a Glicko-2 state for every user and domain.
+- Store rating, rating deviation, and volatility for each user-domain pair.
+- Use category- and domain-based cold-start values when a user has no history in a domain.
+- Translate the user's current rating into a target difficulty range.
+- Use Thompson Sampling to choose among suitable puzzles in that range.
+- Maintain alpha/beta statistics for each puzzle content version, identified by stable puzzle ID and content_version.
+- Apply configured difficulty ceilings and floors so selection remains within safe bounds.
+- Enforce domain-diversity rules so a batch does not over-concentrate on one domain.
+- Apply streak-protection rules for younger users, especially children and teens.
+- Support calibration and exploration behavior before and during personalized selection.
+- Update the user's Glicko-2 state and selected puzzle-version statistics after every accepted puzzle interaction.
+
+The module may use correctness, skips, timing, hint usage, and other agreed interaction signals in its internal update event. The core backend only sends the agreed event; it does not reproduce the Glicko-2 or Thompson Sampling mathematics.
+
+The module returns an ordered list of stable puzzle IDs for a requested batch. It does not implement answer verification, queue delivery, XP, puzzle storage, or AI behavior. The backend loads the current content version and rejects stale submissions.
 
 ### 5.10 XP, streak, statistics, and leaderboard module
 
@@ -374,7 +396,7 @@ Recommended initial leaderboard rule:
 
 - One global leaderboard.
 - Ranked by accumulated XP.
-- No friends leaderboard or age-group leaderboard in the first version.
+- No friends leaderboard or additional audience-specific leaderboards.
 
 ### 5.11 Persistent database
 
@@ -415,7 +437,25 @@ Recommended responsibilities:
 
 Redis is not the source of truth for puzzle content, user attempts, XP, or leaderboard history.
 
-If Redis is lost, the backend should be able to reconstruct the user’s queue by asking the difficulty module for another batch and loading puzzle records from the database.
+If Redis is lost, the backend should be able to reconstruct the user’s queue by asking the audience/difficulty module for another batch and loading puzzle records from the database.
+
+### 5.13 Puzzle archive dataset
+
+The puzzle archive is a separate append-only storage system for every puzzle snapshot, including the initial 3,000 records and every later content version.
+
+It should store:
+
+- Stable puzzle ID.
+- Content version.
+- Puzzle content.
+- Canonical solution, protected by archive access controls.
+- Static hints.
+- Audience category metadata.
+- Difficulty metadata.
+- Created or archived timestamp.
+- Rotation or source metadata when available.
+
+The archive is used for historical records, dataset analysis, auditing, and future work. It is not part of the live feed, Redis queues, or stale-answer verification path.
 
 ## 6. Logical data model
 
@@ -429,7 +469,7 @@ User
 user_id
 authentication_identity
 display_name                 [optional / TBD]
-age
+audience_category            children / teens / ADHD
 created_at
 updated_at
 status
@@ -447,20 +487,38 @@ content_version             increments when content changes
 content                      current flexible puzzle content
 answer_options               optional; format TBD
 puzzle_difficulty            stable difficulty value
+audience_categories          children / teens / ADHD
 canonical_solution           current server-side verification data
 static_hints                 hints for current content
 puzzle_type                  TBD
 difficulty_metadata          TBD / owned partly by difficulty workstream
-age_metadata                 TBD
 explanation_metadata         TBD
 created_at
 updated_at
 next_rotation_at             optional scheduler metadata
 ```
 
-The puzzle type, answer format, age fields, and detailed difficulty metadata are intentionally left open because the team has not defined the puzzle formats yet. The stable ID and difficulty value are not changed by content rotation.
+The puzzle type, answer format, audience categories, and detailed difficulty metadata are intentionally left open where the team has not defined the puzzle formats yet. The stable ID and configured difficulty value are not changed by content rotation.
 
-The canonical solution should remain protected from the client until answer processing requires it. Old content is not retained after a rotation.
+The canonical solution should remain protected from the client until answer processing requires it. Previous content is retained only in the separate archive dataset, never in the live puzzle record.
+
+```text
+PuzzleArchiveRecord
+-------------------
+archive_record_id
+puzzle_id
+content_version
+content
+canonical_solution
+static_hints
+audience_categories
+puzzle_difficulty
+created_at
+archived_at
+rotation_metadata
+```
+
+Archive records are immutable snapshots. The archive is not queried to serve feed cards or verify a stale answer.
 
 ### 6.3 Puzzle attempt
 
@@ -484,7 +542,7 @@ client_device_id             optional
 created_at
 ```
 
-Every answer, skip, or equivalent completed interaction should be recorded with the content version that the client displayed. This lets the backend identify stale submissions and lets analytics distinguish interactions with different content versions. The old puzzle content itself is not retained.
+Every answer, skip, or equivalent completed interaction should be recorded with the content version that the client displayed. This lets the backend identify stale submissions and lets analytics distinguish interactions with different content versions. The old puzzle content is not retained in the live database; it is represented by the archive snapshot.
 
 ### 6.4 Hint request
 
@@ -503,7 +561,32 @@ response_metadata            optional
 
 The dynamic hint content and its internal metadata remain part of the AI workstream.
 
-### 6.5 XP event
+### 6.5 Difficulty state
+
+```text
+UserDomainRating
+----------------
+user_id
+domain
+rating
+rating_deviation
+volatility
+cold_start_category
+updated_at
+
+PuzzleVersionBandStats
+----------------------
+puzzle_id
+content_version
+alpha
+beta
+interaction_count
+updated_at
+```
+
+The difficulty module owns these records or their equivalent. The puzzle statistics key is the pair of stable puzzle ID and content version, so rotating content creates new evidence without changing the queue ID.
+
+### 6.6 XP event
 
 ```text
 XPEvent
@@ -518,7 +601,7 @@ created_at
 
 Using XP events makes the total explainable and allows future corrections. A simpler prototype may also maintain a user XP total, but the source of each award should remain traceable.
 
-### 6.6 Daily puzzle participation
+### 6.7 Daily puzzle participation
 
 ```text
 DailyPuzzleParticipation
@@ -533,7 +616,7 @@ xp_awarded
 
 This entity supports the daily streak without requiring the entire feed to be treated as a daily challenge.
 
-### 6.7 User streak
+### 6.8 User streak
 
 ```text
 UserStreak
@@ -547,7 +630,7 @@ updated_at
 
 The streak must be updated from server-recorded completion, not from a value supplied by the client.
 
-### 6.8 User queue state
+### 6.9 User queue state
 
 The ordered puzzle IDs are stored in Redis. The durable database may store only synchronization metadata if needed.
 
@@ -579,7 +662,7 @@ These are logical names, not a final implementation requirement.
 | Data | Authoritative owner | Fast copy or derived form | Notes |
 |---|---|---|---|
 | User account | Persistent database | Auth/session cache if needed | Stable user identity. |
-| User age/profile | Persistent database | Session context | Used by selection if required. |
+| User audience category | Persistent database | Session context | Used by category-based selection. |
 | Full puzzle content | Puzzle catalog/database | Optional response cache | Database remains canonical. |
 | Canonical solution | Puzzle catalog/backend | Never expose before verification | Used for answer checking. |
 | Static hints | Puzzle catalog/database | Optional client copy after request | Stored with the puzzle. |
@@ -590,7 +673,9 @@ These are logical names, not a final implementation requirement.
 | XP | Persistent database | Leaderboard aggregate/cache | Awarded by backend. |
 | Daily streak | Persistent database | Profile response | Updated from verified completion. |
 | Leaderboard | Derived from persistent data | Optional fast ranking copy | Global scope for v1. |
-| Glicko state | Difficulty module ownership | Storage location TBD | Backend must provide required events. |
+| Audience/difficulty selection state | Audience/difficulty module ownership | Storage location TBD | Backend provides category and interaction context. |
+| Glicko-2 and Thompson state | Difficulty module ownership | Storage location/format TBD | Includes user-domain rating, deviation, volatility, and puzzle-version alpha/beta statistics. |
+| Historical puzzle snapshots | Puzzle archive dataset | None required for live serving | Used for archive, analysis, and future work. |
 
 ## 8. User flows
 
@@ -610,7 +695,7 @@ sequenceDiagram
     U-->>A: Authenticated user context
     A-->>C: Session result
 
-    C->>A: Save age and basic profile information
+    C->>A: Save audience category and basic profile information
     A->>U: Validate profile data
     U->>D: Save profile
     D-->>U: Confirmation
@@ -823,7 +908,7 @@ When the user requests a batch:
 2. The queue manager checks the user’s existing queue.
 3. If the queue has enough IDs, it uses them.
 4. If the queue is low, it requests another batch from the difficulty module.
-5. The difficulty module uses the user’s current state and recent history.
+5. The audience/difficulty module uses the user’s category and recent history.
 6. The queue manager stores the returned IDs in the user’s queue.
 7. The feed coordinator loads the full puzzle records.
 8. The backend returns the ordered batch to the client.
@@ -851,7 +936,7 @@ If the queue becomes empty:
 3. The corresponding puzzle records are loaded.
 4. The client receives the next batch.
 
-If the difficulty module is temporarily unavailable, the fallback behavior is still undecided. The recommended prototype fallback is to select eligible records from the current 3,000-puzzle catalog while preserving age and recent-puzzle filters that are already available.
+If the audience/difficulty module is temporarily unavailable, the backend uses a non-personalized fallback from the current 3,000-puzzle catalog while preserving the user’s audience category, recent-puzzle filters, and current-content checks.
 
 ### 9.5 Queue content
 
@@ -865,16 +950,17 @@ The queue should contain IDs rather than full puzzle documents because:
 
 ## 10. Puzzle catalog synchronization
 
-The system contains exactly 3,000 puzzle records. A rotation changes the content of one existing record while preserving its puzzle ID and difficulty.
+The system contains exactly 3,000 live puzzle records. A rotation archives the current snapshot and changes the content of one existing live record while preserving its puzzle ID and configured difficulty.
 
 Because every user has an individual queue, the queue IDs remain stable while puzzle content rotates. Queue metadata is refreshed lazily:
 
 1. One puzzle is selected by ID on the fixed rotation schedule.
-2. Its content, solution, and static hints are replaced in place.
-3. Its difficulty and puzzle ID remain unchanged.
-4. After five content updates, queue metadata is marked for refresh.
-5. Each user’s queue is refreshed when they next request a batch.
-6. The latest content is loaded for queued IDs.
+2. The current snapshot is written to the archive dataset.
+3. Its content, solution, and static hints are replaced in the live record.
+4. Its configured difficulty, audience categories, and puzzle ID remain unchanged.
+5. After five content updates, queue metadata is marked for refresh.
+6. Each user’s queue is refreshed when they next request a batch.
+7. The latest content is loaded for queued IDs.
 
 The synchronization threshold is five content updates and should remain configurable.
 
@@ -884,9 +970,12 @@ Expected behavior:
 
 - Select the existing puzzle by stable ID.
 - If replacement content arrives with a new upstream/source identifier, map it to the selected existing catalog ID; do not insert a 3,001st record or change the application puzzle ID.
+- Write the current live record to the archive dataset as an immutable snapshot keyed by puzzle ID and content_version.
 - Replace its current content in one database transaction.
+- If the live update fails after the archive write, keep the archive snapshot and retry the rotation idempotently; never delete an archive snapshot.
 - Keep the same puzzle ID.
 - Keep the same difficulty value.
+- Keep the same audience category metadata.
 - Replace the current solution and static hints.
 - Increment the content version.
 - Update the rotation timestamp.
@@ -903,7 +992,7 @@ Expected behavior:
 - The backend compares that version with the current database version.
 - A stale submission is rejected as an expired puzzle.
 - The client discards the expired card and continues.
-- Old content is not retained for verification.
+- The archive is not consulted for verification.
 
 ### 10.3 Queue behavior after rotation
 
@@ -921,14 +1010,16 @@ Expected behavior:
 sequenceDiagram
     participant M as Puzzle management
     participant A as Backend API
-    participant P as Puzzle catalog
-    participant D as Database
-    participant S as Queue sync coordinator
+   participant P as Puzzle catalog
+   participant D as Database
+    participant H as Puzzle archive dataset
+   participant S as Queue sync coordinator
     participant R as Redis
 
-    M->>A: Rotate content by stable puzzle ID
-    A->>P: Validate replacement content
-    P->>D: Update content in existing record
+   M->>A: Rotate content by stable puzzle ID
+   A->>P: Validate replacement content
+    P->>H: Append immutable current snapshot
+   P->>D: Update content in existing record
     D-->>P: Confirm commit
     P->>S: Register content update
     S->>S: Compare update count with threshold five
@@ -957,17 +1048,17 @@ The core backend should be able to send at least:
 DifficultySelectionRequest
 ---------------------------
 user_id
-age
+audience_category
 requested_batch_size
 recent_puzzle_ids
 recent_attempt_outcomes
 recent_skip_outcomes
-current_user_context        supplied or resolved by the difficulty module
+current_user_context        optional module context
 rotation_generation         optional
-eligible_puzzle_constraints optional
+audience_constraints        optional
 ```
 
-The exact difficulty statistics and Glicko fields are owned by the difficulty workstream. The core system should not invent or depend on the internal mathematical representation.
+The request identifies the user's audience category and recent interaction context. The core system does not need to send private Glicko fields if the difficulty module owns and persists them.
 
 ### 11.2 Difficulty module output contract
 
@@ -987,12 +1078,12 @@ The selected IDs should:
 
 - Be ordered for delivery.
 - Be valid puzzle IDs.
-- Be eligible for the user’s age and other supplied constraints.
+- Be eligible for the user’s audience category and other supplied constraints.
 - Avoid duplicates within one batch.
 - Prefer not to repeat recently shown IDs.
 - Be usable by the catalog module to load the full puzzle records.
 
-The module may return additional metadata, such as selected difficulty or a reason, but the core backend should not require that metadata unless the team later decides it is needed.
+The module may return additional metadata, such as target difficulty, domain, exploration/calibration status, or a selection reason, but the core backend should not require that metadata unless the team later decides it is needed.
 
 ### 11.3 Difficulty update input
 
@@ -1004,14 +1095,17 @@ DifficultyOutcomeEvent
 user_id
 puzzle_id
 content_version
+domain
 result                    correct / incorrect / skipped
+outcome_score             optional normalized score used by the difficulty module
 elapsed_time_ms           optional
-static_hint_used
-dynamic_hint_used
+hint_tier_used            optional
+attempt_count             optional
+abandoned_ms              optional
 submitted_at
 ```
 
-The difficulty module can use this event to update the user’s Glicko state. The exact update frequency is expected to be after each verified interaction, but selection requests can still be made once per batch to reduce API traffic.
+The event is emitted only after the interaction is accepted and persisted. The difficulty module uses it to update the user-domain Glicko-2 state and the selected puzzle content-version alpha/beta statistics. Selection requests can still be made once per batch to reduce API traffic.
 
 ### 11.4 Puzzle catalog input/output requirement
 
@@ -1023,7 +1117,7 @@ Any puzzle-creation or puzzle-generation workstream must provide a record that c
 - Static hints.
 - Content version and rotation timestamp.
 - Stable difficulty value.
-- Any metadata required by age filtering, difficulty selection, or rendering.
+- Audience categories, domain, and any metadata required by difficulty selection or rendering.
 
 The exact content format, puzzle types, and metadata are intentionally blank.
 
@@ -1205,7 +1299,7 @@ The leaderboard should return:
 - XP total.
 - Optional current streak.
 
-Private authentication data and exact age should not be exposed publicly.
+Private authentication data and audience-category/profile information should not be exposed publicly unless the product explicitly requires it.
 
 The leaderboard must use backend-recorded XP, not values submitted by the client.
 
@@ -1226,7 +1320,7 @@ The leaderboard must use backend-recorded XP, not values submitted by the client
 
 ### 15.3 Difficulty module is unavailable
 
-The exact fallback is undecided. Recommended simple fallback:
+Configured fallback behavior:
 
 - Use current puzzles from the 3,000-record catalog.
 - Exclude recently shown puzzle IDs when possible.
@@ -1264,7 +1358,7 @@ Repeated delivery of the same request should not create duplicate attempts or du
 
 ## 16. Security and privacy baseline
 
-The first version should keep security simple but should still enforce the following:
+The prototype should keep security simple but should still enforce the following:
 
 - Every protected operation requires an authenticated user.
 - User data is scoped to the authenticated user.
@@ -1272,7 +1366,7 @@ The first version should keep security simple but should still enforce the follo
 - The canonical solution is not sent before answer verification.
 - Puzzle IDs and versions are validated on every attempt.
 - Leaderboard output uses public display information only.
-- Exact age should not be shown publicly.
+- Audience category should not be shown publicly unless explicitly required.
 - Dynamic-hint requests should be associated with the authenticated user and puzzle.
 - Request rate limits can be added later, especially for hint requests.
 
@@ -1318,7 +1412,7 @@ For the prototype, one persistent database with flexible puzzle records is recom
 
 ## 19. Future puzzle-management component
 
-An administrator or puzzle-management component is expected later but is not part of the current first-version interface.
+An administrator or puzzle-management component is expected later but is not part of the current interface.
 
 When added, it should support:
 
@@ -1399,7 +1493,7 @@ sequenceDiagram
 
 The architecture can now be implemented at the logical level. The remaining decisions are mostly implementation details or requirements owned by other workstreams:
 
-1. Exact client framework and whether the first release is web-only or web plus APK.
+1. Exact client framework and whether the release is web-only or web plus APK.
 2. Exact backend framework.
 3. Exact database product.
 4. Exact authentication method.
@@ -1411,12 +1505,14 @@ The architecture can now be implemented at the logical level. The remaining deci
 10. Exact Redis queue ownership implementation.
 11. Exact fixed rotation interval.
 12. Exact queue metadata refresh behavior after five content updates.
-13. Exact Glicko input fields and output metadata.
-14. Difficulty-module fallback behavior.
+13. Exact Glicko-2 parameter values, category/domain cold-start priors, Thompson alpha/beta priors, calibration settings, and safety thresholds.
+14. Exact operational behavior for the non-personalized difficulty-module fallback.
 15. Dynamic-hint contract details owned by the AI workstream.
 16. Exact XP amount and any future XP multipliers.
 17. Exact streak calendar/time-zone behavior.
 18. Whether the global leaderboard is all-time, weekly, or both.
 19. Exact public profile fields.
+20. Whether ADHD should be selectable as the single category or allowed to overlap with CHILDREN or TEENS.
+21. Archive dataset storage product, file format, retention policy, and access controls.
 
 These unresolved items should remain configurable or marked TBD rather than being silently assumed.
