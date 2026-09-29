@@ -8,6 +8,7 @@ Related documents:
 
 - [Detailed project architecture](technical-architecture.md)
 - [Technology recommendations and implementation](technical-stack-and-implementation.md)
+- [Open decisions](open-decisions.md)
 
 ## 1. Work split
 
@@ -21,14 +22,19 @@ This split gives Teammate B ownership of the client-facing feed and its delivery
 
 ## 2. Decisions to carry into implementation
 
-- [ ] Use the current recommended starting stack unless the team changes it together: Expo, React Native, Expo Router, and TypeScript for the client; Node.js, Fastify, and TypeScript for the API; PostgreSQL with Prisma for durable data; Redis for per-user feed queues.
+- [x] Use the selected starting stack: Expo, React Native, React Native Web, Expo Router, and TypeScript for the client; Node.js, Fastify, and TypeScript for the API; PostgreSQL with Prisma for durable data; Redis for per-user feed queues.
 - [ ] Keep the release as a small prototype with one central backend.
-- [ ] Start with REST/JSON. The exact route names can follow the implementation, but the request and response fields must be agreed before client and server integration.
-- [ ] Keep puzzle-specific formats flexible until the puzzle source or puzzle workstream defines them.
-- [ ] Store one audience category as the planned profile classification: CHILDREN, TEENS, or ADHD.
+- [x] Use REST/JSON and `camelCase` for API and difficulty-adapter fields.
+- [x] On difficulty-service outage, serve a non-personalized batch while enforcing audience eligibility and current content, avoiding recent IDs when possible, recording fallback use, and resuming personalized selection after recovery.
+- [x] Award 10 XP for a verified correct answer and 0 for incorrect or skipped puzzles; use no multipliers in v1. Calculate streak dates in one configured application time zone.
+- [x] Use an all-time global XP leaderboard; break ties by stable user ID. Expose only display name, XP, rank, and optional current streak, and do not reveal the solution automatically after an incorrect answer in v1.
+- [x] Archive append-only JSON snapshots in object storage, keyed by puzzle ID and content version, restricted to backend/maintainer access, with backups. Provider and retention period remain TBD.
+- [ ] Finalize the exact request/response fields, errors, and routes in the shared contract before client/server integration.
+- [ ] Keep puzzle-specific formats flexible until the puzzle-generation workstream defines them later.
+- [ ] Store one of three audience categories: CHILDREN, TEENS, or NEURODIVERGENT. The age-specific eligibility rule for NEURODIVERGENT remains TBD; do not infer age from the category.
 - [ ] Use a configurable initial feed batch size of 5 and refill threshold of 2 as implementation defaults; these are adjustable values.
-- [ ] Keep the queue-refresh threshold at 5 puzzle content updates.
-- [ ] Set the fixed rotation interval through configuration. The exact interval still needs a team decision.
+- [ ] After every 5 successful content updates, increment the durable catalogGeneration. On each user's next feed request, replace only undelivered queue IDs if their saved generation is behind.
+- [ ] Set the rotation interval through configuration once the team chooses it. Each scheduled run requests one replacement from the generation engine.
 - [ ] Return only correct or incorrect for submitted answers. A skipped/swiped puzzle is recorded as skipped.
 - [ ] Build the global leaderboard only. Do not build a Library, share action, or fast-forward action in this prototype.
 - [ ] Keep dynamic hints behind an integration boundary. The app may show an unavailable state until the AI owner supplies the integration contract and implementation.
@@ -52,19 +58,19 @@ This split gives Teammate B ownership of the client-facing feed and its delivery
 
 - [ ] SH-03 — Both: Create or approve the shared API contract location. Put shared request/response types there rather than separately inventing client and server shapes.
 - [ ] SH-04 — Both: Agree on the first account/authentication approach. The architecture requires an account, but the exact method is still open.
-- [ ] SH-05 — Both: Confirm which puzzle source will provide the initial 3,000 puzzle records and replacement content.
-- [ ] SH-06 — Both: Confirm the rotation interval and how replacement content is delivered to the backend.
-- [ ] SH-07 — Both: Confirm the initial puzzle type and answer format once the puzzle source provides them. Do not invent a puzzle schema or verifier before that input exists.
-- [ ] SH-08 — Both: Confirm the archive dataset location/format and confirm that the profile stores one audience category.
+- [ ] SH-05 — Both: Plan to insert the initial 3,000 puzzle records later; confirm the generation engine's replacement-content handoff before rotation is implemented.
+- [ ] SH-06 — Both: Confirm the rotation interval. Replacement content is supplied by the puzzle-generation engine to a backend scheduled job.
+- [ ] SH-07 — Both: Defer the first puzzle type and answer format until the puzzle-generation workstream defines them. Do not invent a puzzle schema or verifier before that input exists.
+- [ ] SH-08 — Both: Choose the object-storage provider and retention period for append-only JSON archive snapshots; confirm backend/maintainer-only access and backups.
 
 ### Shared API contract to settle early
 
 - [ ] API-01 — Teammate A leads; Teammate B reviews: Define common error shape, authentication convention, user identifier, timestamps, and idempotency behavior.
-- [ ] API-02 — Teammate B leads; Teammate A reviews: Define the feed batch request/response, including stable puzzle ID, content_version, content, static hints, and the next-refill signal.
-- [ ] API-03 — Teammate A leads; Teammate B reviews: Define answer submission and answer result payloads, including attempt ID, stable puzzle ID, content_version, submitted answer, and correct/incorrect result.
+- [ ] API-02 — Teammate B leads; Teammate A reviews: Define the camelCase feed batch request/response, including stable puzzle ID, contentVersion, content, static hints, and the next-refill signal.
+- [ ] API-03 — Teammate A leads; Teammate B reviews: Define camelCase answer submission and result payloads, including attemptId, stable puzzle ID, contentVersion, submittedAnswer, and correct/incorrect result.
 - [ ] API-04 — Teammate A: Define the expired-content response code and message. A version mismatch must tell the client to discard the card and continue.
 - [ ] API-05 — Teammate A: Define the profile, static hint, dynamic-hint placeholder, stats, daily-puzzle, and leaderboard response shapes.
-- [ ] API-06 — Both: Put the agreed example payloads in the shared contract package or API documentation and use those same shapes in implementation.
+- [ ] API-06 — Both: Define the exact routes, payloads, errors, timestamps, authentication fields, and idempotency rules in the shared OpenAPI document; use those same camelCase shapes in implementation.
 
 ### Dependency map and recommended order
 
@@ -81,10 +87,10 @@ The main dependencies are between task groups, not every individual checkbox. Ta
 | A3 Puzzle catalog and initial data | A2 plus SH-05 and SH-08; a real 3,000-record seed also needs puzzle-source data | A4, A5, and B4 catalog integration |
 | B2 Account/profile screens | B1, SH-04, API-01, and Teammate A's account/profile routes | Account-to-feed integration |
 | B3 Puzzle feed UI | B1 and API-02; SH-07 is needed for final puzzle controls. Layout work can start with placeholder data | End-to-end solve-and-scroll also needs A4 and B4 |
-| B4 Feed endpoint, Redis queue, difficulty adapter | Queue mechanics can start against API-02; connect catalog reads when A1/A2/A3 are ready. Difficulty integration needs the difficulty-owner contract | B5 and personalized-feed integration; its rotation-refresh piece also needs A5 |
+| B4 Feed endpoint, Redis queue, difficulty adapter | Queue mechanics can start against API-02; connect catalog reads when A1/A2/A3 are ready. Difficulty integration needs the difficulty-owner contract | B5 and personalized-feed integration; its catalog-generation/reselection piece also needs A5 |
 | Difficulty integration state | API-02/API-03/API-05 plus difficulty-owner contract | B4 selection adapter, A4 outcome emission, and difficulty-module verification |
 | A4 Answer, attempt, and skip handling | A2, A3, API-03/API-04, and SH-07 puzzle/answer rules | A7 XP flow and end-to-end answer feedback |
-| A5 Content rotation | A3, SH-05 replacement input, SH-06 interval/source, SH-08 archive contract, and the queue-refresh contract | B4 rotation-refresh piece and content-rotation milestone |
+| A5 Content rotation | A3, SH-05 replacement input, SH-06 interval/source, SH-08 archive contract, and the catalog-generation/reselection contract | B4 catalog-generation/reselection piece and content-rotation milestone |
 | A6 Hints | A2, A3, and API-05; static hints can start before an AI contract exists | B6 hint integration |
 | A7 XP, daily puzzle, stats, leaderboard | A2, A4, API-05, and the team’s initial XP rule | B7 screens |
 | B5 Client batch state and prefetch | B1 and B4 feed contract/endpoint | Smooth continuous-feed milestone |
@@ -98,7 +104,7 @@ flowchart TD
     S[Repository and stack agreement] --> A1[A1 Backend foundation]
     S --> B1[B1 Client foundation]
     F[Feed contract] --> B4[B4 Feed API and Redis queue]
-    P[Puzzle source and answer format] --> A3[A3 Puzzle catalog and seed]
+    P[Initial seed and later puzzle-generation format] --> A3[A3 Puzzle catalog and seed]
 
     A1 --> A2[A2 Durable data model]
     A2 --> A3
@@ -126,7 +132,7 @@ flowchart TD
 
     A3 --> A5[A5 Content rotation]
     R[Rotation interval and replacement input] --> A5
-    A5 -. refresh behavior .-> Q[B4 queue-refresh handling]
+    A5 -. catalog generation .-> Q[B4 undelivered-ID reselection]
     B4 --> Q
 ~~~
 
@@ -136,7 +142,7 @@ flowchart TD
 - Teammate A can draft A2 while Teammate B builds screens with placeholder data; final field shapes depend on the shared contracts and puzzle input.
 - Teammate A can implement A6 static hints while Teammate B builds the feed UI.
 - Teammate B can implement queue mechanics and the public difficulty adapter contract once A1/A2/A3 and API-02 are ready. The complete difficulty module remains an independent integration dependency.
-- A5 rotation and B3/B5 client work can be developed separately, but their integrated behavior depends on stable content_version and queue-refresh contracts.
+- A5 rotation and B3/B5 client work can be developed separately, but their integrated behavior depends on stable contentVersion and catalog-generation/reselection contracts.
 
 ## 4. Teammate A — Core backend and durable application features
 
@@ -156,7 +162,9 @@ Completion outcome: The API starts locally, connects to PostgreSQL, and exposes 
 ### A2. Durable data model
 
 - [ ] Implement the initial User/Profile model, including the account identity, audience category, display name if used, XP totals, and streak fields required by the agreed API.
-- [ ] Implement the Puzzle model with a stable application ID, contentVersion, stable difficulty, domain, audience categories, current content, current verification data, current static hints, and rotation timestamps.
+- [ ] Implement the Puzzle model with a stable application ID, contentVersion, required numeric difficultyRating, required domain, audience categories, current content, current verification data, current static hints, and rotation timestamps.
+- [ ] Implement CatalogState with the durable catalogGeneration and pending successful-content-update count.
+- [ ] Implement a DifficultyOutboxEvent with unique eventId, payload, delivery status, and timestamps.
 - [ ] Implement Attempt data with user ID, stable puzzle ID, displayed content version, answer result or skipped result, hint counts, elapsed time when available, XP awarded, and an idempotency identifier.
 - [ ] Implement the data needed for static/dynamic hint usage, XP events, and daily puzzle completion.
 - [ ] Add the database migrations and keep frequently queried fields as normal columns. Keep puzzle-specific content flexible.
@@ -171,7 +179,7 @@ Completion outcome: The database represents accounts, the current puzzle catalog
 - [ ] Implement a response mapper that returns only client-safe puzzle fields.
 - [ ] Implement initial catalog import/seed with validation.
 - [ ] Ensure the live catalog contains exactly 3,000 puzzle records after seeding.
-- [ ] Ensure each record has an application ID, content, canonical solution, static hints, stable difficulty, domain, and audience categories supplied by the puzzle source.
+- [ ] Ensure each record has an application ID, content, canonical solution, static hints, numeric difficultyRating, domain, and at least one audience category. Each generated puzzle JSON includes its own difficultyRating.
 - [ ] Write an immutable archive snapshot for each initial puzzle record.
 - [ ] Write an immutable archive snapshot before replacing content for an existing puzzle ID.
 - [ ] Reject or report invalid/incomplete input instead of silently inserting it.
@@ -181,8 +189,8 @@ Completion outcome: The application catalog has exactly 3,000 current records. T
 
 ### A4. Answer, attempt, and skip handling
 
-- [ ] Implement the first answer verifier after the puzzle source defines the first puzzle format and answer rules.
-- [ ] On answer submission, load the current puzzle by stable ID and compare the submitted content_version with the current version before verifying.
+- [ ] Implement the first answer verifier after the puzzle-generation workstream defines the first puzzle format and answer rules.
+- [ ] On answer submission, load the current puzzle by stable ID and compare the submitted contentVersion with the current version before verifying.
 - [ ] If versions match, verify on the backend and return only correct or incorrect.
 - [ ] If versions differ, reject the submission as an expired puzzle before verification; do not award XP or create a correct/incorrect attempt for stale content.
 - [ ] Persist accepted attempts with the version shown to the user and only basic attempt information.
@@ -192,7 +200,7 @@ Completion outcome: The application catalog has exactly 3,000 current records. T
 
 Completion outcome: Current puzzle answers produce a backend-owned correctness result. Stale content is rejected and can never award XP. Swipes are recorded as skips.
 
-### A5. Content rotation and queue-refresh signal
+### A5. Content rotation and catalog-generation signal
 
 - [ ] Implement a configurable fixed-time rotation trigger, one puzzle at a time.
 - [ ] Select an existing puzzle record by its stable application ID.
@@ -200,14 +208,15 @@ Completion outcome: Current puzzle answers produce a backend-owned correctness r
 - [ ] Replace only its current content, solution, and static hints.
 - [ ] Write the current live snapshot to the append-only archive dataset before replacement.
 - [ ] Preserve the puzzle ID, configured difficulty, domain, and audience categories exactly.
-- [ ] Increment content_version and update the rotation timestamp in the same database transaction as the content replacement.
+- [ ] Increment contentVersion and update the rotation timestamp in the same database transaction as the content replacement.
 - [ ] Keep the live catalog size at exactly 3,000. Do not insert a new catalog row; archive the outgoing snapshot separately.
-- [ ] Increment a shared rotation/update counter after each successful content update.
-- [ ] After 5 updates, mark queue metadata as needing refresh.
-- [ ] Apply the refresh lazily when each user next requests a batch. Keep queued IDs stable and load their latest content/version.
+- [ ] Increment the pending successful-content-update count in the same transaction as each successful rotation.
+- [ ] After 5 successful updates, increment catalogGeneration and reset the pending count.
+- [ ] On each user's next batch request, compare their Redis generation with catalogGeneration. If stale, discard and reselect only IDs still waiting in the server-side queue.
+- [ ] Keep IDs already reserved for an in-flight response and cards already returned to the client unchanged; always load current content/version by ID.
 - [ ] Ensure already displayed older versions receive the expired-puzzle response if submitted after rotation.
 
-Completion outcome: A scheduled update archives the outgoing snapshot, changes one existing record’s content while preserving its ID, difficulty, domain, and audience categories, and keeps the catalog at 3,000 records; queue metadata becomes refresh-pending after five updates.
+Completion outcome: A scheduled update archives the outgoing snapshot, changes one existing record’s content while preserving its ID, difficulty, domain, and audience categories, and keeps the catalog at 3,000 records. After five successful updates, stale users' undelivered queue IDs are reselected on their next request.
 
 ### A6. Hints
 
@@ -269,8 +278,8 @@ Completion outcome: A user can sign in and reach the authenticated app with the 
 - [ ] Prevent accidental duplicate answer/skip submission while a card is being submitted or transitioned.
 - [ ] Implement card states for loading, ready, submitting, answered, skipped, expired, and recoverable error.
 - [ ] Handle an expired-puzzle response by discarding that card, showing a brief “puzzle updated; continue” message, and moving the user forward.
-- [ ] Keep the correct solution out of the client state unless the API explicitly returns an approved result field.
-- [ ] Keep the visual interaction simple and aligned with the supplied feed mockup.
+- [ ] Do not reveal the correct solution automatically after an incorrect answer in v1.
+- [ ] Use the supplied feed mockup as visual inspiration; omit Library, share, and fast-forward actions from the prototype.
 
 Completion outcome: A user can open the feed, solve and submit, see correctness, swipe to skip, and continue through cards.
 
@@ -278,8 +287,10 @@ Completion outcome: A user can open the feed, solve and submit, see correctness,
 
 - [ ] Implement the feed batch endpoint and coordinator using the shared feed contract.
 - [ ] Connect the independent difficulty module through the agreed adapter: Glicko-2 per user/domain, Thompson Sampling, and category eligibility.
-- [ ] Include selection inputs for audience category, recent IDs, recent outcomes, and batch constraints.
-- [ ] Emit accepted outcome events containing puzzle ID, content_version, domain, result, timing, hint tier, and other agreed signals.
+- [ ] Include candidate metadata from the catalog (puzzleId, contentVersion, difficultyRating, domain, audienceCategories), plus the user's audience category, recent IDs/outcomes, and batch constraints.
+- [ ] Make QueueService the only caller of the difficulty adapter; it stores returned IDs in Redis.
+- [ ] Emit accepted outcome events with a stable eventId and puzzle ID, contentVersion, domain, result, timing, hint tier, and other agreed signals.
+- [ ] Persist outcome events in the outbox with the attempt/skip; retry the same eventId until the difficulty module acknowledges it.
 - [ ] Ensure the adapter keeps content-version statistics separate when a stable puzzle ID rotates.
 - [ ] Test difficulty ceilings/floors, domain diversity, calibration, exploration, and younger-user streak protection through the public contract.
 - [ ] Keep the difficulty integration behind an adapter. The client must not call the difficulty module directly.
@@ -291,8 +302,8 @@ Completion outcome: A user can open the feed, solve and submit, see correctness,
 - [ ] On a missing Redis queue, reconstruct it through the adapter.
 - [ ] On a missing catalog ID, discard that ID and ask for another.
 - [ ] Load current puzzle content/version from PostgreSQL when building the response.
-- [ ] On a pending five-update refresh marker, refresh that user’s queue metadata on their next batch request while retaining stable IDs.
-- [ ] On Redis failure, use the configured non-personalized fallback or return a recoverable error; do not lose attempts, XP, or profile data.
+- [ ] On a stale catalogGeneration, discard and reselect only undelivered IDs in the user's Redis queue; never change cards already sent to the client.
+- [ ] On Redis failure, return a recoverable feed error. Do not claim a database-backed queue fallback in the prototype, and do not lose attempts, XP, or profile data.
 - [ ] Preserve per-user queue behavior across app sessions.
 
 Completion outcome: Feed batches are personalized per user through the adapter, stored as IDs in Redis, and returned with current content from PostgreSQL.
@@ -320,7 +331,7 @@ Completion outcome: Static hints work. Dynamic hints show a clear unavailable st
 
 ### B7. Stats, daily puzzle, and leaderboard screens
 
-- [ ] Implement the Stats screen using the backend’s statistics response.
+- [ ] Implement the Stats screen using the backend’s documented statistics response. Treat mockup badges, weekly trends, and insight cards as future work until their data is specified.
 - [ ] Include the daily puzzle entry/completion state in the agreed simple form.
 - [ ] Implement the global leaderboard screen using public response fields only.
 - [ ] Implement loading, empty, and retry states for these screens.
@@ -373,8 +384,8 @@ Complete these in order. A milestone is ready when its behavior can be shown end
 ### Milestone 6 — Content rotation
 
 - [ ] Teammate A: Fixed-time rotation updates one existing puzzle ID at a time.
-- [ ] Teammate A: Rotation writes the outgoing snapshot to the archive, preserves ID/difficulty/domain/audience categories, replaces current content/solution/hints, and increments content_version.
-- [ ] Teammate B: Next batch request loads the latest content for the user’s queued stable IDs after the refresh marker.
+- [ ] Teammate A: Rotation writes the outgoing snapshot to the archive, preserves ID/difficulty/domain/audience categories, replaces current content/solution/hints, and increments contentVersion.
+- [ ] Teammate B: After a catalogGeneration change, the next batch request replaces only undelivered queued IDs; already returned cards remain unchanged.
 - [ ] Both: Confirm old displayed versions receive the expired response and the client lets the user continue.
 - [ ] Both: Confirm the archive receives the outgoing snapshot and the live catalog remains exactly 3,000 records.
 
@@ -382,12 +393,12 @@ Complete these in order. A milestone is ready when its behavior can be shown end
 
 The following are dependencies, not implementation tasks for these two teammates:
 
-- [ ] Puzzle source supplies exactly 3,000 valid initial records with content, canonical solution, static hints, stable difficulty, domain, and audience categories.
-- [ ] Puzzle source supplies replacement content for a selected existing catalog ID and defines how any source identifier maps to that ID.
-- [ ] Puzzle owner defines the first puzzle type and answer format so the backend can implement its verifier and the client can render its controls.
+- [ ] The initial 3,000 puzzle records are inserted later with content, canonical solution, static hints, per-puzzle difficultyRating, domain, and audience categories.
+- [ ] The puzzle-generation engine supplies replacement content; before rotation is implemented, define payload validation and mapping to the selected existing catalog ID.
+- [ ] The puzzle-generation workstream defines the first puzzle type and answer format later so the backend can implement its verifier and the client can render its controls.
 - [ ] Difficulty owner supplies the complete Glicko-2/Thompson selection and outcome contracts, including category eligibility and content-version statistics.
 - [ ] AI owner supplies a dynamic-hint integration contract and service. Until then, retain only the placeholder/unavailable behavior.
-- [ ] Product/team selects the authentication approach, confirms the audience-category setup, the fixed rotation interval, and the initial XP amount.
+- [ ] Product/team selects the authentication approach and confirms the audience-category setup and fixed rotation interval.
 
 ## 8. Prototype completion checklist
 
@@ -402,7 +413,7 @@ The following are dependencies, not implementation tasks for these two teammates
 - [ ] The feed uses a per-user Redis queue of stable puzzle IDs and loads current content from PostgreSQL.
 - [ ] The current catalog contains exactly 3,000 puzzle records.
 - [ ] Scheduled rotation archives the outgoing snapshot, changes content for one existing puzzle ID at a time, preserves ID/difficulty/domain/audience categories, and increments the content version.
-- [ ] After five content updates, each user’s queue metadata is refreshed on that user’s next batch request.
+- [ ] After five successful content updates, catalogGeneration increments; each user's next batch request reselects only undelivered IDs if its saved generation is stale.
 - [ ] A stale displayed puzzle is rejected as expired, is not verified, and awards no XP; the client lets the user continue.
 - [ ] No retired puzzle content is kept in the live database; rotated snapshots are stored in the separate archive dataset.
 

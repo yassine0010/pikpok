@@ -4,6 +4,8 @@
 
 This document defines the current logical architecture of PikPok based on the product idea, the reference UI, and the decisions discussed so far.
 
+For a grouped list of unresolved choices, see [Open decisions](open-decisions.md).
+
 It explains:
 
 - How the client, backend, databases, Redis, and independent modules connect.
@@ -22,7 +24,7 @@ This is a logical architecture. It intentionally does not choose implementation 
 
 - Mobile-first client experience.
 - User account and simple profile.
-- A simple audience category: children, teens, or ADHD users.
+- One audience category: CHILDREN, TEENS, or NEURODIVERGENT.
 - Main puzzle feed.
 - Batch puzzle delivery.
 - Per-user puzzle queue.
@@ -92,7 +94,7 @@ The first interface is expected to contain:
 
 There is no Library section in the current scope. The share button and fast-forward button shown in the reference UI are removed from the current scope.
 
-The user must have an account. The profile should remain simple and currently requires one audience category: CHILDREN, TEENS, or ADHD. The exact authentication method is undecided.
+The user must have an account. The profile stores one of three audience categories: CHILDREN, TEENS, or NEURODIVERGENT. The age-specific eligibility rule for the NEURODIVERGENT category remains TBD; do not infer an age from the category. The exact authentication method is undecided.
 
 The application is intended for a small prototype. The architecture should therefore stay simple while keeping clean boundaries so the project can evolve later.
 
@@ -116,6 +118,7 @@ flowchart LR
     Redis[("Redis<br/>Per-user puzzle queues and queue state")]
 
     Difficulty["Audience and difficulty module<br/>Independent Glicko-2 + Thompson Sampling"]
+    Outbox["Difficulty outbox worker"]
     AI["AI modules<br/>Internal design blank"]
 
     Client -->|Account, profile, feed, answer, stats| API
@@ -129,16 +132,18 @@ flowchart LR
     Auth --> Store
     Feed --> Queue
     Feed --> Catalog
-    Feed -.->|Request ordered batch of IDs| Difficulty
     Queue --> Redis
+    Queue -.->|Send candidates and selection context; receive IDs| Difficulty
+    Catalog -.->|Available candidate metadata| Queue
     Catalog --> Store
     Catalog --> Archive
     Attempts --> Store
+    Store --> Outbox
+    Outbox -.->|Verified outcomes with eventId| Difficulty
     Hints --> Catalog
     Hints -.->|Dynamic hint boundary| AI
     Game --> Store
 
-    Queue -.->|Request category-compatible IDs| Difficulty
 ```
 
 ### 4.1 Architectural shape
@@ -153,13 +158,13 @@ The recommended shape is:
 - A separate append-only puzzle archive dataset for current and previous puzzle snapshots.
 - Redis as the fast per-user queue and queue-state store.
 
-This is not a commitment to a specific programming framework. The backend may later be implemented with the team’s chosen technology.
+The logical design is independent of implementation details. The selected technologies are recorded in [technical-stack-and-implementation.md](technical-stack-and-implementation.md).
 
 ## 5. Main components and responsibilities
 
 ### 5.1 Mobile-first client
 
-The client is the user-facing application. It may eventually be delivered as a mobile-first website, an installable mobile application, or both. The implementation choice is not fixed yet.
+The client is the user-facing application, built with Expo, React Native, and React Native Web for web and Android.
 
 Responsibilities:
 
@@ -209,15 +214,15 @@ Responsibilities:
 - Authenticate the user using the authentication method selected later.
 - Maintain a stable user identifier.
 - Store basic profile information.
-- Store one audience category: children, teens, or ADHD users.
+- Store one audience category: children, teens, or NEURODIVERGENT users.
 - Provide the backend with the identity required to locate the user’s queue and history.
 
 The profile remains intentionally small for the prototype. Possible fields include:
 
-- `user_id`
-- `display_name` or username
+- `userId`
+- `displayName` or username
 - Authentication identity
-- `audience_category`
+- `audienceCategory`
 - Account creation timestamp
 - Profile update timestamp
 
@@ -231,21 +236,18 @@ Responsibilities:
 
 - Receive a feed request from the backend API.
 - Determine whether the user already has enough queued puzzle IDs.
-- Ask the audience/difficulty module for a new ordered batch when necessary.
-- Put selected IDs into the user’s queue.
-- Reserve or remove IDs from the queue when constructing a response.
+- Ask the queue manager for the next reserved IDs.
 - Load the complete puzzle records from the catalog.
 - Filter out unavailable or missing records.
 - Load the latest content version for each stable ID.
 - Avoid returning duplicate recent puzzles when enough alternatives exist.
 - Return an ordered batch to the client.
-- Ask for another batch when the user’s queue becomes empty or reaches its refill threshold.
 
 The feed coordinator does not implement the difficulty algorithm. It only uses the difficulty module’s output.
 
 ### 5.5 Per-user queue manager
 
-The queue manager owns the delivery queue for each user, subject to confirmation of the final ownership decision.
+The queue manager owns the delivery queue for each user.
 
 Recommended ownership:
 
@@ -261,7 +263,9 @@ Responsibilities:
 - Preserve the user’s queue when the app is closed and reopened.
 - Coordinate access when the same user uses multiple devices.
 - Reduce repeated puzzles by tracking recently delivered IDs.
-- Request another batch when the queue is low.
+- Request available candidate metadata from the catalog when the queue is low or stale.
+- Call the difficulty adapter with those candidates when the queue needs refilling.
+- Refresh the queue after the catalog generation changes by replacing only undelivered IDs.
 - Prevent the same queued item from being delivered twice during concurrent requests.
 - Detect missing puzzle IDs and stale puzzle content versions.
 - Support queue generation/version information.
@@ -285,7 +289,7 @@ Responsibilities:
 - Provide static hints associated with the current content.
 - Keep the canonical solution available to the backend for verification.
 - Write an immutable snapshot to the puzzle archive whenever a puzzle is created or its content is rotated.
-- Trigger queue metadata synchronization after every configured number of content updates.
+- Increment the durable catalog generation after every five successful content updates. The queue manager uses that generation to reselect only undelivered IDs on each user's next feed request.
 
 The live database contains exactly 3,000 current puzzles. Historical snapshots are stored in the separate puzzle archive dataset. The archive is not used to serve feed cards or verify expired submissions.
 
@@ -309,7 +313,7 @@ The user currently wants the result to be simple:
 - `correct`
 - `incorrect`
 
-For an incorrect answer, the client should show the incorrect result. Whether the correct solution is later shown is not currently part of the required result and remains undecided.
+For an incorrect answer, the client shows the incorrect result. In v1, the correct solution is not revealed automatically.
 
 ### 5.8 Hint coordinator
 
@@ -341,10 +345,11 @@ The difficulty module is independent from the core backend and owns Glicko-2 and
 
 The audience eligibility layer is intentionally small:
 
-- A user has one selected audience category: CHILDREN, TEENS, or ADHD.
+- A user has one selected audience category: CHILDREN, TEENS, or NEURODIVERGENT.
 - Each puzzle declares the audience categories that may receive it.
 - The module filters by audience category before applying difficulty selection.
 - The category is an eligibility and safety input; it does not replace the user's skill rating.
+- The age-specific eligibility rule for NEURODIVERGENT users remains TBD.
 
 The complete difficulty-selection design is:
 
@@ -353,14 +358,15 @@ The complete difficulty-selection design is:
 - Use category- and domain-based cold-start values when a user has no history in a domain.
 - Translate the user's current rating into a target difficulty range.
 - Use Thompson Sampling to choose among suitable puzzles in that range.
-- Maintain alpha/beta statistics for each puzzle content version, identified by stable puzzle ID and content_version.
+- Maintain alpha/beta statistics for each puzzle content version, identified by stable puzzle ID and contentVersion.
 - Apply configured difficulty ceilings and floors so selection remains within safe bounds.
 - Enforce domain-diversity rules so a batch does not over-concentrate on one domain.
 - Apply streak-protection rules for younger users, especially children and teens.
 - Support calibration and exploration behavior before and during personalized selection.
-- Update the user's Glicko-2 state and selected puzzle-version statistics after every accepted puzzle interaction.
+- Update the user's Glicko-2 state and puzzle-version success/failure statistics from correct or incorrect results.
+- Record skips for repeat avoidance, but treat them as unknown: a skip does not change the user's skill rating or the puzzle-version success/failure statistics in the first version.
 
-The module may use correctness, skips, timing, hint usage, and other agreed interaction signals in its internal update event. The core backend only sends the agreed event; it does not reproduce the Glicko-2 or Thompson Sampling mathematics.
+Correct/incorrect answers update the skill and puzzle-version outcome statistics. Skips are still sent as events and recorded for repeat avoidance, but are neutral for those statistics in the first version. Timing and hint use may be recorded as context; they do not change the score until the difficulty owner defines and validates a weighting rule. The core backend sends the agreed facts and does not reproduce the Glicko-2 or Thompson Sampling mathematics.
 
 The module returns an ordered list of stable puzzle IDs for a requested batch. It does not implement answer verification, queue delivery, XP, puzzle storage, or AI behavior. The backend loads the current content version and rejects stale submissions.
 
@@ -384,18 +390,19 @@ Recommended simple XP rule for the prototype:
 - Using a hint: does not remove XP, but is recorded.
 - More advanced XP weighting by difficulty can be added later.
 
-The exact XP amount is not fixed. It should be configurable rather than embedded in the client.
+In v1, award 10 XP for a verified correct answer and 0 XP for an incorrect or skipped puzzle. Do not apply multipliers. The backend owns this rule; the client never supplies the XP amount.
 
-Recommended initial streak rule:
+Agreed initial streak rule:
 
 - A user maintains a daily streak by completing the daily puzzle.
 - The daily puzzle is recorded separately from ordinary feed activity.
 - The streak is updated only from a verified backend event.
+- Streak dates use one configured application time zone.
 
-Recommended initial leaderboard rule:
+Agreed initial leaderboard rule:
 
 - One global leaderboard.
-- Ranked by accumulated XP.
+- All-time, ranked by accumulated XP; break equal-XP ties by stable user ID.
 - No friends leaderboard or additional audience-specific leaderboards.
 
 ### 5.11 Persistent database
@@ -404,7 +411,7 @@ The database is the source of truth for durable application state.
 
 For the small prototype, the recommended direction is one database with flexible puzzle content rather than two different persistent databases. This avoids unnecessary synchronization between a puzzle database and a user-activity database.
 
-The exact database product is undecided.
+The selected persistent database is PostgreSQL with Prisma. Puzzle content may use flexible JSONB fields.
 
 The database should store:
 
@@ -437,11 +444,11 @@ Recommended responsibilities:
 
 Redis is not the source of truth for puzzle content, user attempts, XP, or leaderboard history.
 
-If Redis is lost, the backend should be able to reconstruct the user’s queue by asking the audience/difficulty module for another batch and loading puzzle records from the database.
+If Redis data is lost while Redis is available, the backend reconstructs the user’s queue through QueueService: it requests candidate metadata from the catalog, asks the difficulty module for IDs, then loads current puzzle records from the database. If Redis itself is unavailable, the feed returns a retryable error until Redis is available again.
 
 ### 5.13 Puzzle archive dataset
 
-The puzzle archive is a separate append-only storage system for every puzzle snapshot, including the initial 3,000 records and every later content version.
+The puzzle archive is separate from live serving and stores append-only JSON snapshots for every puzzle version, including the initial 3,000 records and every later content version. Key each snapshot by stable puzzle ID and content version. Store it in object storage, restrict access to the backend and maintainers, and back it up. The provider and retention period remain open.
 
 It should store:
 
@@ -459,19 +466,19 @@ The archive is used for historical records, dataset analysis, auditing, and futu
 
 ## 6. Logical data model
 
-The following entities describe the information needed by the architecture. Exact field names and puzzle-specific fields remain open.
+The following entities use the same camelCase field names as the JSON contracts. Puzzle-specific content fields remain open.
 
 ### 6.1 User
 
 ```text
 User
 -----
-user_id
-authentication_identity
-display_name                 [optional / TBD]
-audience_category            children / teens / ADHD
-created_at
-updated_at
+userId
+authenticationIdentity
+displayName                 [optional / TBD]
+audienceCategory            CHILDREN / TEENS / NEURODIVERGENT
+createdAt
+updatedAt
 status
 ```
 
@@ -482,40 +489,41 @@ The authentication identity should not be exposed publicly on the leaderboard.
 ```text
 Puzzle
 ------
-puzzle_id                    stable identifier
-content_version             increments when content changes
+puzzleId                    stable identifier
+contentVersion             increments when content changes
 content                      current flexible puzzle content
-answer_options               optional; format TBD
-puzzle_difficulty            stable difficulty value
-audience_categories          children / teens / ADHD
-canonical_solution           current server-side verification data
-static_hints                 hints for current content
-puzzle_type                  TBD
-difficulty_metadata          TBD / owned partly by difficulty workstream
-explanation_metadata         TBD
-created_at
-updated_at
-next_rotation_at             optional scheduler metadata
+answerOptions               optional; format TBD
+domain                      required selection domain
+difficultyRating            required numeric selection rating; exact scale TBD
+audienceCategories          CHILDREN / TEENS / NEURODIVERGENT
+canonicalSolution           current server-side verification data
+staticHints                 hints for current content
+type                  TBD
+difficultyMetadata          optional generation or calibration details
+explanationMetadata         TBD
+createdAt
+updatedAt
+nextRotationAt             optional scheduler metadata
 ```
 
-The puzzle type, answer format, audience categories, and detailed difficulty metadata are intentionally left open where the team has not defined the puzzle formats yet. The stable ID and configured difficulty value are not changed by content rotation.
+The puzzle type, answer format, exact difficulty scale, and neurodivergent age rule remain open. Every selectable puzzle must have a domain, numeric difficulty rating, and at least one audience category. The difficulty rating must use the scale agreed with the difficulty module for its target-range comparisons. The stable ID and configured difficulty value are not changed by content rotation.
 
 The canonical solution should remain protected from the client until answer processing requires it. Previous content is retained only in the separate archive dataset, never in the live puzzle record.
 
 ```text
 PuzzleArchiveRecord
 -------------------
-archive_record_id
-puzzle_id
-content_version
+archiveRecordId
+puzzleId
+contentVersion
 content
-canonical_solution
-static_hints
-audience_categories
-puzzle_difficulty
-created_at
-archived_at
-rotation_metadata
+canonicalSolution
+staticHints
+audienceCategories
+difficultyRating
+createdAt
+archivedAt
+rotationMetadata
 ```
 
 Archive records are immutable snapshots. The archive is not queried to serve feed cards or verify a stale answer.
@@ -525,21 +533,21 @@ Archive records are immutable snapshots. The archive is not queried to serve fee
 ```text
 PuzzleAttempt
 -------------
-attempt_id                   idempotent interaction identifier
-user_id
-puzzle_id
-content_version              version displayed to the user
-session_id                   optional
-submitted_answer             format TBD
+attemptId                   idempotent interaction identifier
+userId
+puzzleId
+contentVersion              version displayed to the user
+sessionId                   optional
+submittedAnswer             format TBD
 result                       correct / incorrect / skipped
-started_at                   optional
-submitted_at
-elapsed_time_ms              optional
-static_hint_count
-dynamic_hint_count
-xp_awarded
-client_device_id             optional
-created_at
+startedAt                   optional
+submittedAt
+elapsedTimeMs              optional
+staticHintCount
+dynamicHintCount
+xpAwarded
+clientDeviceId             optional
+createdAt
 ```
 
 Every answer, skip, or equivalent completed interaction should be recorded with the content version that the client displayed. This lets the backend identify stale submissions and lets analytics distinguish interactions with different content versions. The old puzzle content is not retained in the live database; it is represented by the archive snapshot.
@@ -549,14 +557,14 @@ Every answer, skip, or equivalent completed interaction should be recorded with 
 ```text
 HintRequest
 -----------
-hint_request_id
-user_id
-puzzle_id
-attempt_id                   optional
-hint_type                    static / dynamic
-requested_at
+hintRequestId
+userId
+puzzleId
+attemptId                   optional
+hintType                    static / dynamic
+requestedAt
 status                       delivered / failed / unavailable / TBD
-response_metadata            optional
+responseMetadata            optional
 ```
 
 The dynamic hint content and its internal metadata remain part of the AI workstream.
@@ -566,37 +574,39 @@ The dynamic hint content and its internal metadata remain part of the AI workstr
 ```text
 UserDomainRating
 ----------------
-user_id
+userId
 domain
 rating
-rating_deviation
+ratingDeviation
 volatility
-cold_start_category
-updated_at
+coldStartCategory
+updatedAt
 
 PuzzleVersionBandStats
 ----------------------
-puzzle_id
-content_version
+puzzleId
+contentVersion
 alpha
 beta
-interaction_count
-updated_at
+interactionCount
+updatedAt
 ```
 
 The difficulty module owns these records or their equivalent. The puzzle statistics key is the pair of stable puzzle ID and content version, so rotating content creates new evidence without changing the queue ID.
+
+The core backend also persists a `DifficultyOutboxEvent` for each accepted answer or skip in the same transaction as that interaction. Each event has a unique `eventId`, payload, delivery status, and timestamps. A worker retries pending events; the difficulty module ignores an `eventId` it has already processed.
 
 ### 6.6 XP event
 
 ```text
 XPEvent
 -------
-xp_event_id
-user_id
+xpEventId
+userId
 source                       correct answer / daily puzzle / future source
-reference_id                 attempt or daily-puzzle identifier
+referenceId                 attempt or daily-puzzle identifier
 amount
-created_at
+createdAt
 ```
 
 Using XP events makes the total explainable and allows future corrections. A simpler prototype may also maintain a user XP total, but the source of each award should remain traceable.
@@ -606,12 +616,12 @@ Using XP events makes the total explainable and allows future corrections. A sim
 ```text
 DailyPuzzleParticipation
 -------------------------
-user_id
-daily_puzzle_id
+userId
+dailyPuzzleId
 date
 completed
-completed_at
-xp_awarded
+completedAt
+xpAwarded
 ```
 
 This entity supports the daily streak without requiring the entire feed to be treated as a daily challenge.
@@ -621,11 +631,11 @@ This entity supports the daily streak without requiring the entire feed to be tr
 ```text
 UserStreak
 ----------
-user_id
-current_streak
-longest_streak
-last_completed_date
-updated_at
+userId
+currentStreak
+longestStreak
+lastCompletedDate
+updatedAt
 ```
 
 The streak must be updated from server-recorded completion, not from a value supplied by the client.
@@ -637,25 +647,29 @@ The ordered puzzle IDs are stored in Redis. The durable database may store only 
 ```text
 UserQueueState
 --------------
-user_id
-queue_generation
-rotation_generation_seen
-last_refilled_at
-last_consumed_at
-reserved_count
+userId
+queueGeneration
+catalogGenerationSeen
+lastRefilledAt
+lastConsumedAt
+reservedCount
 status
 ```
 
 Logical Redis structures may include:
 
 ```text
-user_queue:{user_id}
-user_recent_puzzles:{user_id}
-user_queue_generation:{user_id}
-user_queue_reservations:{user_id}
+userQueue:{userId}
+userRecentPuzzles:{userId}
+userQueueGeneration:{userId}
+userQueueReservations:{userId}
 ```
 
 These are logical names, not a final implementation requirement.
+
+### 6.10 Catalog synchronization state
+
+The persistent database owns one `catalogGeneration` value and a pending successful-content-update count. After every five successful rotations, increment `catalogGeneration` and reset the pending count. Each user's Redis queue stores the generation it last used. On that user's next feed request, a generation mismatch means the backend discards and reselects only IDs still waiting in Redis. IDs already reserved for an in-flight response or already returned to the client are left alone.
 
 ## 7. Data ownership and source of truth
 
@@ -668,7 +682,7 @@ These are logical names, not a final implementation requirement.
 | Static hints | Puzzle catalog/database | Optional client copy after request | Stored with the puzzle. |
 | User puzzle order | Redis user queue | Optional database metadata | Rebuilt if Redis is lost. |
 | Recently seen IDs | Redis or database history | Queue-support state | Used to reduce repetition. |
-| Attempts and answers | Persistent database | Statistics aggregates | Must survive content rotations and queue metadata refreshes. |
+| Attempts and answers | Persistent database | Statistics aggregates | Must survive content rotations and per-user queue reselection. |
 | Hint usage | Persistent database | Statistics aggregates | Static and dynamic separated. |
 | XP | Persistent database | Leaderboard aggregate/cache | Awarded by backend. |
 | Daily streak | Persistent database | Profile response | Updated from verified completion. |
@@ -676,6 +690,7 @@ These are logical names, not a final implementation requirement.
 | Audience/difficulty selection state | Audience/difficulty module ownership | Storage location TBD | Backend provides category and interaction context. |
 | Glicko-2 and Thompson state | Difficulty module ownership | Storage location/format TBD | Includes user-domain rating, deviation, volatility, and puzzle-version alpha/beta statistics. |
 | Historical puzzle snapshots | Puzzle archive dataset | None required for live serving | Used for archive, analysis, and future work. |
+| Catalog generation and pending update count | Persistent database | Per-user generation watermark in Redis | Generation increments after every five successful content updates. |
 
 ## 8. User flows
 
@@ -714,20 +729,30 @@ sequenceDiagram
     participant F as Feed coordinator
     participant Q as Queue manager
     participant R as Redis
-    participant G as Difficulty module
     participant P as Puzzle catalog
+    participant G as Difficulty module
     participant D as Database
 
     C->>A: Request feed batch
     A->>A: Validate authenticated user
     A->>F: Request batch for user
     F->>Q: Check user queue
-    Q->>R: Read queued IDs
+    Q->>R: Read queued IDs and saved catalog generation
+    R-->>Q: Return ready IDs and saved generation
+    Q->>D: Read current catalog generation
+    D-->>Q: Return current generation
 
-    alt Queue has enough IDs
-        R-->>Q: Return ordered IDs
-    else Queue is empty or below threshold
-        Q->>G: Request ordered batch for user
+    alt Queue has enough IDs and current catalog generation
+        R-->>Q: Keep existing ordered IDs
+    else Queue is low or its catalog generation is stale
+        opt Saved generation is stale
+            Q->>R: Discard only undelivered IDs
+        end
+        Q->>P: Request candidate metadata
+        P->>D: Read IDs, versions, ratings, domains, and audiences
+        D-->>P: Return candidate metadata
+        P-->>Q: Return candidate metadata
+        Q->>G: Request ordered IDs with candidates and user context
         G-->>Q: Return selected puzzle IDs
         Q->>R: Store IDs in user queue
         R-->>Q: Confirm queue update
@@ -755,8 +780,8 @@ sequenceDiagram
     participant V as "Answer/Attempt module"
     participant P as Puzzle catalog
     participant D as Database
-    participant X as "XP/Stats module"
     participant G as Difficulty module
+    participant O as Difficulty outbox worker
 
     C->>A: Submit answer with puzzle ID and content version
     A->>V: Validate submission
@@ -768,23 +793,22 @@ sequenceDiagram
 
     alt Content version is current
         V->>V: Check submitted answer
-        V->>D: Persist attempt and result
-        D-->>V: Confirm attempt
-
         alt Answer is correct
-            V->>X: Record successful outcome
-            X->>D: Award XP and update statistics
-            X-->>V: Return updated progress
-            V->>G: Send verified user outcome
+            V->>V: Calculate XP and progress update
         else Answer is incorrect
-            V->>X: Record unsuccessful outcome
-            X->>D: Update statistics without XP award
-            X-->>V: Return updated progress
-            V->>G: Send verified user outcome
+            V->>V: Set XP award to zero
         end
 
-        V-->>A: Return correct or incorrect result
-        A-->>C: Display result
+        V->>D: Save attempt, XP/progress, and outbox event in one transaction
+        D-->>V: Commit
+        par Respond to the client
+            V-->>A: Return correct or incorrect result
+            A-->>C: Display result
+        and Deliver the saved outcome asynchronously
+            O->>G: Send outcome with eventId after commit
+            G-->>O: Acknowledge or report duplicate eventId
+            O->>D: Mark outbox event delivered
+        end
     else Content version is stale
         V-->>A: Return expired-puzzle conflict
         A-->>C: Discard card and ask user to continue
@@ -801,18 +825,24 @@ sequenceDiagram
     participant A as Backend API
     participant V as Attempt module
     participant D as Database
+    participant O as Difficulty outbox worker
     participant G as Difficulty module
 
     C->>A: Record puzzle skipped/swiped
     A->>V: Validate user, puzzle ID, and version
-    V->>D: Save skipped interaction
-    D-->>V: Confirm interaction
-    V->>G: Send verified skip outcome
-    V-->>A: Skip recorded
-    A-->>C: Allow next puzzle to display
+    V->>D: Save skipped interaction and outbox event in one transaction
+    D-->>V: Commit
+    par Respond to the client
+        V-->>A: Skip recorded
+        A-->>C: Allow next puzzle to display
+    and Deliver the saved outcome asynchronously
+        O->>G: Send verified skip outcome with eventId after commit
+        G-->>O: Acknowledge or report duplicate eventId
+        O->>D: Mark outbox event delivered
+    end
 ```
 
-A skipped puzzle does not award XP. The difficulty module may use the skip as part of its own user modeling, but that behavior is outside this document.
+A skipped puzzle does not award XP. The skip is recorded for repeat avoidance, but does not count as a correct or incorrect result for Glicko-2 or puzzle-version success/failure statistics in the first version.
 
 ### 8.5 Static hint request
 
@@ -895,7 +925,7 @@ The exact values are configuration, but a simple starting point is:
 Initial batch size:       5 puzzles
 Refill threshold:         2 remaining puzzles
 Recent duplicate window: configurable
-Content updates before queue refresh: 5
+    Successful content updates before catalog generation increments: 5
 ```
 
 These values are not product decisions. They are safe initial defaults for reducing API calls without creating an unnecessarily large queue.
@@ -905,12 +935,12 @@ These values are not product decisions. They are safe initial defaults for reduc
 When the user requests a batch:
 
 1. The backend identifies the user.
-2. The queue manager checks the user’s existing queue.
-3. If the queue has enough IDs, it uses them.
-4. If the queue is low, it requests another batch from the difficulty module.
-5. The audience/difficulty module uses the user’s category and recent history.
-6. The queue manager stores the returned IDs in the user’s queue.
-7. The feed coordinator loads the full puzzle records.
+2. The queue manager checks the user's Redis queue and saved catalog generation.
+3. If the catalog generation is newer, the queue manager removes only undelivered IDs and marks the queue for refill.
+4. If the queue is low or marked for refill, the queue manager requests current candidate metadata from the catalog.
+5. The queue manager sends those candidates, the user's audience category, and recent history to the difficulty module.
+6. The queue manager stores the returned ordered IDs in Redis and records the current catalog generation.
+7. The feed coordinator reserves IDs through the queue manager and loads full puzzle records from the catalog.
 8. The backend returns the ordered batch to the client.
 
 ### 9.3 Reducing repeated puzzles
@@ -931,7 +961,7 @@ The exact percentage target is undecided.
 
 If the queue becomes empty:
 
-1. The backend requests another batch from the difficulty module.
+1. The queue manager requests current candidate metadata from the catalog, then asks the difficulty module to filter and select IDs.
 2. The new IDs are stored in Redis.
 3. The corresponding puzzle records are loaded.
 4. The client receives the next batch.
@@ -945,24 +975,25 @@ The queue should contain IDs rather than full puzzle documents because:
 - Puzzle content remains authoritative in the database.
 - Puzzle updates do not leave multiple full copies in Redis.
 - Redis memory usage stays lower.
-- Queue metadata refreshes continue to deal with stable identifiers.
+- Queue refresh replaces only undelivered IDs; puzzle content remains authoritative in the catalog.
 - The feed coordinator can load the current content for the stable ID before returning it.
 
 ## 10. Puzzle catalog synchronization
 
 The system contains exactly 3,000 live puzzle records. A rotation archives the current snapshot and changes the content of one existing live record while preserving its puzzle ID and configured difficulty.
 
-Because every user has an individual queue, the queue IDs remain stable while puzzle content rotates. Queue metadata is refreshed lazily:
+Because every user has an individual queue, a single rotation leaves each queue alone. After five successful rotations, the catalog generation changes and each queue is refreshed lazily on that user's next batch request:
 
 1. One puzzle is selected by ID on the fixed rotation schedule.
 2. The current snapshot is written to the archive dataset.
 3. Its content, solution, and static hints are replaced in the live record.
 4. Its configured difficulty, audience categories, and puzzle ID remain unchanged.
-5. After five content updates, queue metadata is marked for refresh.
-6. Each user’s queue is refreshed when they next request a batch.
-7. The latest content is loaded for queued IDs.
+5. After five successful content updates, increment the durable catalog generation and reset the pending update count.
+6. On a user's next batch request, compare their Redis queue's saved catalog generation to the current one.
+7. If it is behind, discard and reselect only undelivered IDs; keep already returned cards unchanged.
+8. The latest content is loaded for every ID returned from the catalog.
 
-The synchronization threshold is five content updates and should remain configurable.
+The synchronization threshold is five successful content updates and should remain configurable. Queue refresh does not change the 3,000 catalog rows; it replaces only undelivered selections in an individual user's Redis queue.
 
 ### 10.1 Content rotation
 
@@ -970,7 +1001,7 @@ Expected behavior:
 
 - Select the existing puzzle by stable ID.
 - If replacement content arrives with a new upstream/source identifier, map it to the selected existing catalog ID; do not insert a 3,001st record or change the application puzzle ID.
-- Write the current live record to the archive dataset as an immutable snapshot keyed by puzzle ID and content_version.
+- Write the current live record to the archive dataset as an immutable snapshot keyed by puzzle ID and contentVersion.
 - Replace its current content in one database transaction.
 - If the live update fails after the archive write, keep the archive snapshot and retry the rotation idempotently; never delete an archive snapshot.
 - Keep the same puzzle ID.
@@ -979,9 +1010,9 @@ Expected behavior:
 - Replace the current solution and static hints.
 - Increment the content version.
 - Update the rotation timestamp.
-- Increment the pending queue-refresh count.
+- Increment the pending successful-content-update count.
 
-The first scheduler can select the record whose rotation time is earliest. The exact scheduler implementation remains a technology decision.
+At each scheduled rotation, the backend requests one replacement from the puzzle-generation engine. A backend scheduled job selects the record whose rotation time is earliest. The rotation interval remains to be chosen.
 
 ### 10.2 Content versioning
 
@@ -998,67 +1029,83 @@ Expected behavior:
 
 Expected behavior:
 
-- Queue entries keep the same stable IDs.
-- A content rotation does not remove an ID from Redis.
+- A single content rotation does not immediately alter any user's queue.
 - The catalog returns the latest content when the next batch is loaded.
 - A user with old content already displayed may receive an expired-puzzle response.
-- After five content updates, queue metadata is refreshed lazily on the next batch request.
+- After five successful content updates, the catalog generation changes.
+- On that user's next batch request, only undelivered IDs still in Redis are discarded and reselected.
+- IDs already reserved for an in-flight response and cards already sent to the client are unchanged.
 
-### 10.4 Queue metadata refresh flow
+### 10.4 Queue refresh after catalog updates
 
 ```mermaid
 sequenceDiagram
     participant M as Puzzle management
     participant A as Backend API
-   participant P as Puzzle catalog
-   participant D as Database
+    participant P as Puzzle catalog
+    participant D as Database
     participant H as Puzzle archive dataset
-   participant S as Queue sync coordinator
+    participant Q as QueueService
     participant R as Redis
+    participant G as Difficulty module
 
-   M->>A: Rotate content by stable puzzle ID
-   A->>P: Validate replacement content
+    M->>A: Rotate content by stable puzzle ID
+    A->>P: Validate replacement content
     P->>H: Append immutable current snapshot
-   P->>D: Update content in existing record
-    D-->>P: Confirm commit
-    P->>S: Register content update
-    S->>S: Compare update count with threshold five
+    P->>D: Update content/version and increment pending update count in one transaction
 
     alt Threshold not reached
-        S-->>P: Keep refresh count pending
+        D-->>D: Keep current catalog generation
     else Threshold reached
-        S->>S: Mark queue metadata refresh pending
-        S->>R: Refresh metadata lazily per user
-        R-->>S: Synchronization state recorded
+        D->>D: Increment catalog generation and reset pending count
     end
+    D-->>P: Commit catalog update and generation state
 
     P-->>A: Catalog operation completed
     A-->>M: Return status
+
+    opt On a later feed request with a stale queue generation
+        A->>Q: Request next batch
+        Q->>R: Read queue IDs and saved generation
+        R-->>Q: Return undelivered IDs and generation
+        Q->>D: Read current catalog generation
+        D-->>Q: Return current generation
+        Q->>R: Discard only undelivered IDs
+        Q->>P: Request candidate metadata
+        P-->>Q: Return candidates without puzzle text or answers
+        Q->>G: Select replacement IDs from candidates
+        G-->>Q: Return ordered IDs
+        Q->>R: Store IDs and update saved generation
+        Q-->>A: Return reserved IDs
+    end
 ```
 
-The refresh does not replace the 3,000 IDs. It only ensures that future batches load the latest content versions. A user’s queue is refreshed when that user requests another batch.
+The catalog update does not change the 3,000 live catalog rows. On each user's next feed request, the queue manager compares generations. If stale, it replaces only undelivered queued IDs; cards already sent to a client are unaffected and retain their content-version checks.
 
 ## 11. Requirements exchanged with other modules
 
 ### 11.1 Difficulty module input contract
+
+Use `camelCase` for every REST/JSON field and every difficulty-adapter field. Internal names may differ only when an explicit mapping is defined.
 
 The core backend should be able to send at least:
 
 ```text
 DifficultySelectionRequest
 ---------------------------
-user_id
-audience_category
-requested_batch_size
-recent_puzzle_ids
-recent_attempt_outcomes
-recent_skip_outcomes
-current_user_context        optional module context
-rotation_generation         optional
-audience_constraints        optional
+userId
+audienceCategory
+batchSize
+candidates: [{ puzzleId, contentVersion, difficultyRating, domain, audienceCategories }]
+recentPuzzleIds
+recentAttemptOutcomes
+recentSkipOutcomes
+currentUserContext          optional module context
+catalogGeneration
+audienceConstraints         optional
 ```
 
-The request identifies the user's audience category and recent interaction context. The core system does not need to send private Glicko fields if the difficulty module owns and persists them.
+The queue manager asks the catalog for the current candidate metadata and sends that list to the difficulty module. The module owns eligibility filtering and ranking, including the Glicko and Thompson Sampling logic; the catalog remains the source of truth for which puzzles exist. The module receives metadata only, never puzzle text, canonical solutions, or hints. The request also carries the user's audience category and recent interaction context. The core system does not need to send private Glicko fields if the difficulty module owns and persists them.
 
 ### 11.2 Difficulty module output contract
 
@@ -1067,11 +1114,11 @@ The core backend needs at least:
 ```text
 DifficultySelectionResponse
 ----------------------------
-selection_id
-user_id
-ordered_puzzle_ids
-selection_generation        optional
-expires_at                  optional
+selectionId
+userId
+orderedPuzzleIds
+selectionGeneration         optional
+expiresAt                   optional
 ```
 
 The selected IDs should:
@@ -1092,20 +1139,21 @@ After an interaction, the backend should provide a verified outcome such as:
 ```text
 DifficultyOutcomeEvent
 ----------------------
-user_id
-puzzle_id
-content_version
+eventId                    stable idempotency identifier
+userId
+puzzleId
+contentVersion
 domain
 result                    correct / incorrect / skipped
-outcome_score             optional normalized score used by the difficulty module
-elapsed_time_ms           optional
-hint_tier_used            optional
-attempt_count             optional
-abandoned_ms              optional
-submitted_at
+outcomeScore              optional normalized score used by the difficulty module
+elapsedTimeMs             optional
+hintTierUsed              optional
+attemptCount              optional
+abandonedMs               optional
+submittedAt
 ```
 
-The event is emitted only after the interaction is accepted and persisted. The difficulty module uses it to update the user-domain Glicko-2 state and the selected puzzle content-version alpha/beta statistics. Selection requests can still be made once per batch to reduce API traffic.
+The event is emitted only after the interaction is accepted and persisted. Store it in a durable outbox in the same transaction as the attempt/skip, then retry with the same eventId until acknowledged. The difficulty module deduplicates by eventId. It updates user-domain Glicko-2 and puzzle-version success/failure statistics for correct or incorrect results; skips are neutral and may be used for repeat avoidance. Timing and hint signals are context only until a weighting rule is agreed. Selection requests can still be made once per batch to reduce API traffic.
 
 ### 11.4 Puzzle catalog input/output requirement
 
@@ -1128,20 +1176,20 @@ The core backend only needs an integration boundary for dynamic hints. The follo
 ```text
 DynamicHintRequest
 ------------------
-request_id
-user_id
-puzzle_id
-content_version
-attempt_id                  optional
-user_question               optional
-current_attempt_context     optional
+requestId
+userId
+puzzleId
+contentVersion
+attemptId                   optional
+userQuestion                optional
+currentAttemptContext       optional
 
 DynamicHintResponse
 -------------------
-request_id
+requestId
 status                      success / unavailable / failed / TBD
-hint_content                TBD
-next_guidance               TBD
+hintContent                 TBD
+nextGuidance                TBD
 ```
 
 The internal AI modules, prompts, models, frameworks, and reasoning are intentionally not specified.
@@ -1196,7 +1244,7 @@ Get global leaderboard
 Request difficulty batch
 Send verified difficulty outcome
 Rotate content for puzzle ID
-Refresh queue metadata after five updates
+Advance catalogGeneration after five successful rotations; reselect undelivered IDs lazily
 Re-read current content on next batch
 ```
 
@@ -1208,35 +1256,35 @@ These internal operations do not need to be exposed directly to the client.
 
 ```json
 {
-  "session_id": "session-id",
-  "queue_generation": "generation-id",
+  "sessionId": "session-id",
+  "queueGeneration": "generation-id",
   "puzzles": [
     {
-      "puzzle_id": "puzzle-id",
-      "content_version": 1,
+      "puzzleId": "puzzle-id",
+      "contentVersion": 1,
       "content": {},
-      "static_hints": [],
+      "staticHints": [],
       "type": null,
-      "difficulty": null
+      "difficultyRating": 1200
     }
   ],
-  "next_batch_required_at": 2
+  "nextBatchRequiredAt": 2
 }
 ```
 
-The empty or null fields are intentional placeholders because puzzle formats and metadata have not yet been decided.
+The empty or null fields are intentional placeholders because puzzle formats and metadata have not yet been decided. `difficultyRating: 1200` is an example value only; the final scale must be agreed with the difficulty module.
 
 ### 13.2 Answer submission
 
 ```json
 {
-  "attempt_id": "client-generated-id",
-  "puzzle_id": "puzzle-id",
-  "content_version": 1,
-  "submitted_answer": {},
-  "elapsed_time_ms": null,
-  "static_hints_used": 0,
-  "dynamic_hints_used": 0
+  "attemptId": "client-generated-id",
+  "puzzleId": "puzzle-id",
+  "contentVersion": 1,
+  "submittedAnswer": {},
+  "elapsedTimeMs": null,
+  "staticHintsUsed": 0,
+  "dynamicHintsUsed": 0
 }
 ```
 
@@ -1244,11 +1292,11 @@ The empty or null fields are intentional placeholders because puzzle formats and
 
 ```json
 {
-  "attempt_id": "client-generated-id",
-  "puzzle_id": "puzzle-id",
+  "attemptId": "client-generated-id",
+  "puzzleId": "puzzle-id",
   "result": "correct",
-  "xp_awarded": 10,
-  "streak_updated": true
+  "xpAwarded": 10,
+  "streakUpdated": true
 }
 ```
 
@@ -1258,9 +1306,9 @@ The only required correctness result is `correct` or `incorrect`. Additional pro
 
 ```json
 {
-  "selection_id": "selection-id",
-  "user_id": "user-id",
-  "ordered_puzzle_ids": [
+  "selectionId": "selection-id",
+  "userId": "user-id",
+  "orderedPuzzleIds": [
     "puzzle-id-1",
     "puzzle-id-2",
     "puzzle-id-3"
@@ -1290,16 +1338,16 @@ Progress by puzzle type should be added once puzzle types are defined. The archi
 
 ### 14.2 Global leaderboard
 
-The first leaderboard should be global and ranked by XP.
+The first leaderboard is global and all-time, ranked by XP. Equal XP is ordered by stable user ID.
 
 The leaderboard should return:
 
 - Rank.
-- Public display name or safe identifier.
+- Public display name (or a safe default when none is set).
 - XP total.
 - Optional current streak.
 
-Private authentication data and audience-category/profile information should not be exposed publicly unless the product explicitly requires it.
+Only display name, XP, rank, and optional current streak are public. Authentication identity, audience category, and private attempts are not exposed.
 
 The leaderboard must use backend-recorded XP, not values submitted by the client.
 
@@ -1313,19 +1361,20 @@ The leaderboard must use backend-recorded XP, not values submitted by the client
 
 ### 15.2 Redis is unavailable
 
-- The backend may request a fresh batch from the difficulty module.
-- The backend may use a database-backed fallback queue for the prototype.
-- Reconstruct the user’s queue when Redis becomes available again.
+- Return a retryable feed error while Redis is unavailable; the prototype does not provide a database-backed queue fallback.
+- Reconstruct the user’s queue through the queue manager when Redis becomes available again.
 - Do not lose attempts, XP, or profile data because they belong in the persistent database.
 
 ### 15.3 Difficulty module is unavailable
 
 Configured fallback behavior:
 
-- Use current puzzles from the 3,000-record catalog.
+- Select only current puzzles from the 3,000-record catalog that are eligible for the user's audience category.
 - Exclude recently shown puzzle IDs when possible.
+- Load and return the current content version for each selected stable puzzle ID.
 - Return a non-personalized batch.
 - Record that fallback selection was used.
+- Resume personalized selection automatically when the difficulty module recovers.
 
 The main feed should not completely fail just because personalization is temporarily unavailable.
 
@@ -1391,22 +1440,20 @@ The system should not be over-engineered with many independent services for the 
 
 ## 18. Framework and technology decisions
 
-These are intentionally not finalized.
+The team selected the recommended starting stack. Exact dependency versions and service providers remain open.
 
 ```text
-Client framework:              TBD
-Mobile packaging approach:     TBD
-Backend framework:             TBD
-Persistent database product:   TBD
-Redis deployment/product:      TBD
+Client framework:              Expo + React Native + React Native Web
+Mobile packaging approach:     Web and Android through Expo
+Backend framework:             Node.js + Fastify + TypeScript
+Persistent database product:   PostgreSQL + Prisma
+Queue/cache:                   Redis; deployment product TBD
 Authentication mechanism:      TBD
 Hosting provider:              TBD
-API style:                     No specific style required
+API style:                     REST/JSON with camelCase fields
 AI frameworks/models:          Intentionally blank
 Difficulty implementation:     Owned by difficulty workstream
 ```
-
-Node.js has been mentioned as a possible backend direction. A mobile-first website and a cross-platform client capable of producing an APK have also been discussed. These are possibilities, not architecture decisions.
 
 For the prototype, one persistent database with flexible puzzle records is recommended over separate NoSQL and SQL databases unless the team already has a strong reason to split them.
 
@@ -1421,7 +1468,7 @@ When added, it should support:
 - Trigger or request the fixed-time rotation.
 - View content version and rotation timestamp.
 - View the stable difficulty value.
-- Trigger queue metadata refresh after five updates.
+- Advance catalogGeneration after five successful updates; each user's next feed request replaces only undelivered queue IDs if stale.
 - Inspect validation errors.
 
 It should write through the catalog module rather than writing directly to Redis.
@@ -1432,27 +1479,34 @@ It should write through the catalog module rather than writing directly to Redis
 sequenceDiagram
     participant U as User
     participant C as Client
-    participant B as Central backend
-    participant R as Redis user queue
+    participant B as Feed/API
+    participant Q as QueueService
+    participant R as Redis queue
     participant G as Difficulty module
     participant P as Puzzle catalog
     participant D as Persistent database
+    participant O as Difficulty outbox worker
     participant A as AI boundary
 
     U->>C: Open app
     C->>B: Authenticate and request feed batch
-    B->>R: Check user queue
+    B->>Q: Get next feed batch
+    Q->>R: Read ready IDs and saved catalog generation
 
-    alt Queue needs more puzzles
-        R-->>B: Empty or below threshold
-        B->>G: Request personalized batch
-        G-->>B: Ordered puzzle IDs
-        B->>R: Store IDs for user
+    alt Queue is low or catalog generation is stale
+        Q->>P: Request candidate metadata
+        P->>D: Read IDs, versions, difficulty, domains, and audiences
+        D-->>P: Return candidate metadata
+        P-->>Q: Return candidate metadata without puzzle text or answers
+        Q->>G: Select from candidates using user category and history
+        G-->>Q: Return ordered puzzle IDs
+        Q->>R: Replace stale undelivered IDs and save current generation
     else Queue is ready
-        R-->>B: Return queued IDs
+        R-->>Q: Return queued IDs
     end
 
-    B->>P: Load puzzle records by ID
+    Q-->>B: Reserve next IDs
+    B->>P: Load current puzzle records by ID
     P->>D: Read puzzle content
     D-->>P: Return puzzle data
     P-->>B: Return renderable puzzle data
@@ -1476,43 +1530,40 @@ sequenceDiagram
         B-->>C: Return result/status
     end
 
-    C->>B: Submit answer or skip
-    B->>P: Load protected solution
-    P->>D: Read solution
-    D-->>P: Return verification data
-    P-->>B: Return verification data
-    B->>D: Record attempt
-    B->>D: Update XP, streak, and statistics
-    B->>G: Send verified outcome
-    B-->>C: Correct/incorrect result
+    C->>B: Submit answer or skip with interaction ID and contentVersion
+    B->>P: Load current puzzle version and protected solution
+    P->>D: Read current record
+    D-->>P: Return version and verification data
+    P-->>B: Return current version and verification data
+
+    alt Submitted version is stale
+        B-->>C: Return expired-puzzle response; do not verify or award XP
+    else Submitted version is current
+        B->>D: Save interaction, XP if correct, and outbox event in one transaction
+        D-->>B: Commit
+        par Return interaction result
+            B-->>C: Return correct, incorrect, or skipped result
+        and Deliver saved outcome asynchronously
+            O->>G: Send outcome with eventId after commit
+            G-->>O: Acknowledge or report duplicate eventId
+            O->>D: Mark outbox event delivered
+        end
+    end
 
     C->>B: Request next batch when queue is low
 ```
 
 ## 21. Remaining decisions
 
-The architecture can now be implemented at the logical level. The remaining decisions are mostly implementation details or requirements owned by other workstreams:
+The agreed behavior is recorded in [open-decisions.md](open-decisions.md). Items still open are:
 
-1. Exact client framework and whether the release is web-only or web plus APK.
-2. Exact backend framework.
-3. Exact database product.
-4. Exact authentication method.
-5. Exact puzzle content schema.
-6. Exact puzzle interaction types.
-7. Exact answer-validation rules.
-8. Exact batch size and refill threshold after testing.
-9. Exact duplicate-reduction percentage.
-10. Exact Redis queue ownership implementation.
-11. Exact fixed rotation interval.
-12. Exact queue metadata refresh behavior after five content updates.
-13. Exact Glicko-2 parameter values, category/domain cold-start priors, Thompson alpha/beta priors, calibration settings, and safety thresholds.
-14. Exact operational behavior for the non-personalized difficulty-module fallback.
-15. Dynamic-hint contract details owned by the AI workstream.
-16. Exact XP amount and any future XP multipliers.
-17. Exact streak calendar/time-zone behavior.
-18. Whether the global leaderboard is all-time, weekly, or both.
-19. Exact public profile fields.
-20. Whether ADHD should be selectable as the single category or allowed to overlap with CHILDREN or TEENS.
-21. Archive dataset storage product, file format, retention policy, and access controls.
+- Exact authentication method/provider, hosting provider, Node.js release, and Redis deployment.
+- The age-specific eligibility rule for the NEURODIVERGENT audience.
+- Puzzle difficulty rating scale and exact Glicko-2/Thompson Sampling parameter and prior values.
+- Puzzle types, content shape, and answer-validation rules, deferred until puzzle-generation work is ready.
+- The rotation interval; replacement content comes from the generation engine.
+- Exact routes and payload schemas in the shared OpenAPI contract.
+- Batch/refill thresholds, repeat-reduction window, and Redis reservation/recovery implementation, to be tuned or finalized during implementation.
+- Archive storage provider and retention period.
 
-These unresolved items should remain configurable or marked TBD rather than being silently assumed.
+D-11's dynamic-hint details remain intentionally blank; the unavailable placeholder boundary is sufficient for this version.
