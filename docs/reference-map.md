@@ -2,17 +2,17 @@
 
 This document routes agents through the historical material in `old work/`. It is not a product or architecture source.
 
-`project.md` and `architecture.md` always win when there is a conflict. `old work/` may contain useful implementation detail, but it must be reconciled before it is copied or applied.
+`project.md`, `architecture.md`, and `implementation-contract.md` always win when there is a conflict. All remaining useful legacy implementation details have been reconciled into the current contract, so `old work/` is now history only.
 
 ---
 
 ## How to Use a Legacy Source
 
-1. Read `project.md`, `architecture.md`, `milestones.md`, and `tasks.md` first.
+1. Read `project.md`, `architecture.md`, `implementation-contract.md`, `milestones.md`, and `tasks.md` first.
 2. Find the relevant source and detail in the table below.
-3. Compare the old detail with the current contract.
-4. If the detail is still valid, move the reconciled version into the current docs or code.
-5. Update this map and the current document together.
+3. Compare the old detail with the current implementation contract.
+4. Use the old file only for historical context, not as an implementation source.
+5. If a historical detail seems to add new behavior, raise it as a product or architecture decision before implementing it.
 
 Do not add new rules, routes, fields, or behavior only because they exist in `old work/`.
 
@@ -23,13 +23,13 @@ Do not add new rules, routes, fields, or behavior only because they exist in `ol
 | Legacy source | Status | Current home | Useful historical detail |
 |---|---|---|---|
 | [project-overview.md](<../old work/project-overview.md>) | Superseded | `project.md` | Plain-language summary only. No unique implementation contract. |
-| [technical-architecture.md](<../old work/technical-architecture.md>) | Partially consolidated | `architecture.md` | Detailed queue algorithm, data model, user flows, logical API payloads, failure behavior, and module contracts. |
-| [technical-stack-and-implementation.md](<../old work/technical-stack-and-implementation.md>) | Partially consolidated | `architecture.md` | Candidate Prisma schema, Redis reservation mechanics, adapter interfaces, verifier registry, answer transaction, idempotency, testing, and local setup. |
-| [Age_Difficulty_Generation_Engines_MASTER_Recap.md](<../old work/difficulty module/Age_Difficulty_Generation_Engines_MASTER_Recap.md>) | Partially consolidated | `project.md`, `architecture.md` | Glicko-2, Thompson Sampling, cold-start calibration, safety limits, age policy, neurodivergent profile behavior, and generation-engine inversion flow. |
-| [PUZZLE_GENERATION_GUIDELINES_AND_SCHEMA.md](<../old work/puzzle generation/PUZZLE_GENERATION_GUIDELINES_AND_SCHEMA.md>) | Partially consolidated | `common/types/puzzle.types.ts` | Verification schemas, System 1 checks, structural fingerprints, LLM guardrails, and delivery checklist. |
+| [technical-architecture.md](<../old work/technical-architecture.md>) | Consolidated | `implementation-contract.md` | Historical queue design, logical payloads, failure behavior, and module contracts. |
+| [technical-stack-and-implementation.md](<../old work/technical-stack-and-implementation.md>) | Consolidated | `implementation-contract.md` | Historical Prisma schema, Redis mechanics, adapter interfaces, verifier registry, answer transaction, idempotency, testing, and local setup. |
+| [Age_Difficulty_Generation_Engines_MASTER_Recap.md](<../old work/difficulty module/Age_Difficulty_Generation_Engines_MASTER_Recap.md>) | Consolidated with exclusions | `project.md`, `architecture.md`, `implementation-contract.md` | Historical Glicko-2 and generation-engine design. Neurodivergent behavior remains deferred to M7. |
+| [PUZZLE_GENERATION_GUIDELINES_AND_SCHEMA.md](<../old work/puzzle generation/PUZZLE_GENERATION_GUIDELINES_AND_SCHEMA.md>) | Consolidated | `common/types/puzzle.types.ts`, `implementation-contract.md` | Verification schemas, System 1 checks, structural fingerprints, LLM guardrails, and catalog distribution. |
 | [puzzle-types-and-generation-guide.md](<../old work/puzzle generation/puzzle-types-and-generation-guide.md>) | Reference only | `common/types/puzzle.types.ts`, `common/types/future/neurodivergent.types.ts` | Product-level guidance for the five active puzzle types, the deferred ADHD type, and validating unique answers. |
 | [types.ts](<../old work/puzzle generation/types.ts>) | Duplicate | `common/types/puzzle.types.ts`, `common/types/future/neurodivergent.types.ts` | Use the current shared files. Compare before assuming the copies are identical. |
-| [open-decisions.md](<../old work/tasks/open-decisions.md>) | Partially consolidated | `project.md` | Historical decision register. Some rows are resolved and some remain open. |
+| [open-decisions.md](<../old work/tasks/open-decisions.md>) | Superseded | `project.md`, `architecture.md` | Historical decision register. Active v1 choices are now recorded in the current docs. |
 | [development-checklist-two-teammates.md](<../old work/tasks/development-checklist-two-teammates.md>) | Superseded | `milestones.md`, `tasks.md` | Older task breakdown only. Do not use it as the active delivery plan. |
 | [development-checklist-interactive.html](<../old work/tasks/development-checklist-interactive.html>) | Stale duplicate | `milestones.md`, `tasks.md` | Interactive presentation of the older checklist. |
 
@@ -45,48 +45,63 @@ Do not add new rules, routes, fields, or behavior only because they exist in `ol
 - Stale-answer rejection using `PUZZLE_CONTENT_EXPIRED`.
 - QueueService as the only caller of the Difficulty Adapter.
 - Audience eligibility before difficulty selection.
-- Difficulty fallback behavior when the module is unavailable.
+- Difficulty fallback behavior when the adapter fails.
 - Server-side answer validation, XP rules, and durable outbox behavior.
 - Redis ready, processing, metadata, and recent-ID key responsibilities.
 - UI reference locations and mockup limitations.
+- Local-only deployment, Docker Compose services, and local endpoints.
+- Email/password bcrypt authentication with 7-day JWT access tokens.
+- Local filesystem archive behind `ArchiveAdapter`.
+- In-process difficulty module with PostgreSQL-backed rating and selection state.
+- Configurable 60-minute rotation and manual `npm run rotate`.
+- Shared Glicko-compatible rating scale centered at 1500.
+- Default recent-puzzle window of 100 and queue-reservation TTL of 600 seconds.
+- UTC default application time zone and indefinite local archive retention.
+- Versioned JSON seed format and SHA-256 structural fingerprint rules.
 
 ---
 
-## Details Still Requiring Deliberate Migration
+## Reconciled Legacy Details
 
-These areas exist mainly or only in `old work/`. They are candidates for implementation, not current decisions:
+The former deliberate-migration list is now resolved in `implementation-contract.md`:
 
-- Final Prisma schema and migration design.
-- Exact Redis command or Lua-script implementation for atomic reservation and recovery.
-- Exact difficulty-adapter TypeScript interfaces and error codes.
-- Verifier registry interfaces and per-type answer normalization.
-- Attempt, XP, streak, and outbox transaction implementation.
-- Detailed logical API payloads and OpenAPI schemas.
-- Puzzle generation validation pipeline, fingerprint algorithm, and LLM constraints.
-- Seed-file format and initial 3,000-puzzle ingestion process.
-- Authentication provider selection and implementation.
+| Detail | Current location |
+|---|---|
+| Final Prisma schema and migration design | Sections 2.1 and 2.2 |
+| Redis Lua reservation script and recovery tests | Sections 3.2 through 3.4 |
+| Difficulty-adapter interfaces and error codes | Section 4 |
+| Verifier registry, normalization, and per-type rules | Section 5 |
+| Attempt, XP, streak, hint, and outbox transaction | Section 6 |
+| API payloads and OpenAPI-compatible schemas | Section 1 |
+| Puzzle validation, fingerprints, LLM constraints, and 3,000-puzzle ingestion | Section 7 |
+| Authentication routes, middleware, and token handling | Section 8 |
+| Required implementation tests | Section 9 |
 
-When one of these becomes part of an active milestone, promote the reconciled design into `architecture.md` or the relevant code.
+There are no active implementation areas left only in `old work/`.
 
 ---
 
-## Known Conflicts and Open Gaps
+## Resolved Historical Conflicts
 
 ### Neurodivergent audience modeling
 
-This is deliberately deferred to M7, not an M1 blocker. Active v1 uses `CHILDREN | TEENS`; the legacy additive-profile model must not be added to schema, signup, feed, or generated puzzle contracts before the M7 product and safety decision gates are approved. The isolated future contract is `common/types/future/neurodivergent.types.ts`.
+Deferred to M7. Active v1 uses `CHILDREN | TEENS`; the future contract remains isolated in `common/types/future/neurodivergent.types.ts`. No legacy profile or condition-specific value may enter active schema, signup, feed, generation, or renderer contracts.
 
 ### Difficulty outcome scoring
 
-Some historical notes describe a 0.0 to 1.0 outcome score with hint weighting. The current rules use correct or incorrect only, award no XP changes for hints, and keep skips neutral for Glicko-2. Do not implement the old scoring model without a new product decision.
+Resolved. v1 uses `correct | incorrect | skipped`; skips are neutral and there is no `outcomeScore` or hint-weighted score.
 
 ### UI concepts
 
-The mockups use "ScrollMind", show a Library tab, sharing, fast-forward, and multiple-choice answers. These conflict with the current PikPok product scope. Use the images for layout and visual direction only.
+Resolved. Use the images for layout and visual direction only. Ignore "ScrollMind", Library, sharing, fast-forward, and multiple-choice elements.
 
 ### Suggested database schema
 
-The old Prisma model is illustrative. It contains fields such as a single `attempts` table and simplified XP/streak state that have not been reconciled with the current acceptance criteria. Treat it as a design input when M1 begins.
+Resolved. The current Prisma-shaped model is in `implementation-contract.md` section 2 with the active tables and migration rules.
+
+### Deployment assumptions
+
+Resolved. v1 runs locally with Docker Compose for PostgreSQL and Redis, local JSON archive files, and no CI/CD pipeline.
 
 ---
 
@@ -95,4 +110,4 @@ The old Prisma model is illustrative. It contains fields such as a single `attem
 A legacy detail becomes current only when both conditions are true:
 
 1. It has been reconciled against `project.md` and `architecture.md`.
-2. Its durable description has been added to a current document or implemented with tests.
+2. Its durable description has been added to `implementation-contract.md`, another current document, or code with tests.

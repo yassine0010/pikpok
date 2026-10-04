@@ -1,6 +1,8 @@
 # PikPok — Milestones
 
 > Each milestone is a shippable increment. Complete one before starting the next. Tasks within a milestone can run in parallel between Yassine and Mohamed.
+>
+> Implementation-level contracts referenced by these milestones are defined in `implementation-contract.md`.
 
 ---
 
@@ -13,14 +15,16 @@
 - [ ] Docker Compose running PostgreSQL 16 + Redis 7
 - [ ] Expo client bootstrapped with Expo Router and TypeScript
 - [ ] Fastify server bootstrapped with TypeScript and basic health check route
-- [ ] Prisma schema defined: `User`, `Puzzle`, `Attempt`, `UserStats`, `HintUsage`
+- [ ] Prisma schema defined: `User`, `Puzzle`, `Attempt`, `UserStats`, `HintUsage`, `OutboxEvent`, `CatalogState`, `UserRating`, `PuzzleSelectionStats`
 - [ ] First Prisma migration applied successfully
 - [ ] Shared types moved to `common/types/` and importable from both apps
 - [ ] ESLint + Prettier configured for both apps
+- [ ] Root npm scripts configured for local dev, migrations, seeding, rotation, lint, typecheck, and tests
+- [ ] `.env.example` created with local ports, JWT, rotation, queue, and time-zone defaults
 - [ ] `.gitignore`, `README.md`, and `docs/` committed
 - [ ] Git repository initialized with agreed branch strategy
 
-**Exit Criteria:** Both developers can clone, run `docker-compose up -d`, install deps, run migrations, and start both the API and the Expo client locally.
+**Exit Criteria:** Both developers can clone, run `npm install` and `docker compose up -d`, run migrations, and start both the API and the Expo client locally.
 
 ---
 
@@ -29,7 +33,7 @@
 **Goal:** Users can sign up, log in, select an audience category, and see their profile.
 
 **Deliverables:**
-- [ ] Auth provider chosen and integrated (JWT recommended)
+- [ ] Email/password authentication integrated with bcrypt and 7-day `@fastify/jwt` access tokens
 - [ ] `POST /auth/signup` — creates account with display name + audience category
 - [ ] `POST /auth/login` — returns token
 - [ ] Auth middleware protecting all routes except signup/login
@@ -54,7 +58,7 @@
 - [ ] `GET /feed` — returns a batch of puzzles (default 5) from the user's Redis queue
 - [ ] QueueService: fetches candidates from catalog → filters by audience → calls DifficultyAdapter → reserves in Redis
 - [ ] DifficultyAdapter stub: returns candidates in random order (real Glicko-2 integration in M5)
-- [ ] Fallback path: if difficulty adapter is unavailable, serve a non-personalized batch respecting audience eligibility
+- [ ] Fallback path: if the difficulty adapter fails, serve a non-personalized batch respecting audience eligibility
 - [ ] Recent-puzzle tracking in Redis to avoid repeats
 - [ ] Feed refill: client requests new batch when local queue ≤ 2
 - [ ] `POST /feed/skip` — records skip, removes puzzle from queue
@@ -64,8 +68,9 @@
 - [ ] Client: batch prefetch and loading states
 - [ ] Content rotation infrastructure:
   - [ ] RotationService: archive old version → update live row → increment contentVersion
-  - [ ] ArchiveAdapter: write JSON snapshot to object storage (or local filesystem for prototype)
-  - [ ] catalogGeneration counter: increment every 5 rotations, trigger queue reselection
+  - [ ] ArchiveAdapter: write JSON snapshot to `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
+  - [ ] catalogGeneration counter in `CatalogState`: increment every 5 rotations, trigger queue reselection
+  - [ ] Scheduler config: `ROTATION_ENABLED=true`, `ROTATION_INTERVAL_MINUTES=60`, plus `npm run rotate`
 - [ ] Integration test: signup → get feed → verify audience filtering → verify no solutions in response
 
 **Exit Criteria:** A logged-in CHILDREN user sees only children-appropriate puzzles in a swipeable feed. Puzzle solutions are absent from API responses.
@@ -100,9 +105,9 @@
 **Goal:** The feed is truly personalized via Glicko-2 and Thompson Sampling. Static hints are available per puzzle.
 
 **Deliverables:**
-- [ ] DifficultyAdapter connected to the real difficulty module (replaces M3 stub)
-- [ ] Glicko-2 rating updates after each answer (per user, per domain)
-- [ ] Thompson Sampling for puzzle selection (exploration vs exploitation)
+- [ ] DifficultyAdapter connected to the in-process TypeScript difficulty module (replaces M3 stub)
+- [ ] Glicko-2 rating updates persisted in `UserRating` after each answer (per user, per domain)
+- [ ] Thompson Sampling persisted in `PuzzleSelectionStats` (exploration vs exploitation)
 - [ ] Cold-start calibration: new users start with age-band median ratings
 - [ ] Age Engine hard filter at database query level (age_floor/age_ceiling)
 - [ ] Safety net / anti-churn rules in difficulty selection
@@ -112,29 +117,31 @@
 - [ ] Dynamic hint placeholder: returns "unavailable" with explanatory message
 - [ ] Client: hint reveal UI (progressive — tap to reveal next tier)
 - [ ] Integration test: verify personalized feed differs from random feed
-- [ ] Integration test: verify difficulty fallback on module outage
+- [ ] Integration test: verify difficulty fallback on adapter failure
 
 **Exit Criteria:** Two users with different skill levels and audience categories receive meaningfully different puzzle feeds. Hints work.
 
 ---
 
-## M6 — Testing, Polish & Deployment
+## M6 — Testing, Polish & Local Demo
 
-**Goal:** The prototype is tested, polished, and deployable.
+**Goal:** The local prototype is tested, polished, reproducible, and demo-ready.
 
 **Deliverables:**
 - [ ] All acceptance criteria from `project.md` verified with automated tests
-- [ ] Edge cases tested: expired content, Redis unavailable, difficulty unavailable, multi-device access
+- [ ] Edge cases tested: expired content, Redis unavailable, difficulty adapter failure, multi-device access
 - [ ] API documentation: OpenAPI spec generated or manually written for all routes
 - [ ] Client polish: loading states, error states, empty states, animations
 - [ ] Responsive layout verified on web and Android
 - [ ] Performance check: feed batch delivery < 500ms
 - [ ] Security review: verify solutions never leak, private data never in public responses
 - [ ] README updated with full setup instructions
-- [ ] Docker Compose production profile (or deployment target chosen)
+- [ ] Full validated 3,000-puzzle seed loaded and verified against the fixed live-catalog rule
+- [ ] Fresh local setup verified from README using Docker Compose, migrations, and seed data
 - [ ] Demo-ready: walkthrough of signup → feed → solve → stats → leaderboard
+- [ ] Confirm no production hosting, cloud deployment, or CI/CD work was added to v1
 
-**Exit Criteria:** The app can be demonstrated end-to-end. All automated tests pass. A new developer can clone, set up, and run the project using only the README.
+**Exit Criteria:** The app can be demonstrated end-to-end on a local workstation. All automated tests pass. A new developer can clone, set up, and run the project using only the README.
 
 ---
 

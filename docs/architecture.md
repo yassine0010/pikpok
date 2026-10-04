@@ -41,7 +41,7 @@ pikpok/
 │       │   ├── schema.prisma      # Database schema
 │       │   └── migrations/        # Prisma migration history
 │       ├── tests/                 # Integration and unit tests
-│       ├── Dockerfile
+│       ├── .env.example           # Local ports, JWT secret, rotation settings
 │       ├── package.json
 │       └── tsconfig.json
 │
@@ -58,6 +58,7 @@ pikpok/
 │   ├── agent.md                   # AI agent behavior rules
 │   ├── project.md                 # Source of truth (requirements, business logic)
 │   ├── architecture.md            # This file
+│   ├── implementation-contract.md # Exact routes, schema, transactions, and adapters
 │   ├── milestones.md              # Development phases
 │   ├── tasks.md                   # Per-person task assignments
 │   ├── reference-map.md           # Legacy-source routing and reconciliation guide
@@ -101,19 +102,19 @@ pikpok/
 │                                                                 │
 │  Adapters:                                                      │
 │    DifficultyAdapter ──→ [Difficulty Module]                    │
-│    ArchiveAdapter    ──→ [Object Storage]                       │
+│    ArchiveAdapter    ──→ [Local archive]                        │
 │    AiHintAdapter     ──→ [AI Service] (future)                  │
 └────────┬──────────────────┬──────────────────┬──────────────────┘
          │                  │                  │
          ▼                  ▼                  ▼
 ┌─────────────┐   ┌─────────────┐   ┌─────────────────────────┐
-│ PostgreSQL  │   │    Redis    │   │   Object Storage (S3)   │
+│ PostgreSQL  │   │    Redis    │   │   Local archive         │
 │             │   │             │   │                         │
 │ Users       │   │ Per-user    │   │ Archived puzzle         │
 │ Puzzles     │   │ feed queues │   │ version snapshots        │
 │ Attempts    │   │ Recent IDs  │   │ (append-only JSON)      │
-│ XP/Streaks  │   │ Leaderboard │   │                         │
-│ Leaderboard │   │ cache       │   │                         │
+│ XP/Streaks  │   │ Leaderboard │   │ ./.local/archive/       │
+│ Outbox      │   │ cache       │   │                         │
 └─────────────┘   └─────────────┘   └─────────────────────────┘
 
          Independent Modules (behind adapters):
@@ -126,7 +127,7 @@ pikpok/
 │ Thompson Sampling (per puzzle)  │   │ formula → parameters   │
 │ Cold-start calibration          │   │ LLM cosmetic skinning  │
 │ Safety net / anti-churn         │   │ System 1 verification  │
-│ Fallback on outage              │   │ Fingerprint hashing    │
+│ Fallback on adapter failure     │   │ Fingerprint hashing    │
 └─────────────────────────────────┘   └────────────────────────┘
 ```
 
@@ -162,7 +163,7 @@ These images are visual direction only. They were created before the current pro
 - v1 requires the name "PikPok", has no Library/share/fast-forward features, and uses short typed answers.
 - Stats labels and cognitive domains in the image are illustrative and do not replace the domains defined in `common/types/puzzle.types.ts`.
 
-**Deployment:** Web (any static host), Android (Expo build)
+**Deployment:** Local Expo dev server at `http://localhost:8081`; web and Android are tested locally. No production hosting is configured for v1.
 
 ### 3.2. Backend — Fastify API Server
 
@@ -182,14 +183,18 @@ These images are visual direction only. They were created before the current pro
 | `StatsService` | Computes user statistics (accuracy, XP, streaks, hint usage) |
 | `LeaderboardService` | Global XP leaderboard with tie-breaking by stable user ID |
 
-**Deployment:** Docker container, any Node.js-compatible host
+**Deployment:** Local Node.js process at `http://localhost:3000`.
+
+**API conventions:** Successful responses return the resource or result directly. Errors use `{ "error": { "code", "message", "details"? } }`. All timestamps are ISO 8601 UTC strings.
+
+Exact route payloads, Prisma models, Redis scripts, adapter interfaces, verification rules, and transaction behavior are defined in [implementation-contract.md](./implementation-contract.md). Update that contract and this architecture together whenever an implementation boundary changes.
 
 ### 3.3. Adapters (Integration Boundaries)
 
 | Adapter | Connects To | Purpose |
 |---|---|---|
-| `DifficultyAdapter` | Independent Difficulty Module | Sends candidate puzzle metadata; receives filtered/ranked IDs. Falls back to non-personalized batch on outage |
-| `ArchiveAdapter` | Object Storage (S3/GCS/MinIO) | Writes append-only JSON snapshots of rotated puzzle versions |
+| `DifficultyAdapter` | In-process difficulty module | Sends candidate puzzle metadata; receives filtered/ranked IDs. Falls back to a non-personalized batch on adapter failure |
+| `ArchiveAdapter` | Local filesystem archive | Writes append-only JSON snapshots to `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json` |
 | `AiHintAdapter` | AI Hint Service (future) | Will generate contextual dynamic hints. Currently returns "unavailable" |
 
 ### 3.4. Puzzle Catalog Lifecycle and Rotation
@@ -217,7 +222,7 @@ Rotation sequence:
 2. The replacement is validated before it can touch the live catalog.
 3. The selected stable puzzle ID is loaded with its current `contentVersion`.
 4. The current live version is written to the archive as an immutable JSON snapshot:
-   `puzzles/{puzzleId}/v{contentVersion}.json`
+   `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
 5. The live row is updated in one database transaction:
    - replace `content`, `verification`, and `staticHints`
    - preserve `id`, `domain`, `difficultyRating`, and audience eligibility
@@ -226,6 +231,8 @@ Rotation sequence:
    - increment the pending successful-rotation count
 6. After five successful rotations, increment `catalogGeneration` and reset the pending count. The threshold remains configurable.
 7. If the database update fails after the archive write, retain the archive snapshot and retry the rotation idempotently. Never delete a valid archive snapshot.
+
+`CatalogState` is the durable singleton row that stores `catalogGeneration` and the pending successful-rotation count. The scheduler runs in the API process at `ROTATION_INTERVAL_MINUTES` (default `60`) when `ROTATION_ENABLED=true`. `npm run rotate` performs one rotation through the same service for testing.
 
 Content-version behavior:
 
@@ -285,14 +292,24 @@ The adapter returns:
 - ordered `orderedPuzzleIds`
 - optional generation or expiry metadata
 
-The independent Difficulty Module owns and persists:
+For v1, the difficulty engine is a TypeScript module under `apps/api/src/difficulty`; QueueService calls it through `DifficultyAdapter`. The adapter remains the extraction boundary if this work becomes a separate service later.
 
-- Glicko-2 state per user and domain: rating, rating deviation, and volatility
-- Thompson Sampling statistics keyed by `puzzleId` plus `contentVersion`
+User ratings and puzzle `difficultyRating` values use a Glicko-compatible scale centered at `1500`, with valid puzzle ratings from `400` through `2800`. Exact tuning formulas and priors remain post-prototype work.
+
+The difficulty module owns and persists:
+
+- Glicko-2 state per user and domain in the `UserRating` PostgreSQL table: rating, rating deviation, and volatility
+- Thompson Sampling statistics keyed by `puzzleId` plus `contentVersion` in the `PuzzleSelectionStats` PostgreSQL table
 - cold-start priors and calibration state
 - target difficulty, exploration, safety limits, and domain-diversity rules
 
-Age and audience eligibility are filtered before candidates reach the Difficulty Module. If the module is unavailable, QueueService records the fallback and serves current, eligible puzzles while avoiding recent IDs where possible.
+Age and audience eligibility are filtered before candidates reach the Difficulty Module. If the adapter fails, QueueService records the fallback and serves current, eligible puzzles while avoiding recent IDs where possible.
+
+### 3.7 Puzzle Generation Input
+
+Seed and replacement content use a versioned JSON array of `GeneratedPuzzle` objects. The ingestion command validates every item, computes its structural fingerprint, rejects duplicates, and upserts by stable puzzle ID. M3 may use a smaller validated fixture; M6 requires the full 3,000-slot catalog.
+
+`fingerprintHash` is SHA-256 over canonical JSON of normalized structural fields. Cosmetic theme, character names, and wording are excluded so reskinning a puzzle does not bypass duplicate detection.
 
 ---
 
@@ -306,10 +323,14 @@ Age and audience eligibility are filtered before candidates reach the Difficulty
 
 **Key Tables:**
 - `User` — id, displayName, email, passwordHash, audienceCategory, createdAt
-- `Puzzle` — id (stable), contentVersion, type, domain, difficultyRating, ageFloor, ageCeiling, audienceCategories, content (JSONB), verification (JSONB), staticHints (JSONB), fingerprintHash, catalogGeneration, createdAt, updatedAt
+- `Puzzle` — id (stable), contentVersion, type, domain, difficultyRating, ageFloor, ageCeiling, audienceCategories, content (JSONB), verification (JSONB), staticHints (JSONB), fingerprintHash, createdAt, updatedAt
 - `Attempt` — id, userId, puzzleId, contentVersion, submittedAnswer, isCorrect, isSkip, eventId, createdAt
 - `UserStats` — userId, totalXp, currentStreak, longestStreak, totalAttempts, correctAttempts, lastActiveDate
 - `HintUsage` — id, userId, puzzleId, hintTier, usedAt
+- `OutboxEvent` — eventId (unique), aggregateType, aggregateId, eventType, payload (JSONB), status, attemptCount, availableAt, processedAt, lastError, createdAt
+- `CatalogState` — singleton id, catalogGeneration, pendingRotationCount, updatedAt
+- `UserRating` — userId, domain, rating, ratingDeviation, volatility, updatedAt; unique on `(userId, domain)`
+- `PuzzleSelectionStats` — puzzleId, contentVersion, alpha, beta, impressions, updatedAt; unique on `(puzzleId, contentVersion)`
 
 ### 4.2. Redis (Cache & Queue)
 
@@ -321,21 +342,21 @@ Age and audience eligibility are filtered before candidates reach the Difficulty
 - `queue:{userId}:ready` - Ordered puzzle IDs waiting to be delivered.
 - `queue:{userId}:processing:{requestId}` - IDs temporarily reserved for an in-flight response. This prevents two devices from consuming the same puzzle.
 - `queue:{userId}:meta` - Queue generation, last-seen catalog generation, and last refill time.
-- `recent:{userId}` - Recently delivered IDs with timestamps or expiry for repeat avoidance.
+- `recent:{userId}` - The most recent delivered IDs for repeat avoidance, limited to `RECENT_PUZZLE_WINDOW` (default `100`).
 - `leaderboard:global` - Optional derived leaderboard cache.
 
-Queue operations must be atomic. A feed request moves IDs from `ready` to a request-specific `processing` list, loads the live puzzle records, and deletes the processing list after success. On a recoverable failure, reserved IDs return to `ready`. Abandoned processing lists expire.
+Queue operations must be atomic. A feed request uses one Redis Lua script to move IDs from `ready` to a request-specific `processing` list, loads the live puzzle records, and deletes the processing list after success. On a recoverable failure, reserved IDs return to `ready`. Abandoned processing lists expire after `QUEUE_RESERVATION_TTL_SECONDS` (default `600`).
 
-### 4.3. Object Storage (Archive)
+### 4.3. Local Archive
 
-**Type:** S3-compatible object storage (provider TBD)
+**Type:** Local filesystem behind `ArchiveAdapter`
 
 **Purpose:** Immutable archive of every rotated puzzle content version.
 
 **Key Structure:**
-- Key: `puzzles/{puzzleId}/v{contentVersion}.json`
+- Path: `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
 - Content: Full puzzle JSON snapshot (content + verification + metadata)
-- Access: Backend and maintainers only, with backups
+- Access: Backend and maintainers only. Keep snapshots for the life of the local v1 workspace; there is no pruning job. This directory is gitignored and is not a production backup.
 
 ---
 
@@ -343,16 +364,16 @@ Queue operations must be atomic. A feed request moves IDs from `ready` to a requ
 
 | Service | Purpose | Integration Method | Status |
 |---|---|---|---|
-| Difficulty Module | Personalized puzzle selection (Glicko-2 + Thompson Sampling) | Internal adapter (function call or local HTTP) | Required boundary — implementation independent |
+| Difficulty Module | Personalized puzzle selection (Glicko-2 + Thompson Sampling) | In-process TypeScript module called through `DifficultyAdapter` | Selected for v1 |
 | Puzzle Generation Engine | Produces certified puzzle content for the 3,000-slot catalog | Scheduled job ingests generated JSON | Independent workstream |
 | AI Hint Service | Dynamic contextual hints | REST API via `AiHintAdapter` | Future — placeholder in v1 |
-| Auth Provider | Account management (JWT / OAuth) | TBD | Open decision |
+| Auth | Email/password account management | Fastify routes + `@fastify/jwt` | Selected; no external provider in v1 |
 
 ---
 
 ## 6. Deployment & Infrastructure
 
-**Cloud Provider:** TBD (prototype runs locally via Docker Compose)
+**Deployment Target:** Local workstation only. v1 has no cloud provider or production deployment target.
 
 **Local Development Stack:**
 ```yaml
@@ -370,15 +391,19 @@ services:
     ports: ["6379:6379"]
 ```
 
-**CI/CD Pipeline:** TBD (GitHub Actions recommended)
+**Local Endpoints:**
+- API: `http://localhost:3000`
+- Expo web/dev server: `http://localhost:8081`
 
-**Monitoring & Logging:** TBD (Fastify built-in logging for prototype)
+**CI/CD Pipeline:** None in v1.
+
+**Monitoring & Logging:** Fastify/Pino console logs only. No external observability service.
 
 ---
 
 ## 7. Security Considerations
 
-**Authentication:** TBD — JWT-based recommended for the prototype.
+**Authentication:** Email/password with bcrypt hashing and a 7-day JWT access token issued by `@fastify/jwt`. The API accepts `Authorization: Bearer <token>`. OAuth, refresh tokens, and external identity providers are not included in v1.
 
 **Authorization:** Role-based — users can only access their own data. No admin role in v1.
 
@@ -397,19 +422,23 @@ services:
 
 **Local Setup:**
 1. Clone the repository.
-2. Run `docker-compose up -d` (starts PostgreSQL + Redis).
-3. `cd apps/api && npm install && npx prisma migrate dev && npm run dev`
-4. `cd apps/client && npm install && npm start` (Expo dev server)
+2. Run `npm install` at the repository root.
+3. Run `docker compose up -d` (starts PostgreSQL 16 + Redis 7).
+4. Run `npm run db:migrate` and `npm run rotate` from the repository root when needed.
+5. Run `npm run dev --workspace apps/api` and `npm run start --workspace apps/client`.
+
+Local `.env` defaults include `API_PORT=3000`, `APP_TIME_ZONE=UTC`, `JWT_EXPIRES_IN=7d`, `ROTATION_ENABLED=true`, `ROTATION_INTERVAL_MINUTES=60`, `RECENT_PUZZLE_WINDOW=100`, and `QUEUE_RESERVATION_TTL_SECONDS=600`.
 
 **Testing Frameworks:**
-- Backend: Jest or Vitest for unit + integration tests
+- Backend: Vitest for unit + integration tests
 - Frontend: Jest + React Native Testing Library
-- E2E: TBD (Maestro or Detox for mobile, Playwright for web)
+- E2E: Playwright for web. Android is manually verified in v1.
 
 **Code Quality:**
 - ESLint + Prettier (TypeScript config)
 - Prisma format for schema files
 - Strict TypeScript (`strict: true`)
+- Local required checks: `npm run lint`, `npm run typecheck`, and `npm test`
 
 ---
 
@@ -437,7 +466,7 @@ This work is not part of v1 and must not affect active audience values, puzzle t
 
 **Project Name:** PikPok
 
-**Repository URL:** TBD
+**Repository URL:** Not configured; this is a local workspace only.
 
 **Primary Team:** Yassine (Backend & Data), Mohamed (Frontend & Feed)
 

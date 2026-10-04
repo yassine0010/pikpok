@@ -48,6 +48,7 @@ export interface GeneratedPuzzle<
   contentVersion: number;
   type: PuzzleType;
   domain: DomainCategory;
+  /** Glicko-compatible rating on the shared 1500-centered scale; valid range is 400-2800. */
   difficultyRating: number;
   difficultyMetadata: TMetadata;
   ageFloor: number;

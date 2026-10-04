@@ -37,12 +37,14 @@ The user (or parent) selects their age category at signup. It is never inferred 
 ### FR-01: Account & Profile
 - Users must have an account to use the app.
 - Profile stores: display name, audience category (`CHILDREN` | `TEENS`), and account creation date.
-- Authentication method is TBD (JWT-based is recommended).
+- Authentication uses email and password. Passwords are hashed with bcrypt, and the API issues a 7-day JWT access token through `@fastify/jwt`.
+- Clients send the token as `Authorization: Bearer <token>`. OAuth, refresh tokens, and external identity providers are out of scope for v1.
 
 ### FR-02: Puzzle Feed
 - On opening the app, the user receives a batch of puzzles (default: 5).
 - When the local queue drops to ≤ 2 puzzles, the client requests a new batch.
 - Puzzles are selected based on audience eligibility first, then personalized by the difficulty engine.
+- QueueService keeps the most recent 100 delivered puzzle IDs by default in `RECENT_PUZZLE_WINDOW` for repeat avoidance.
 - Each puzzle has a stable ID and a `contentVersion` — the ID never changes, even when content rotates.
 
 ### FR-03: Answer Submission
@@ -71,7 +73,7 @@ The user (or parent) selects their age category at signup. It is never inferred 
 - No XP multipliers in v1.
 
 ### FR-08: Daily Streak
-- Calculated using one configured application time zone.
+- Calculated using `APP_TIME_ZONE`, which defaults to `UTC` for local v1.
 - A streak increments when the user answers at least one puzzle correctly on a new calendar day.
 
 ### FR-09: Leaderboard
@@ -85,14 +87,16 @@ The user (or parent) selects their age category at signup. It is never inferred 
 
 ### FR-11: Puzzle Catalog & Rotation
 - Live catalog holds exactly **3,000 puzzle slots** with stable IDs.
-- A puzzle-generation engine supplies replacement content on a scheduled interval (interval TBD).
+- A puzzle-generation engine supplies replacement content on a scheduled interval controlled by `ROTATION_INTERVAL_MINUTES`, which defaults to 60 minutes. Scheduling is enabled when `ROTATION_ENABLED=true`.
+- `npm run rotate` performs one rotation manually for local testing. The same command is the fallback if the in-process scheduler is stopped.
 - Each rotation run replaces one puzzle: archive the old version (append-only JSON snapshot), update the live row, increment `contentVersion`.
 - After every 5 successful rotations, increment `catalogGeneration`. On the next feed request for each user, reselect only undelivered queued puzzle IDs if the user's saved generation is stale.
 
-### FR-12: Difficulty-Aware Feed (via independent module)
+### FR-12: Difficulty-Aware Feed (In-Process Module)
 - The difficulty engine uses Glicko-2 (per user per domain) and Thompson Sampling (per puzzle content version) to select optimal puzzles.
+- User ratings and puzzle `difficultyRating` values use the same Glicko-compatible scale centered at `1500`; valid puzzle ratings are `400` through `2800`.
 - QueueService is the only component that calls the difficulty adapter.
-- If the difficulty service is unavailable, fall back to a non-personalized batch that still respects audience eligibility, uses current content, avoids recently seen puzzles, and records fallback use.
+- If the difficulty adapter fails, fall back to a non-personalized batch that still respects audience eligibility, uses current content, avoids recently seen puzzles, and records fallback use.
 
 ---
 
@@ -122,7 +126,7 @@ User submits answer (puzzleId, contentVersion, submittedAnswer)
 
 ### Difficulty Fallback
 ```
-Difficulty service unavailable?
+Difficulty adapter failed?
     → Serve non-personalized batch
     → Enforce audience eligibility
     → Use current puzzle content only
@@ -153,6 +157,9 @@ Difficulty service unavailable?
 - Durable outbox pattern for answer events sent to the difficulty module.
 - Idempotent event processing (retries reuse the same `eventId`; difficulty module deduplicates).
 - Multi-device access by the same user (one queue, consistent state).
+- v1 runs on local workstation services only. Production hosting, managed cloud services, and a CI/CD pipeline are not part of this delivery.
+- API success responses return the requested resource directly. Errors use `{ "error": { "code": string, "message": string, "details"?: unknown } }`.
+- Timestamps use ISO 8601 UTC strings.
 
 ---
 
@@ -164,12 +171,14 @@ Difficulty service unavailable?
 | Navigation | Expo Router (file-based) | Selected |
 | Language | TypeScript (everywhere) | Selected |
 | Backend | Node.js (Active LTS) + Fastify | Selected |
-| Database | PostgreSQL + Prisma ORM | Selected |
-| Cache / Queue | Redis | Selected (deployment TBD) |
+| Database | PostgreSQL 16 + Prisma ORM | Selected; local Docker Compose |
+| Cache / Queue | Redis 7 | Selected; local Docker Compose only |
 | API Style | REST/JSON, `camelCase`, OpenAPI-compatible | Selected |
-| Archive | Append-only JSON snapshots in object storage | Selected (provider TBD) |
-| Auth | Simple account flow | Open (provider TBD) |
-| Local Dev | Docker Compose | Selected |
+| Archive | Append-only JSON files under `./.local/archive/` | Selected; filesystem implementation |
+| Auth | Email/password with bcrypt and a 7-day `@fastify/jwt` access token | Selected |
+| Testing | Vitest, Jest + React Native Testing Library, Playwright | Selected |
+| Local Dev | Docker Compose + npm workspaces | Selected |
+| Deployment | Local workstation only | Selected for v1 |
 
 ---
 
@@ -179,9 +188,10 @@ Difficulty service unavailable?
 - **3,000 live puzzle rows** — catalog does not grow beyond this.
 - **No Library section, no share button, no fast-forward button** in v1.
 - **No AI-generated dynamic hints** until the AI integration contract is defined.
-- **Authentication provider not yet chosen** — keep the auth layer pluggable.
-- **Rotation interval not yet set** — make it configurable.
-- **Initial 3,000 puzzles will be seeded later** — the puzzle generation engine defines the content.
+- **Authentication is local email/password plus JWT.** Keep token verification behind auth middleware so the provider can change later.
+- **Rotation defaults to one puzzle every 60 minutes.** Keep both the interval and scheduler enablement configurable.
+- **Local scheduler and queue defaults are configurable:** `RECENT_PUZZLE_WINDOW=100`, `QUEUE_RESERVATION_TTL_SECONDS=600`, and `APP_TIME_ZONE=UTC`.
+- **Initial content starts with a small validated fixture in M3.** The full 3,000-slot catalog is required by M6 and is loaded from a versioned seed file.
 
 ---
 
@@ -195,6 +205,7 @@ Difficulty service unavailable?
 - Puzzle solutions never leave the server.
 - Private data (audience category, auth identity, answer history) never appears in public responses.
 - Age filtering is enforced at the database query level, not in application code that could be bypassed.
+- Passwords are stored only as bcrypt hashes. The JWT signing secret is supplied through a local environment file and is never committed.
 - COPPA compliance for users under 13.
 
 ### Scalability
@@ -203,7 +214,7 @@ Difficulty service unavailable?
 
 ### Reliability
 - If Redis is unavailable: return a retryable feed error.
-- If the difficulty module is unavailable: use the non-personalized fallback.
+- If the difficulty adapter fails: use the non-personalized fallback.
 - Durable outbox pattern ensures no answer events are lost.
 
 ---
@@ -219,6 +230,8 @@ Difficulty service unavailable?
 - iOS build (Android + Web only).
 - Admin dashboard.
 - Analytics / observability tooling.
+- Production deployment, managed cloud infrastructure, and CI/CD pipelines.
+- OAuth, refresh tokens, and external identity providers.
 - Multiplayer or real-time competitive modes.
 - Neurodivergent profiles, ADHD tap challenges, and condition-specific adaptations (deferred to M7).
 
@@ -249,7 +262,7 @@ The phase must:
 | AC-04 | Submitting an answer for an expired `contentVersion` returns an expired error | Integration test with mismatched version |
 | AC-05 | Skipping a puzzle records the skip but does not affect XP or difficulty rating | Check database after skip — XP unchanged, no Glicko-2 update |
 | AC-06 | Feed respects the active audience category — children and teens never receive content outside their eligibility | Query test: verify age_floor/age_ceiling filter applied |
-| AC-07 | If the difficulty service is down, the user still gets a non-personalized feed | Integration test with mocked unavailable difficulty adapter |
+| AC-07 | If the difficulty adapter fails, the user still gets a non-personalized feed | Integration test with mocked adapter failure |
 | AC-08 | Leaderboard shows display name, XP, rank — never audience category or auth identity | Inspect leaderboard API response |
-| AC-09 | Puzzle rotation archives the old version before updating | Check object storage after a rotation run |
+| AC-09 | Puzzle rotation archives the old version before updating | Check `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json` after a rotation run |
 | AC-10 | Static hints (3 tiers) are served with each puzzle | Verify hint array in feed response |

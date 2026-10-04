@@ -1,6 +1,8 @@
 # PikPok — Tasks
 
 > Organized by person and milestone. Check off tasks as they are completed. See `milestones.md` for full deliverable descriptions and exit criteria.
+>
+> Use `implementation-contract.md` for exact routes, payloads, schema, adapters, and transaction behavior.
 
 ---
 
@@ -11,13 +13,16 @@
 - [ ] Create `docker-compose.yml` with PostgreSQL 16 + Redis 7
 - [ ] Scaffold Fastify server with TypeScript (`apps/api/`)
 - [ ] Add health check route (`GET /health`)
-- [ ] Write Prisma schema: `User`, `Puzzle`, `Attempt`, `UserStats`, `HintUsage`
+- [ ] Write Prisma schema: `User`, `Puzzle`, `Attempt`, `UserStats`, `HintUsage`, `OutboxEvent`, `CatalogState`, `UserRating`, `PuzzleSelectionStats`
 - [ ] Run first Prisma migration
 - [ ] Configure ESLint + Prettier for `apps/api/`
 - [ ] Set up path aliases (`@routes/`, `@services/`, `@adapters/`, `@common/`)
+- [ ] Create `apps/api/.env.example` with local ports, JWT, rotation, queue, and time-zone defaults
+- [ ] Add root npm scripts for local dev, migrations, seeding, rotation, lint, typecheck, and tests
+- [ ] Configure Vitest for `apps/api/`
 
 ### M2 — Authentication & User Profiles
-- [ ] Choose and integrate auth approach (JWT recommended)
+- [ ] Integrate email/password auth with bcrypt and a 7-day `@fastify/jwt` access token
 - [ ] Implement `POST /auth/signup` (displayName, email, password, audienceCategory)
 - [ ] Implement `POST /auth/login` (returns JWT)
 - [ ] Implement auth middleware (verify token, attach userId to request)
@@ -29,13 +34,14 @@
 - [ ] Write puzzle seed script (≥ 50 puzzles per audience category)
 - [ ] Implement QueueService: candidate fetch → age filter → difficulty adapter → Redis reserve
 - [ ] Implement DifficultyAdapter stub (random selection respecting audience)
-- [ ] Implement fallback path for difficulty outage
+- [ ] Implement fallback path for difficulty adapter failure
 - [ ] Implement `GET /feed` (returns batch from Redis queue)
 - [ ] Implement `POST /feed/skip` (record skip, dequeue)
 - [ ] Implement recent-puzzle tracking in Redis
 - [ ] Implement RotationService: archive → update → increment contentVersion
-- [ ] Implement ArchiveAdapter (write JSON snapshot to local filesystem / S3)
-- [ ] Implement catalogGeneration counter + queue reselection trigger
+- [ ] Implement ArchiveAdapter using `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
+- [ ] Implement `CatalogState` counter + queue reselection trigger
+- [ ] Implement local rotation scheduler and `npm run rotate`
 - [ ] Write integration tests: feed returns correct audience, no solutions leaked
 
 ### M4 — Answer Handling, XP, Streaks & Leaderboard
@@ -50,19 +56,21 @@
 - [ ] Write integration tests for answer + XP + leaderboard flow
 
 ### M5 — Difficulty Engine Integration & Hints
-- [ ] Connect DifficultyAdapter to real difficulty module (replace stub)
+- [ ] Connect DifficultyAdapter to the in-process TypeScript difficulty module (replace stub)
+- [ ] Persist Glicko-2 state in `UserRating` and Thompson Sampling state in `PuzzleSelectionStats`
 - [ ] Implement outcome event emission via durable outbox
 - [ ] Implement `GET /hints/:puzzleId` (static hints, 3 tiers)
 - [ ] Implement hint usage tracking
 - [ ] Implement dynamic hint placeholder ("unavailable" response)
 - [ ] Write integration tests for personalized feed + fallback
 
-### M6 — Testing, Polish & Deployment
+### M6 — Testing, Polish & Local Demo
 - [ ] Verify all acceptance criteria with automated tests
-- [ ] Test edge cases (expired content, Redis down, difficulty down, multi-device)
+- [ ] Test edge cases (expired content, Redis down, difficulty adapter failure, multi-device)
 - [ ] Generate or write OpenAPI documentation for all routes
-- [ ] Create Dockerfile for production deployment
 - [ ] Update README with complete setup instructions
+- [ ] Load and verify the full 3,000-puzzle seed catalog
+- [ ] Verify a clean local setup with Docker Compose, migrations, and seed data
 
 ### M7 — Neurodivergent Profile (Post-v1, Deferred)
 - [ ] Write the product decision covering additive profile vs accessibility layer vs another model
@@ -81,6 +89,7 @@
 - [ ] Configure ESLint + Prettier for `apps/client/`
 - [ ] Move shared types to `common/types/` and verify imports work from both apps
 - [ ] Set up design system: color palette, typography, spacing constants
+- [ ] Configure Jest + React Native Testing Library for `apps/client/`
 
 ### M2 — Authentication & User Profiles
 - [ ] Build signup screen with audience category picker (CHILDREN / TEENS)
@@ -112,7 +121,7 @@
 - [ ] Build dynamic hint placeholder ("Coming soon" state)
 - [ ] Build puzzle card renderers for remaining types (SCHEDULING_ORDER, ONE_TRUE_STATEMENT, CONSTRAINED_ROUTE)
 
-### M6 — Testing, Polish & Deployment
+### M6 — Testing, Polish & Local Demo
 - [ ] Polish UI: loading states, error states, empty states, transitions, animations
 - [ ] Verify responsive layout on web (desktop + mobile) and Android
 - [ ] Write frontend unit tests for key components
@@ -133,7 +142,7 @@
 ### Shared Setup (Before M1)
 - [ ] Agree on repository layout and branch/merge strategy
 - [ ] Assign Yassine = Backend, Mohamed = Frontend
-- [ ] Agree on first auth approach
+- [ ] Use the agreed email/password + bcrypt + JWT approach
 
 ### API Contract (Before M2)
 - [ ] Define common error shape and authentication convention (Yassine leads, Mohamed reviews)

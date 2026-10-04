@@ -8,10 +8,11 @@ This document defines how any AI coding agent must behave when working on the Pi
 
 1. **Read `project.md` first.** It is the single source of truth for what the system must do.
 2. **Read `architecture.md` second.** It describes how the system is built, where files live, and how components connect.
-3. **Read `milestones.md` and `tasks.md`** to understand what phase the project is in and which tasks are assigned to whom.
-4. **Read `reference-map.md` before consulting `old work/`.** It explains which historical details still matter and where current decisions supersede them.
-5. **For client work, inspect the UI references linked from `architecture.md`.** They describe visual direction, not product requirements.
-6. **Never start a feature that is not listed in the current milestone.** If you think something is missing, ask before implementing.
+3. **Read `implementation-contract.md` third.** It defines exact routes, payloads, database models, Redis behavior, adapters, transactions, and generation rules.
+4. **Read `milestones.md` and `tasks.md`** to understand what phase the project is in and which tasks are assigned to whom.
+5. **Read `reference-map.md` before consulting `old work/`.** It explains which historical details still matter and where current decisions supersede them.
+6. **For client work, inspect the UI references linked from `architecture.md`.** They describe visual direction, not product requirements.
+7. **Never start a feature that is not listed in the current milestone.** If you think something is missing, ask before implementing.
 
 ---
 
@@ -23,7 +24,9 @@ This document defines how any AI coding agent must behave when working on the Pi
 | Frontend | Expo + React Native + React Native Web, Expo Router for navigation. |
 | Backend | Node.js (Active LTS) + Fastify. |
 | Database | PostgreSQL with Prisma ORM. Migrations via `npx prisma migrate dev`. |
-| Cache/Queue | Redis for per-user feed queues and recent-puzzle tracking. |
+| Cache/Queue | Redis 7 on local Docker for per-user feed queues and recent-puzzle tracking. |
+| Archive | Local append-only JSON files under `./.local/archive/` behind `ArchiveAdapter`. |
+| Deployment | Local workstation only. Do not add cloud or production infrastructure in v1. |
 | API style | REST/JSON, `camelCase` field names, OpenAPI-compatible schemas. |
 | Shared types | Active shared request/response types live in `common/types/`. Post-v1 contracts live under `common/types/future/` and must not be imported by active v1 code. Never duplicate type definitions. |
 | Package manager | Use `npm`. Pin exact versions in lockfiles. |
@@ -44,7 +47,7 @@ This document defines how any AI coding agent must behave when working on the Pi
 ## 4. Architecture Rules
 
 - **Never send puzzle solutions to the client.** The `verification` object stays on the server. The client only sees `content` and `staticHints`.
-- **The difficulty engine is an independent module** behind an adapter. Do not call Glicko-2 or Thompson Sampling logic directly from route handlers.
+- **The difficulty engine is an independent in-process module** behind an adapter. Do not call Glicko-2 or Thompson Sampling logic directly from route handlers.
 - **QueueService is the only component that calls the difficulty adapter.** Route handlers call QueueService, never the difficulty module directly.
 - **Age filtering happens at the database layer** before the difficulty engine ever sees candidates. A bug in the difficulty engine must never expose age-inappropriate content.
 - **Dynamic hints are behind an integration boundary.** Show an "unavailable" placeholder until the AI integration is built. Do not stub fake AI responses.
@@ -56,10 +59,12 @@ This document defines how any AI coding agent must behave when working on the Pi
 
 - **3,000 live puzzle slots.** The catalog never grows beyond this. Rotation replaces content, it does not add rows.
 - **Stable puzzle IDs.** When content rotates, the ID stays the same — only `contentVersion` increments.
-- **Archive before replacing.** Every rotated puzzle version gets an append-only JSON snapshot in object storage before the live row is updated.
+- **Archive before replacing.** Every rotated puzzle version gets an append-only JSON snapshot under `./.local/archive/` before the live row is updated.
 - **Expired answers are rejected.** If a user submits an answer for an old `contentVersion`, return an expired-content error — never check it against the new answer.
 - **Scoring:** 10 XP for correct, 0 for incorrect or skipped. No multipliers in v1.
 - **Skips are neutral for difficulty.** Record them for repeat-avoidance, but do not treat them as correct or incorrect for Glicko-2 updates.
+- **Use one rating scale.** User ratings and puzzle `difficultyRating` values are centered at `1500` and valid puzzle ratings stay within `400` through `2800`.
+- **Keep local defaults configurable.** Use `RECENT_PUZZLE_WINDOW=100`, `QUEUE_RESERVATION_TTL_SECONDS=600`, and `APP_TIME_ZONE=UTC` unless a later decision changes them.
 
 ---
 
@@ -68,7 +73,7 @@ This document defines how any AI coding agent must behave when working on the Pi
 - **Never submit code that breaks existing tests.**
 - **Every new API route must have at least one integration test** covering the success path and one error path.
 - **Every new utility function must have a unit test.**
-- **Use the project's test framework** (Jest or Vitest — whichever is configured).
+- **Use the configured test framework:** Vitest for the API, Jest + React Native Testing Library for the client, and Playwright for web E2E.
 
 ---
 
@@ -103,10 +108,11 @@ Use this priority order when sources disagree:
 
 1. `project.md` — product behavior, scope, and business rules.
 2. `architecture.md` — current technical design, data flow, and integration boundaries.
-3. `milestones.md` and `tasks.md` — current delivery phase and assigned work.
-4. `common/types/` — current shared contracts.
-5. `docs/ui/` — visual references only.
-6. `old work/` — historical design notes and implementation candidates.
+3. `implementation-contract.md` — exact implementation contracts, adapters, schemas, and transactions.
+4. `milestones.md` and `tasks.md` — current delivery phase and assigned work.
+5. `common/types/` — current shared contracts.
+6. `docs/ui/` — visual references only.
+7. `old work/` — historical design notes only.
 
 Rules for historical material:
 
