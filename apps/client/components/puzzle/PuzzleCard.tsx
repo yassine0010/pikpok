@@ -84,7 +84,7 @@ export function PuzzleCard({ puzzle, index, onSkip }: PuzzleCardProps) {
           <Text style={styles.domainText}>{puzzle.domain}</Text>
         </View>
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip} disabled={submitting || !!result}>
-          <Ionicons name="skip-forward-outline" size={20} color={Colors.textTertiary} />
+          <Ionicons name="play-skip-forward-outline" size={20} color={Colors.textTertiary} />
         </TouchableOpacity>
       </View>
 

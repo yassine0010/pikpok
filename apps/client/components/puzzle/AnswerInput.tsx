@@ -80,7 +80,13 @@ export function AnswerInput({ value, onChangeText, onSubmit, disabled, placehold
     transform: [{ scale: pulseAnim }]
   };
 
-  const getResultStyles = () => {
+  const getResultStyles = (): {
+    borderColor: string;
+    backgroundColor: string;
+    iconColor: string;
+    iconName: React.ComponentProps<typeof Ionicons>['name'];
+    buttonBg: string;
+  } => {
     if (result === 'correct') {
       return {
         borderColor: Colors.success,
@@ -125,7 +131,7 @@ export function AnswerInput({ value, onChangeText, onSubmit, disabled, placehold
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor={Colors.textTertiary}
-          disabled={disabled || !!result}
+          editable={!disabled && !result}
           returnKeyType="go"
           onSubmitEditing={handleSubmit}
           autoCapitalize="none"
@@ -143,25 +149,19 @@ export function AnswerInput({ value, onChangeText, onSubmit, disabled, placehold
       </View>
 
       {result && (
-        <Animated.View
-          style={[
-            styles.resultText,
-            { color: result === 'correct' ? Colors.success : Colors.error }
-          ]}
-          entering={Animated.timing(pulseAnim, { toValue: 1, duration: 300, useNativeDriver: false })}
-        >
+        <View style={styles.resultText}>
           {result === 'correct' ? (
             <>
               <Ionicons name="checkmark-circle" size={16} color={Colors.success} style={styles.resultIcon} />
-              <Text style={styles.resultMessage}>Correct! +10 XP</Text>
+              <Text style={[styles.resultMessage, { color: Colors.success }]}>Correct! +10 XP</Text>
             </>
           ) : (
             <>
               <Ionicons name="close-circle" size={16} color={Colors.error} style={styles.resultIcon} />
-              <Text style={styles.resultMessage}>Incorrect. Try the next one!</Text>
+              <Text style={[styles.resultMessage, { color: Colors.error }]}>Incorrect. Try the next one!</Text>
             </>
           )}
-        </Animated.View>
+        </View>
       )}
     </Animated.View>
   );

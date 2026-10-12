@@ -7,7 +7,7 @@ import { Typography } from '@/constants/typography';
 interface ErrorStateProps {
   message: string;
   onRetry: () => void;
-  icon?: string;
+  icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
 export function ErrorState({ message, onRetry, icon = 'alert-circle-outline' }: ErrorStateProps) {

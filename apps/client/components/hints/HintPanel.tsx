@@ -1,9 +1,11 @@
+import { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
-import type { FeedPuzzle, StaticHint } from '@/services/api';
+import type { FeedPuzzle } from '@/services/api';
+import type { StaticHint } from '@common/types/puzzle.types';
 
 interface HintPanelProps {
   puzzle: FeedPuzzle;
@@ -32,7 +34,7 @@ export function HintPanel({ puzzle, visible, currentTier, onClose, onNextTier, o
     }
   }, [visible, fadeAnim, slideAnim]);
 
-  if (!visible && fadeAnim._value === 0) return null;
+  if (!visible) return null;
 
   const availableHints = puzzle.staticHints.filter(h => h.tier <= currentTier);
   const currentHint = puzzle.staticHints.find(h => h.tier === currentTier);
@@ -49,9 +51,9 @@ export function HintPanel({ puzzle, visible, currentTier, onClose, onNextTier, o
     3: 'Step Walkthrough'
   };
 
-  const tierIcons: Record<number, string> = {
+  const tierIcons: Record<number, React.ComponentProps<typeof Ionicons>['name']> = {
     1: 'help-circle-outline',
-    2: 'lightbulb-outline',
+    2: 'bulb-outline',
     3: 'list-outline'
   };
 
@@ -140,8 +142,6 @@ export function HintPanel({ puzzle, visible, currentTier, onClose, onNextTier, o
   );
 }
 
-// Add missing import
-import { useRef, useEffect } from 'react';
 
 const styles = StyleSheet.create({
   container: {

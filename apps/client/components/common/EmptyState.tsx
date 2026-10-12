@@ -7,7 +7,7 @@ import { Typography } from '@/constants/typography';
 interface EmptyStateProps {
   title: string;
   message: string;
-  icon: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
   actionLabel?: string;
   onAction?: () => void;
 }

@@ -18,7 +18,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "@routes/*": ["src/routes/*"],
@@ -27,7 +27,7 @@
       "@models/*": ["src/models/*"],
       "@middleware/*": ["src/middleware/*"],
       "@utils/*": ["src/utils/*"],
-      "@common/*": ["../../../common/types/*"]
+      "@common/*": ["../../common/types/*"]
     },
     "types": ["vitest/globals", "node"]
   },

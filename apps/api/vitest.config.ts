@@ -23,7 +23,7 @@ export default defineConfig({
       '@models': path.resolve(__dirname, 'src/models'),
       '@middleware': path.resolve(__dirname, 'src/middleware'),
       '@utils': path.resolve(__dirname, 'src/utils'),
-      '@common': path.resolve(__dirname, '../../../common/types')
+      '@common': path.resolve(__dirname, '../../common/types')
     }
   }
 });

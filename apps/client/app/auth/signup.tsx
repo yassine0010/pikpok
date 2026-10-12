@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, TouchableOpacity, Picker } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, TouchableOpacity, TextInput } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
@@ -109,7 +109,7 @@ export default function SignupScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Ionicons name="logo-pikpok" size={48} color={Colors.primary} />
+          <Ionicons name="extension-puzzle" size={48} color={Colors.primary} />
           <Text style={styles.title}>Create your account</Text>
           <Text style={styles.subtitle}>Choose your audience to get personalized puzzles</Text>
         </View>
@@ -258,8 +258,6 @@ export default function SignupScreen() {
   );
 }
 
-// Add missing import
-import { TextInput } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {

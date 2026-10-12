@@ -5,9 +5,9 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
-    '^@common/(.*)$': '<rootDir>/../../../common/types/$1'
+    '^@common/(.*)$': '<rootDir>/../../common/types/$1'
   },
-  setupFilesAfterSetup: ['<rootDir>/tests/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testMatch: ['<rootDir>/tests/**/*.test.{ts,tsx}'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.expo/'],
   collectCoverageFrom: [

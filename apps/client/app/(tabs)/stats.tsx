@@ -115,7 +115,7 @@ export default function StatsScreen() {
         <StatCard
           label="Hints Used"
           value={stats.hintsUsed.toLocaleString()}
-          icon="lightbulb"
+          icon="bulb"
           iconColor={Colors.info}
         />
       </View>
@@ -146,13 +146,13 @@ export default function StatsScreen() {
       </View>
 
       <View style={styles.domainGrid}>
-        {[
+        {([
           { domain: 'Math', icon: 'calculator', color: Colors.primary, accuracy: 78, count: 45 },
-          { domain: 'Logic', icon: 'puzzle', color: Colors.secondary, accuracy: 82, count: 38 },
+          { domain: 'Logic', icon: 'extension-puzzle', color: Colors.secondary, accuracy: 82, count: 38 },
           { domain: 'Spatial', icon: 'cube', color: Colors.tertiary, accuracy: 65, count: 22 },
           { domain: 'Pattern', icon: 'grid', color: Colors.quaternary, accuracy: 71, count: 31 },
           { domain: 'Deduction', icon: 'search', color: Colors.quinary, accuracy: 88, count: 19 }
-        ].map((item) => (
+        ] as const).map((item) => (
           <View key={item.domain} style={styles.domainCard}>
             <View style={[styles.domainIconContainer, { backgroundColor: item.color + '20' }]}>
               <Ionicons name={item.icon} size={20} color={item.color} />

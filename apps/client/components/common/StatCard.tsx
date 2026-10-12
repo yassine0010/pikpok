@@ -8,7 +8,7 @@ import { ViewStyle } from 'react-native';
 interface StatCardProps {
   label: string;
   value: string;
-  icon: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
   iconColor: string;
   trend?: { value: string; positive: boolean };
   style?: ViewStyle;

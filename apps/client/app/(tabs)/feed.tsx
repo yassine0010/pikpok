@@ -70,7 +70,7 @@ export default function FeedScreen() {
       <EmptyState
         title="No puzzles available"
         message="Check back later for new puzzles!"
-        icon="puzzle-outline"
+        icon="extension-puzzle-outline"
       />
     );
   }

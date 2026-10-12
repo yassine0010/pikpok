@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, TouchableOpacity, TextInput } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/hooks/useAuth';
@@ -61,7 +61,7 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.header}>
-          <Ionicons name="logo-pikpok" size={48} color={Colors.primary} />
+          <Ionicons name="extension-puzzle" size={48} color={Colors.primary} />
           <Text style={styles.title}>Welcome back</Text>
           <Text style={styles.subtitle}>Sign in to continue your puzzle journey</Text>
         </View>

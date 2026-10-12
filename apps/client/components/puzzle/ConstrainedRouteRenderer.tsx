@@ -39,7 +39,7 @@ export function ConstrainedRouteRenderer({ content }: ConstrainedRouteRendererPr
         {content.grid.cells.map((row, r) => (
           <View key={r} style={styles.gridRow}>
             {row.map((cell, c) => {
-              const colors = CELL_COLORS[cell] || CELL_COLORS['.'];
+              const colors = CELL_COLORS[cell] ?? { bg: Colors.background, border: Colors.border, text: Colors.textPrimary };
               return (
                 <View
                   key={c}

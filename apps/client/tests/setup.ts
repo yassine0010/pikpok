@@ -54,11 +54,14 @@ jest.mock('expo-constants', () => ({
 }));
 
 // Mock @expo/vector-icons
-jest.mock('@expo/vector-icons', () => ({
-  Ionicons: ({ name, size, color, ...props }: any) => (
-    <Text testID={`icon-${name}`} {...props} />
-  )
-}));
+jest.mock('@expo/vector-icons', () => {
+  const React = require('react');
+  const { Text } = require('react-native');
+  return {
+    Ionicons: ({ name, size, color, ...props }: any) =>
+      React.createElement(Text, { testID: `icon-${name}`, ...props })
+  };
+});
 
 // Mock react-native-reanimated
 jest.mock('react-native-reanimated', () => {

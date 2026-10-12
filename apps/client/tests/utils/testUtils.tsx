@@ -102,7 +102,9 @@ export const waitFor = (ms: number) => new Promise(resolve => setTimeout(resolve
 export const flushPromises = () => new Promise(resolve => setImmediate(resolve));
 
 // Mock API responses
-export const mockApiSuccess = <T>(data: T) => Promise.resolve(data);
+export function mockApiSuccess<T>(data: T): Promise<T> {
+  return Promise.resolve(data);
+}
 export const mockApiError = (code: string, message: string, details?: any) =>
   Promise.reject({
     response: { ok: false, status: 400 },

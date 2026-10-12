@@ -33,7 +33,7 @@ export default function TabLayout() {
         name="feed"
         options={{
           title: 'Feed',
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color }: { focused: boolean; color: string }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
               size={24}
@@ -46,7 +46,7 @@ export default function TabLayout() {
         name="stats"
         options={{
           title: 'Stats',
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color }: { focused: boolean; color: string }) => (
             <Ionicons
               name={focused ? 'bar-chart' : 'bar-chart-outline'}
               size={24}
@@ -59,7 +59,7 @@ export default function TabLayout() {
         name="leaderboard"
         options={{
           title: 'Leaderboard',
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color }: { focused: boolean; color: string }) => (
             <Ionicons
               name={focused ? 'trophy' : 'trophy-outline'}
               size={24}
@@ -72,7 +72,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused, color }: { focused: boolean; color: string }) => (
             <Ionicons
               name={focused ? 'person' : 'person-outline'}
               size={24}
