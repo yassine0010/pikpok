@@ -20,7 +20,8 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
 
   try {
     await request.jwtVerify();
-    const userId = request.user?.sub;
+    const user = request.user as { sub?: string } | undefined;
+    const userId = user?.sub;
 
     if (!userId) {
       return reply.status(401).send({

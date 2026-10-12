@@ -5,7 +5,7 @@
  */
 
 import type { GeneratedPuzzle, StaticHint, PuzzleType, DomainCategory, AudienceCategory } from './puzzle.types';
-import type { UserProfile, UserStats, LeaderboardResponse } from './user.types';
+import type { UserProfile, UserStats } from './user.types';
 
 // ============================================================================
 // Error Types
@@ -143,8 +143,6 @@ export interface StatsResponse extends UserStats {}
 export interface LeaderboardRequest {
   limit?: number; // 1-100, default 50
 }
-
-export interface LeaderboardResponse extends LeaderboardResponse {}
 
 export interface ProfileResponse extends UserProfile {}
 

@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 const prisma = new PrismaClient();
 
 function fingerprintHash(obj: unknown): string {
-  return createHash('sha256').update(JSON.stringify(obj, Object.keys(obj).sort())).digest('hex');
+  return createHash('sha256').update(JSON.stringify(obj, Object.keys(obj as object).sort())).digest('hex');
 }
 
 const samplePuzzles = [

@@ -20,7 +20,7 @@ export async function registerPlugins(fastify: FastifyInstance) {
     timeWindow: '1 minute'
   });
 
-  await fastify.register(fastifyJwt, {
+  await fastify.register(fastifyJwt as any, {
     secret: config.jwt.secret,
     sign: {
       issuer: config.jwt.issuer,

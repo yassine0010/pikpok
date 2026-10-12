@@ -64,9 +64,10 @@ async function rotate() {
   writeFileSync(archiveFile, JSON.stringify(archiveData, null, 2));
   console.log(`Archived to ${archiveFile}`);
 
+  const oldContent = (puzzle.content && typeof puzzle.content === 'object' ? puzzle.content : {}) as Record<string, unknown>;
   const newContent = {
-    prompt: `[ROTATED v${puzzle.contentVersion + 1}] ${puzzle.content.prompt || 'Updated puzzle content'}`,
-    ...puzzle.content
+    ...oldContent,
+    prompt: `[ROTATED v${puzzle.contentVersion + 1}] ${(oldContent.prompt as string) || 'Updated puzzle content'}`
   };
 
   await prisma.puzzle.update({

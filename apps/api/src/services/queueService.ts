@@ -153,7 +153,9 @@ export class QueueService {
     const foundIds = new Set(puzzles.map(p => p.id));
     const missingIds = reserved.filter(id => !foundIds.has(id));
     if (missingIds.length > 0) {
-      await this.redis.lrem(processingKey, 0, ...missingIds);
+      for (const id of missingIds) {
+        await this.redis.lrem(processingKey, 0, id);
+      }
     }
 
     const orderedPuzzles = reserved
@@ -166,7 +168,7 @@ export class QueueService {
     await this.redis.zremrangebyrank(recentKey, 0, -(config.app.recentPuzzleWindow + 1));
 
     return {
-      puzzles: orderedPuzzles,
+      puzzles: orderedPuzzles as unknown as FeedPuzzle[],
       nextBatchRequiredAt: Math.max(2, size - orderedPuzzles.length)
     };
   }

@@ -4,7 +4,7 @@
  * Shared types for user profiles, stats, and leaderboard.
  */
 
-export type AudienceCategory = 'CHILDREN' | 'TEENS';
+import type { AudienceCategory } from './puzzle.types';
 
 export interface UserProfile {
   id: string;
@@ -39,25 +39,4 @@ export interface LeaderboardResponse {
     totalXp: number;
     currentStreak: number;
   };
-}
-
-export interface AuthResponse {
-  token: string;
-  user: UserProfile;
-}
-
-export interface SignupRequest {
-  displayName: string;
-  email: string;
-  password: string;
-  audienceCategory: AudienceCategory;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface UpdateProfileRequest {
-  displayName: string;
 }

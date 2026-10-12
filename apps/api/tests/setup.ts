@@ -21,7 +21,7 @@ vi.mock('ioredis', () => {
 });
 
 vi.mock('@prisma/client', () => {
-  const mPrisma = {
+  const mPrisma: Record<string, any> = {
     user: {
       findUnique: vi.fn(),
       create: vi.fn(),

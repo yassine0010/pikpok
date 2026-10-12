@@ -48,7 +48,7 @@ export async function hintRoutes(fastify: FastifyInstance) {
     const query = hintQuerySchema.parse(request.query);
     const userId = (request as any).userId;
 
-    const result = await hintService.getHint(userId, puzzleId, query.contentVersion, query.tier);
+    const result = await hintService.getHint(userId, puzzleId, query.contentVersion, query.tier as 1 | 2 | 3);
     return reply.send(result);
   });
 }
