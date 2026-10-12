@@ -4,6 +4,19 @@
 
 ---
 
+
+## Active v1 contract
+
+The shared v1 contract is maintained in docs/contracts.md. Where older sections in this architecture or legacy project documents conflict with it, use that contract.
+
+- The only audience categories are CHILDREN (ages 7–13) and YOUNG_ADULTS (ages 17–25). Ages 14–16 and all ages outside those ranges receive AGE_NOT_SUPPORTED; never reclassify them.
+- neurodivergentMode is a private profile setting, default false. The user or an authorized guardian may set it; it is never inferred, makes no diagnostic claims, and changes app presentation only.
+- Every v1 puzzle uses presentation IMAGE and locale en. The generated image is the visual puzzle display. Prompt prose and clues remain structured text beside it; accessibilityText describes the image. Retry a failed image once, then skip the card and request another. There is no app-drawn fallback.
+- Interactive presentation is reserved and inactive. Backend publication rejects it; Frontend skips it.
+- Verification is private and uses generic comparators keyed only by answerType. Canonical and accepted answers are strings.
+- Catalog puzzle ratings and selection targets use 800–2000. Recommended Glicko initialization is 1400 / RD 350 / volatility 0.06 / tau 0.5.
+- The local live image store holds only current images; the append-only archive stores every replaced image with its complete puzzle JSON. The DB points at the current live key.
+
 ## 1. Project Structure
 
 ```
@@ -15,7 +28,7 @@ pikpok/
 │   │   │   ├── auth/              # Login / signup screens
 │   │   │   └── _layout.tsx        # Root layout
 │   │   ├── components/            # Reusable UI components
-│   │   │   ├── puzzle/            # Puzzle card renderers (per puzzle type)
+│   │   │   ├── puzzle/            # Image card, structured prompt text, answer and hint UI
 │   │   │   ├── feed/              # Feed list, batch loader, swipe handler
 │   │   │   ├── hints/             # Hint reveal UI
 │   │   │   └── common/            # Buttons, inputs, modals, loading states
@@ -32,7 +45,10 @@ pikpok/
 │       ├── src/
 │       │   ├── routes/            # Fastify route handlers (auth, feed, answer, hints, stats, leaderboard)
 │       │   ├── services/          # Business logic (QueueService, AnswerService, RotationService, etc.)
-│       │   ├── adapters/          # Integration boundaries (DifficultyAdapter, ArchiveAdapter, future AiHintAdapter)
+│       │   ├── adapters/          # ContentGeneration, Difficulty, and Storage integration boundaries
+│       │   ├── generation/        # In-process puzzle builders and image templates/rendering
+│       │   ├── difficulty/        # In-process age and difficulty module
+│       │   ├── puzzles/           # Generic answer comparators keyed by answerType
 │       │   ├── models/            # Prisma-generated types + custom domain models
 │       │   ├── middleware/        # Auth middleware, error handler, request validation
 │       │   ├── utils/             # Logger, config loader, helpers
@@ -47,18 +63,20 @@ pikpok/
 │
 ├── common/                        # Shared code between frontend and backend
 │   ├── types/                     # Shared TypeScript interfaces & enums
-│   │   ├── puzzle.types.ts        # GeneratedPuzzle, PuzzleType, DomainCategory, etc.
-│   │   ├── future/                # Isolated post-v1 contracts
-│   │   │   └── neurodivergent.types.ts  # Deferred M7 neurodivergent/ADHD contracts
-│   │   ├── api.types.ts           # Request/response shapes, error codes
-│   │   └── user.types.ts          # AudienceCategory, UserProfile, etc.
-│   └── utils/                     # Shared utility functions (validation, formatting)
+│   │   ├── puzzle.types.ts        # InternalPuzzle, PublicPuzzleCard, PuzzleType, etc.
+│   │   ├── api.types.ts           # Request/response shapes and error codes
+│   │   ├── user.types.ts          # AudienceCategory and private UserProfile
+│   │   └── future/                # Reserved contracts; not imported by v1
+│   ├── schemas/                   # Runtime JSON Schemas used by API and modules
+│   ├── test-vectors/              # Shared answer and rating contract fixtures
+│   ├── mocks/                     # Deterministic module and API mocks
+│   └── utils/                     # Shared validation and formatting helpers
 │
 ├── docs/                          # Project documentation
 │   ├── agent.md                   # AI agent behavior rules
 │   ├── project.md                 # Source of truth (requirements, business logic)
 │   ├── architecture.md            # This file
-│   ├── implementation-contract.md # Exact routes, schema, transactions, and adapters
+│   ├── implementation-contract.md # Legacy detail; docs/contracts.md is the accepted v1 contract
 │   ├── milestones.md              # Development phases
 │   ├── tasks.md                   # Per-person task assignments
 │   ├── reference-map.md           # Legacy-source routing and reconciliation guide
@@ -144,9 +162,9 @@ pikpok/
 **Key Screens:**
 - **Feed:** Vertical swipeable puzzle cards with answer input and hint toggle.
 - **Stats:** Accuracy, XP, streak, daily completion, hint usage.
-- **Profile:** Display name, active audience category (`CHILDREN` or `TEENS`, private), settings.
+- **Profile:** Display name, private audience category (CHILDREN or YOUNG_ADULTS), neurodivergentMode setting, and account settings.
 - **Leaderboard:** Global XP ranking with optional streak display.
-- **Auth:** Login and signup with active audience category selection (`CHILDREN` or `TEENS`).
+- **Auth:** Login and signup with age validation for CHILDREN or YOUNG_ADULTS.
 
 **UI References:**
 
@@ -187,69 +205,39 @@ These images are visual direction only. They were created before the current pro
 
 **API conventions:** Successful responses return the resource or result directly. Errors use `{ "error": { "code", "message", "details"? } }`. All timestamps are ISO 8601 UTC strings.
 
-Exact route payloads, Prisma models, Redis scripts, adapter interfaces, verification rules, and transaction behavior are defined in [implementation-contract.md](./implementation-contract.md). Update that contract and this architecture together whenever an implementation boundary changes.
+Accepted v1 route payloads, schemas, verification rules, and storage behavior are defined in [contracts.md](./contracts.md). The older implementation-contract.md remains a migration reference where it differs. Update contracts.md and this architecture together when an implementation boundary changes.
 
 ### 3.3. Adapters (Integration Boundaries)
 
 | Adapter | Connects To | Purpose |
 |---|---|---|
 | `DifficultyAdapter` | In-process difficulty module | Sends candidate puzzle metadata; receives filtered/ranked IDs. Falls back to a non-personalized batch on adapter failure |
-| `ArchiveAdapter` | Local filesystem archive | Writes append-only JSON snapshots to `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json` |
+| `PuzzleStorageAdapter` | Local image storage | Keeps the current image in live storage and appends each replaced image plus puzzle JSON to the archive |
 | `AiHintAdapter` | AI Hint Service (future) | Will generate contextual dynamic hints. Currently returns "unavailable" |
 
 ### 3.4. Puzzle Catalog Lifecycle and Rotation
 
-The live catalog is a fixed set of exactly **3,000 puzzle rows**. Rotation changes the content of an existing row; it never inserts a 3,001st row or deletes a stable puzzle ID.
+The live catalog keeps exactly 3,000 stable puzzle IDs. Rotation replaces a published package for an existing ID; it does not add a row.
 
-The following catalog identity and eligibility metadata remain stable across rotation:
-
-- `Puzzle.id`
-- `Puzzle.domain`
-- `Puzzle.difficultyRating`
-- `Puzzle.audienceCategories`
-- Age eligibility fields such as `ageFloor` and `ageCeiling`
-
-The following content fields are replaced:
-
-- `content`
-- `verification`
-- `staticHints`
-- `difficultyMetadata` when the replacement explicitly changes structural parameters without changing the stable difficulty rating
+Each v1 package has presentation IMAGE and locale en. contentVersion versions the complete package, including prompt text, visual image, accessibilityText, hints, and private verification. Any change to those fields or the rendered image increments contentVersion.
 
 Rotation sequence:
 
-1. The scheduled `RotationService` requests one certified replacement from the Puzzle Generation Engine.
-2. The replacement is validated before it can touch the live catalog.
-3. The selected stable puzzle ID is loaded with its current `contentVersion`.
-4. The current live version is written to the archive as an immutable JSON snapshot:
-   `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
-5. The live row is updated in one database transaction:
-   - replace `content`, `verification`, and `staticHints`
-   - preserve `id`, `domain`, `difficultyRating`, and audience eligibility
-   - increment `contentVersion`
-   - update the rotation timestamp
-   - increment the pending successful-rotation count
-6. After five successful rotations, increment `catalogGeneration` and reset the pending count. The threshold remains configurable.
-7. If the database update fails after the archive write, retain the archive snapshot and retry the rotation idempotently. Never delete a valid archive snapshot.
+1. A background RotationService requests certified puzzle JSON from Content Generation.
+2. Content Generation validates the private verification and uniqueness, then renders a deterministic PNG from visualData only.
+3. Backend validates the puzzle schema, audience and age bounds, difficulty rating, answerType, image checksum, and accessibilityText. Publication accepts only presentation IMAGE.
+4. Backend appends the replaced full private puzzle JSON and image to the local archive:
+   - ./.local/images/archive/{puzzleId}/v{contentVersion}/puzzle.json
+   - ./.local/images/archive/{puzzleId}/v{contentVersion}/image.png
+5. Backend writes the new image at ./.local/images/live/{puzzleId}/v{newContentVersion}.png using a create-exclusive operation.
+6. Backend commits the new puzzle data and current image key in the DB. Only after the commit does it remove the prior live image.
+7. After every five successful rotations, increment catalogGeneration and reselect undelivered queued IDs for users whose queue generation is stale.
 
-`CatalogState` is the durable singleton row that stores `catalogGeneration` and the pending successful-rotation count. The scheduler runs in the API process at `ROTATION_INTERVAL_MINUTES` (default `60`) when `ROTATION_ENABLED=true`. `npm run rotate` performs one rotation through the same service for testing.
+Live holds only the current image for each puzzle. Archive is append-only, stores every replaced image with its corresponding complete puzzle JSON, and is not served to the client. The DB points to the current live image. Never overwrite a version path.
 
-Content-version behavior:
+If generation, rendering, checksum validation, archive writing, or the DB commit fails, retain the old current DB pointer and image. Make retries idempotent. Do not delete a valid archive record.
 
-- A feed response includes both `puzzleId` and `contentVersion`.
-- An answer is verified only when the submitted `contentVersion` matches the current live version.
-- A mismatched answer returns `PUZZLE_CONTENT_EXPIRED`; the server does not check the old answer against the new solution and does not award XP or update difficulty.
-- The archive is for history and auditing, not for live answer verification.
-
-Catalog-generation behavior:
-
-- A single rotation does not immediately rewrite every user queue.
-- After five rotations, `catalogGeneration` changes.
-- On the next batch request, QueueService compares the queue's saved generation with the durable catalog generation.
-- When stale, QueueService discards and reselects only IDs still waiting in the ready queue.
-- IDs reserved in request-specific processing lists remain unchanged so an in-flight response stays consistent.
-- Cards already returned to a client remain unchanged and are still protected by `contentVersion` checks.
-- The live catalog remains at exactly 3,000 rows after every refresh.
+Answers submitted for a non-current contentVersion return PUZZLE_CONTENT_EXPIRED and are never checked against a newer puzzle version.
 
 ### 3.5. Answer Verification, XP, and Durable Events
 
@@ -258,7 +246,7 @@ Answer ownership stays in the backend:
 1. Load the current puzzle by stable ID.
 2. Compare the submitted `contentVersion` with the live version.
 3. Reject stale content before running any verifier.
-4. Select the puzzle-type verifier from a verifier registry. Route handlers and service code must not use one large type-specific conditional block.
+4. Select a generic comparator from a registry keyed only by the private verification.answerType. Do not dispatch answer checks by puzzle type.
 5. Persist the accepted attempt and any XP, streak, or user-stat changes in one database transaction whenever possible.
 6. Persist a durable outbox event in the same transaction using the interaction ID as the stable `eventId`.
 7. After commit, the outbox worker sends the event to the Difficulty Module and retries with the same `eventId` until acknowledged.
@@ -294,7 +282,7 @@ The adapter returns:
 
 For v1, the difficulty engine is a TypeScript module under `apps/api/src/difficulty`; QueueService calls it through `DifficultyAdapter`. The adapter remains the extraction boundary if this work becomes a separate service later.
 
-User ratings and puzzle `difficultyRating` values use a Glicko-compatible scale centered at `1500`, with valid puzzle ratings from `400` through `2800`. Exact tuning formulas and priors remain post-prototype work.
+Catalog puzzle difficultyRating and selection targets are limited to 800–2000. Recommended Glicko defaults are initial rating 1400, RD 350, volatility 0.06, and tau 0.5. Raw Glicko state may be unbounded; clamp the selection target to the catalog range.
 
 The difficulty module owns and persists:
 
@@ -347,18 +335,16 @@ Seed and replacement content use a versioned JSON array of `GeneratedPuzzle` obj
 
 Queue operations must be atomic. A feed request uses one Redis Lua script to move IDs from `ready` to a request-specific `processing` list, loads the live puzzle records, and deletes the processing list after success. On a recoverable failure, reserved IDs return to `ready`. Abandoned processing lists expire after `QUEUE_RESERVATION_TTL_SECONDS` (default `600`).
 
-### 4.3. Local Archive
+### 4.3. Local Image Stores
 
-**Type:** Local filesystem behind `ArchiveAdapter`
+The prototype uses two durable local folders:
 
-**Purpose:** Immutable archive of every rotated puzzle content version.
+- Live current images: ./.local/images/live/{puzzleId}/v{contentVersion}.png
+- Append-only replaced versions: ./.local/images/archive/{puzzleId}/v{contentVersion}/image.png and puzzle.json
 
-**Key Structure:**
-- Path: `./.local/archive/puzzles/{puzzleId}/v{contentVersion}.json`
-- Content: Full puzzle JSON snapshot (content + verification + metadata)
-- Access: Backend and maintainers only. Keep snapshots for the life of the local v1 workspace; there is no pruning job. This directory is gitignored and is not a production backup.
+Each live image path includes puzzle ID and contentVersion and is never overwritten. The DB stores the current live key. Archive records include the replaced image and its complete private puzzle JSON. Staging output is temporary and is not a third durable store.
 
----
+A future cloud adapter can retain these logical keys, copy and checksum-verify objects, switch DB pointers, and serve live images through an authorized media endpoint or CDN. Archive objects must remain immutable.
 
 ## 5. External Integrations / APIs
 
@@ -418,6 +404,12 @@ services:
 
 ---
 
+## Current checkout and main-codebase integration
+
+This architecture describes the target layout. The current checkout has planning documents and shared legacy types, but it does not yet have the root package manifest, apps/api, apps/client, or a database schema. The runnable setup steps below apply after the repository scaffold described in docs/milestones.md M1 has been merged.
+
+Use common/ as the single shared contract workspace for runtime schemas, TypeScript exports, answer vectors, and mocks. Merge in dependency order: workspace scaffold; common schemas and vectors; adapters and mocks; Content Generation; Difficulty Module; Backend services and routes; Frontend; then local end-to-end wiring. Keep module internals behind adapters so teams can merge against mocks without waiting for one another. The detailed PR sequence, scenarios, error behavior, and recovery plan are in docs/contracts.md and docs/teams/.
+
 ## 8. Development & Testing Environment
 
 **Local Setup:**
@@ -450,15 +442,31 @@ Local `.env` defaults include `API_PORT=3000`, `APP_TIME_ZONE=UTC`, `JWT_EXPIRES
 - **Event-Driven Architecture:** Replace durable outbox with a proper message queue (Kafka/NATS) for difficulty module events at scale.
 - **Microservice Extraction:** Split QueueService, RotationService, and DifficultyAdapter into independent services if needed.
 
-### Deferred Post-v1: M7 Neurodivergent Profile
+### Active v1: neurodivergentMode
 
-This work is not part of v1 and must not affect active audience values, puzzle types, domains, signup, generation, or feed rendering before the M7 decision gates are approved.
+The neurodivergentMode profile flag is a private app setting, not an audience category or puzzle-selection signal.
 
-- Decide whether neurodivergent support is an additive profile, a general accessibility layer, or another model.
-- Keep active eligibility compatible with `CHILDREN` and `TEENS`.
-- Define the ADHD tap challenge interaction, verification, scoring, and safety requirements.
-- Assess dyslexia and other condition-specific puzzle content, including whether a verified linguist-reviewed lexicon is required.
-- Complete accessibility research, privacy/COPPA review, legal review, and clinical-safety review.
+- Default to false; set only by the user or an authorized guardian, never infer it.
+- Apply larger hint text and answer box, reduced motion, calmer styling, and no timers.
+- Do not change puzzle eligibility, types, feed ranking, or recommendation.
+- Do not make diagnostic or treatment claims.
+- Keep the flag out of feed cards, public profiles, leaderboard output, analytics payloads, and other users' responses.
+- Complete privacy and guardian-authorization review before enabling a guardian control flow for minors.
+
+## Deferred: interactive puzzles
+
+Interactive presentation is reserved in the contract but is not active in v1. Do not publish or serve interactive puzzle cards. Backend publication rejects the value; Frontend skips it.
+
+When this work is approved later, the architecture will need:
+
+- An approved product scope, audience and age eligibility, accessibility, privacy, and safety review.
+- Puzzle-specific interaction requirements and a content/configuration contract.
+- Client controls, event capture, submission, resume, timeout, and failure behavior.
+- Server-side verification and scoring rules, plus an outcome contract for the Difficulty Module.
+- Content Generation certification, hints, accessibility behavior, versioning, telemetry, mocks, and contract vectors.
+- API, storage, migration, and end-to-end test updates.
+
+ADHD tap tasks, syllable ordering, and spelling correction are examples of deferred work only. This section does not define their configuration or answer schemas.
 
 ---
 
@@ -468,7 +476,7 @@ This work is not part of v1 and must not affect active audience values, puzzle t
 
 **Repository URL:** Not configured; this is a local workspace only.
 
-**Primary Team:** Yassine (Backend & Data), Mohamed (Frontend & Feed)
+**Teams:** Software Team (Backend and Frontend), Content Generation, Difficulty Module
 
 **Date of Last Update:** 2026-10-04
 
@@ -478,11 +486,12 @@ This work is not part of v1 and must not affect active audience values, puzzle t
 
 | Term | Definition |
 |---|---|
-| `AudienceCategory` | Active v1 age category: `CHILDREN` or `TEENS` — determines content eligibility. Neurodivergent profiles are deferred to M7 |
+| `AudienceCategory` | Active v1 age category: CHILDREN (7–13) or YOUNG_ADULTS (17–25) — determines content eligibility |
 | `catalogGeneration` | Counter incremented every 5 successful puzzle rotations — triggers feed queue reselection |
 | `contentVersion` | Integer version of a puzzle's content within its stable ID — increments on rotation |
 | `DomainCategory` | Active v1 cognitive skill domain: `math`, `logic`, `spatial`, `pattern`, or `deduction` |
-| `PuzzleType` | Active v1 puzzle type: `NUMBER_SEQUENCE`, `MISSING_OPERATOR`, `SCHEDULING_ORDER`, `ONE_TRUE_STATEMENT`, or `CONSTRAINED_ROUTE`. `ADHD_TAP_CHALLENGE` is deferred to M7 |
+| `Presentation` | `IMAGE` is active; `INTERACTIVE` is reserved and deferred |
+| `PuzzleType` | Active v1 puzzle type: `NUMBER_SEQUENCE`, `MISSING_OPERATOR`, `SCHEDULING_ORDER`, `ONE_TRUE_STATEMENT`, or `CONSTRAINED_ROUTE` |
 | `Glicko-2` | Rating system tracking user skill as a triple: rating, rating deviation, volatility |
 | `Thompson Sampling` | Exploration/exploitation algorithm for selecting which puzzle to serve next |
 | `QueueService` | The only backend component that calls the difficulty adapter |
