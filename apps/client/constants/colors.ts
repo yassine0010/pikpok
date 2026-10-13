@@ -1,90 +1,89 @@
 /**
  * PikPok - Color Palette
  *
- * Based on the UI references in docs/ui/colors palette.jpeg
- * Using Plus Jakarta Sans typography as specified.
+ * Based on the authoritative UI references in docs/ui/colors palette.jpeg,
+ * docs/ui/README.md, ScrollMind login.svg, fedd ui.jpeg, and stats.jpeg.
+ * Typography: Plus Jakarta Sans
  */
 
 export const Colors = {
-  // Primary - Indigo/Violet (main brand color)
-  primary: '#6366F1',
-  primaryLight: '#818CF8',
-  primaryDark: '#4F46E5',
-  primaryContainer: '#EEF2FF',
+  // Primary - Warm Coral (Core brand color, active tabs, action highlights)
+  primary: '#FF6B4A',
+  primaryLight: '#FF856B',
+  primaryDark: '#D84323',
+  primaryDeep: '#A82E18', // Primary button solid brick red
+  primaryContainer: '#FFE4DE',
 
-  // Secondary - Cyan (for CHILDREN audience)
-  secondary: '#06B6D4',
-  secondaryLight: '#22D3EE',
-  secondaryDark: '#0891B2',
-  secondaryContainer: '#ECFEFF',
+  // Secondary - Deep Ink Navy / Charcoal (Headings, dark buttons, text primary)
+  secondary: '#1A1F36',
+  secondaryLight: '#3D476E',
+  secondaryDark: '#0E111E',
+  secondaryContainer: '#E3E2FF', // Lavender badge & insight tint
 
-  // Tertiary - Purple (for TEENS audience)
-  tertiary: '#8B5CF6',
-  tertiaryLight: '#A78BFA',
-  tertiaryDark: '#7C3AED',
-  tertiaryContainer: '#F5F3FF',
+  // Tertiary - Emerald Green (Badges, level indicator, success feedback)
+  tertiary: '#4CAF50',
+  tertiaryLight: '#66BB6A',
+  tertiaryDark: '#2E7D32',
+  tertiaryContainer: '#E3EEDC', // Sage container tint
 
-  // Quaternary - Emerald (for success/pattern)
-  quaternary: '#10B981',
-  quaternaryLight: '#34D399',
-  quaternaryDark: '#059669',
-  quaternaryContainer: '#ECFDF5',
+  // Neutral & Canvas - Warm Linen / Cream
+  canvas: '#FFFBF5',
+  background: '#FFFBF5',
+  surface: '#FFFFFF',
+  surfaceVariant: '#F4EFEA', // Card variant / secondary fill
+  surfaceSubtle: '#EFEBE4', // Secondary button / search surface
+  white: '#FFFFFF',
+  black: '#000000',
 
-  // Quinary - Orange/Amber (for warnings/spatial)
-  quinary: '#F59E0B',
-  quinaryLight: '#FBBF24',
-  quinaryDark: '#D97706',
-  quinaryContainer: '#FFFDF0',
+  // Legacy mappings for domain compatibility
+  quaternary: '#4CAF50',
+  quinary: '#D84323',
 
-  // Semantic colors
-  success: '#10B981',
+  // Text colors
+  textPrimary: '#1A1F36',
+  textSecondary: '#766B67', // Warm muted gray
+  textTertiary: '#9C918C',
+  textSubhead: '#9DA7D0', // Lavender slate accent
+  textInverse: '#FFFFFF',
+  textOnPrimary: '#FFFFFF',
+  textOnSecondary: '#FFFFFF',
+
+  // Semantic & Feedback colors
+  success: '#4CAF50',
   warning: '#F59E0B',
   error: '#EF4444',
   info: '#3B82F6',
 
-  // Neutral colors
-  white: '#FFFFFF',
-  black: '#000000',
+  // Border & Divider colors
+  border: '#E8DFD7',
+  borderStrong: '#C4BBB5',
+  borderDivider: '#E0D8D1',
 
-  // Background colors
-  background: '#FAFAFA',
-  surface: '#FFFFFF',
-  surfaceVariant: '#F4F4F5',
+  // Cognitive Domain Colors (from Weekly Trend chart in stats.jpeg)
+  domainMath: '#FF6B4A',
+  domainLogic: '#1A1F36',
+  domainPatterns: '#4CAF50',
+  domainWords: '#A82E18',
 
-  // Text colors
-  textPrimary: '#18181B',
-  textSecondary: '#71717A',
-  textTertiary: '#A1A1AA',
-  textInverse: '#FFFFFF',
-  textOnPrimary: '#FFFFFF',
-  textOnSecondary: '#000000',
-  textOnTertiary: '#FFFFFF',
-
-  // Border colors
-  border: '#E4E4E7',
-  borderStrong: '#D4D4D8',
-
-  // Shadow
-  shadow: '#000000',
-  shadowColor: 'rgba(0, 0, 0, 0.08)',
-
-  // Overlay
-  overlay: 'rgba(0, 0, 0, 0.5)',
-  modalOverlay: 'rgba(0, 0, 0, 0.6)',
-
-  // Audience-specific
+  // Audience & Tint Accents
   audienceChildren: '#06B6D4',
-  audienceTeens: '#8B5CF6',
+  audienceYoungAdults: '#FF6B4A',
 
-  // Difficulty colors (for visualizing difficulty rating)
-  difficultyEasy: '#10B981',
+  // Difficulty colors
+  difficultyEasy: '#4CAF50',
   difficultyMedium: '#F59E0B',
   difficultyHard: '#EF4444',
 
   // Hint tier colors
-  hintTier1: '#3B82F6',
-  hintTier2: '#F59E0B',
-  hintTier3: '#8B5CF6'
+  hintTier1: '#1A1F36', // Inverted button navy
+  hintTier2: '#D84323',
+  hintTier3: '#A82E18',
+
+  // Shadows & Overlays
+  shadow: '#1A1F36',
+  shadowColor: 'rgba(26, 31, 54, 0.08)',
+  overlay: 'rgba(26, 31, 54, 0.4)',
+  modalOverlay: 'rgba(26, 31, 54, 0.6)'
 } as const;
 
 export type ColorKey = keyof typeof Colors;
