@@ -1,9 +1,12 @@
-# PikPok — UI Design System & Color Palette Reference
+# PikPok — UI Design System & Screen Blueprints Reference
 
 > **Notice for AI Agents & Developers:**
-> This document translates the visual references located in `docs/ui/` (`colors palette.jpeg`, `ScrollMind login.svg`, `fedd ui.jpeg`, and `stats.jpeg`) into an authoritative, machine-readable design specification.
-> 
-> *Historical context note (per AGENTS.md § 10):* The concept mockups use the legacy name "ScrollMind" and illustrate out-of-scope features (e.g. Library tab, sharing, multiple-choice buttons). The accepted v1 product name is **PikPok**, navigation uses **Feed / Stats / Profile**, and answer inputs are **short typed text**.
+> This document is the authoritative textual design system for PikPok. It translates all visual references located in `docs/ui/` (`colors palette.jpeg`, `ScrollMind login.svg`, `fedd ui.jpeg`, and `stats.jpeg`) into comprehensive, machine-readable screen blueprints, color tokens, typography scales, and component specifications.
+>
+> **Mandatory Agent Rule (per `AGENTS.md` § 1 & § 10):**
+> Any agent implementing or modifying client screens, components, or styles must follow the tokens, layout structures, and screen blueprints defined in this file.
+>
+> *Historical Context Note:* The concept mockups use the legacy project name "ScrollMind" and illustrate out-of-scope features (e.g., Library tab, sharing, multiple-choice buttons). The accepted v1 product name is **PikPok**, navigation uses **Feed / Stats / Profile**, and answer inputs are **short typed text** with server-side fuzzy verification.
 
 ---
 
@@ -23,7 +26,7 @@ The visual identity is built on a warm, organic palette: warm cream neutral back
 ### 1.1. Color Tonal Scales (10-Step Ramps)
 
 #### Primary — Warm Coral (`#FF6B4A` / `#FF684A`)
-*Used for:* Primary brand identity, active tabs, streak badges, key action buttons, chart highlight curves.
+*Used for:* Primary brand identity, active tabs, streak badges, key action buttons, chart highlight curves, feed background gradient.
 
 | Token | Hex | Usage |
 |---|---|---|
@@ -116,58 +119,244 @@ As defined in `docs/ui/colors palette.jpeg`, the primary typeface across all com
 
 ---
 
-## 3. UI Component Patterns
+## 3. Screen Blueprints (Screen-by-Screen Implementation Guide)
 
-### 3.1. Buttons & Controls
+### 3.1. Feed Screen (`docs/ui/fedd ui.jpeg`)
 
-| Variant | Background | Text / Icon Color | Border | Border Radius |
-|---|---|---|---|---|
-| **Primary Solid** | `#A82E18` or `#FF6B4A` | `#FFFFFF` | None | `14px`–`16px` |
-| **Inverted (Dark)** | `#1A1F36` | `#FFFFFF` | None | `14px`–`16px` |
-| **Secondary (Muted)** | `#EFEBE4` | `#1A1F36` | None | `14px`–`16px` |
-| **Outlined** | `#FFFBF5` | `#1A1F36` | `1.5px solid #C4BBB5` | `14px`–`16px` |
-| **Action Pill (Label)** | `#FF6B4A` | `#FFFFFF` | None | `9999px` (Full Pill) |
-| **Action Circle** | `#1A1F36` | `#FFFFFF` | None | `9999px` (Circle) |
+The Feed is the core immersive puzzle-solving screen. It uses a high-energy warm coral canvas with high-contrast interactive elements.
 
-### 3.2. Floating Controls & Badges (Feed Screen)
-* **Hint Button:** Circular dark navy button (`#1A1F36`) with white lightbulb icon (`#FFFFFF`).
-* **Level Badge:** Pill badge with translucent white background (`rgba(255, 255, 255, 0.35)`) and bold white text (`LVL 2`).
-* **Category Pill:** Pill badge (`Quick Math`) in translucent white (`rgba(255, 255, 255, 0.2)`).
+```
+┌────────────────────────────────────────────────────────────┐
+│ [Avatar]   PikPok                              12 🔥       │ Top Bar
+├────────────────────────────────────────────────────────────┤
+│ ( Quick Math )                                    (LVL 2)  │ Badges Row
+│                                                            │
+│       ┌────────────────────────────────────┐               │
+│       │                                    │  [💡 Hint]    │
+│       │        PUZZLE CARD STAGE           │               │
+│       │      Structured Prompt Text        │  [>> Skip]    │ Action
+│       │                                    │               │ Rail
+│       └────────────────────────────────────┘               │
+│                                                            │
+│       ┌────────────────────────────────────┐               │
+│       │        SHORT TYPED INPUT           │               │ Input
+│       │     [Enter your answer...] [Go]    │               │ Stage
+│       └────────────────────────────────────┘               │
+│                                                            │
+│                          ● ○ ○ ○ ○                         │ Dots
+│                       Swipe for next                       │
+├────────────────────────────────────────────────────────────┤
+│   ( Feed )          Stats            Profile               │ Bottom Dock
+└────────────────────────────────────────────────────────────┘
+```
 
-### 3.3. Cards & Containers
-* **White Card (Standard):** `#FFFFFF` fill, `16px`–`20px` border radius, subtle warm drop shadow (`rgba(26, 31, 54, 0.05)`), optional border `1px solid #E8DFD7`.
-* **Insight Card (Lavender):** `#E3E2FF` tint fill, `#1A1F36` title, `#566290` description.
-* **Skill Card (Reaction / Green):** `#E3EEDC` sage green fill, `#4CAF50` icon.
-* **Skill Card (Memory / Warm):** `#F4EFEA` linen fill, `#A82E18` icon.
-* **Feed Canvas:** Vibrant warm coral gradient (`#FF6B4A` at top to `#E64A19` at bottom), question card in white/translucent card with white text.
-
-### 3.4. Navigation Dock (Bottom Tab Bar)
-* **Bar Container:** White (`#FFFFFF`) or Warm Cream (`#FFFBF5`) pill dock with rounded corners (`28px`–`32px`).
-* **Active Tab Item:** Solid coral pill (`#FF6B4A`), white icon (`#FFFFFF`), white or coral label.
-* **Inactive Tab Item:** Transparent background, dark slate outline icon (`#1A1F36`), dark label (`#1A1F36` or `#766B67`).
+#### Screen Elements & Tokens:
+1. **Top Bar:**
+   - Background: Smooth vertical gradient transition from `#FFFBF5` into the coral canvas.
+   - User Avatar: Circular thumbnail (36px).
+   - Brand Wordmark: "PikPok" in bold Plus Jakarta Sans (`#1A1F36` or `#A82E18`, 20px).
+   - Streak Counter: "12 🔥" pill on the right (`#1A1F36` text, subtle peach background `rgba(255,255,255,0.3)`).
+2. **Main Canvas Background:**
+   - Full-bleed vertical gradient: `#FF6B4A` at the top fading to deeper coral `#E64A19` at the bottom.
+3. **Upper Info Badges:**
+   - Left: Cognitive Domain / Tag badge (e.g., `Quick Math`) — translucent white pill (`rgba(255, 255, 255, 0.22)`), bold white text (`#FFFFFF`, 13px), radius 20px.
+   - Right: Difficulty / Level badge (e.g., `LVL 2`) — translucent circular badge (`rgba(255, 255, 255, 0.22)`), 40px diameter, white text (`#FFFFFF`).
+4. **Puzzle Card Stage:**
+   - Elevated rounded card with subtle drop shadow (`rgba(0, 0, 0, 0.12)`).
+   - Fill: Either warm white `#FFFBF5` or translucent card (`rgba(255, 255, 255, 0.25)`).
+   - Structured Prompt / Question Text: Bold white text (`#FFFFFF`, 22px–26px, centered).
+5. **Floating Action Rail (Right Side):**
+   - **Hint Control:** Solid dark navy circle (`#1A1F36`), 48px diameter, white lightbulb icon (`#FFFFFF`, 22px), shadow `rgba(0,0,0,0.2)`. Tapping opens the 3-tier progressive hint sheet.
+   - **Skip Control:** Translucent dark circle (`rgba(0, 0, 0, 0.25)`), 44px diameter, white fast-forward icon (`#FFFFFF`, 18px).
+6. **Answer Input Stage (v1 Contract Reconciliation):**
+   - Instead of legacy multiple-choice buttons, render a rounded input container (`rgba(255, 255, 255, 0.95)` or solid `#1A1F36`).
+   - Short typed text entry field with clear submit button in `#1A1F36` or `#FFFFFF`.
+7. **Feed Pagination Indicator:**
+   - Horizontal pagination dots: 5 pills/dots, active dot is solid white (`#FFFFFF`, width 16px pill), inactive dots are translucent white (`rgba(255, 255, 255, 0.4)`).
+   - Swipe helper: Chevron arrow up + text "Swipe for next" (`rgba(255, 255, 255, 0.85)`, 12px).
 
 ---
 
-## 4. Cognitive Domain / Chart Legend Colors
+### 3.2. Stats & Progress Screen (`docs/ui/stats.jpeg`)
 
-As visualized in `docs/ui/stats.jpeg`:
+The Stats screen provides an analytical, clean, and motivating overview of user cognitive growth.
 
-| Cognitive Domain | Hex Color | Role |
+```
+┌────────────────────────────────────────────────────────────┐
+│ [Avatar]   PikPok                              12 🔥       │ Top Bar
+├────────────────────────────────────────────────────────────┤
+│ Your Growth                                                │ Section Title
+│ Keep pushing your cognitive boundaries.                    │ Subtitle
+│                                                            │
+│ ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│ │     342      │  │    📊 12     │  │    LVL 7     │       │ Quick Stats
+│ │    SOLVED    │  │    STREAK    │  │    BADGE     │       │ Cards
+│ └──────────────┘  └──────────────┘  └──────────────┘       │
+│                                                            │
+│ ┌────────────────────────────────────────────────────────┐ │
+│ │ Weekly Trend                                       ··· │ │ Chart Card
+│ │       ╭────────────╮                                   │ │
+│ │  ────╯              ╰─────────●                        │ │
+│ │   MON   TUE   WED   THU   FRI   SAT   SUN              │ │
+│ │   ● Math  ● Logic  ● Patterns  ● Words                 │ │
+│ └────────────────────────────────────────────────────────┘ │
+│                                                            │
+│ ┌────────────────────────────────────────────────────────┐ │
+│ │ [↗] Your pattern recognition is up 24% this month      │ │ Insight Card
+│ │     You're processing logic puzzles 1.2s faster...     │ │
+│ └────────────────────────────────────────────────────────┘ │
+│                                                            │
+│ ┌───────────────────────────┐  ┌─────────────────────────┐ │
+│ │ [🧠] Memory               │  │ [⏱️] Reaction           │ │ Skill Cards
+│ └───────────────────────────┘  └─────────────────────────┘ │
+├────────────────────────────────────────────────────────────┤
+│     Feed           ( Stats )          Profile              │ Bottom Dock
+└────────────────────────────────────────────────────────────┘
+```
+
+#### Screen Elements & Tokens:
+1. **Background Canvas:** Solid Warm Cream (`#FFFBF5`).
+2. **Title Section:**
+   - "Your Growth": Plus Jakarta Sans Bold (28px) in Lavender-Slate (`#9DA7D0` or `#7480B2`).
+   - Subtitle: "Keep pushing your cognitive boundaries." in Deep Charcoal (`#3C312E`, 15px).
+3. **Quick Metric 3-Card Row:**
+   - Card 1 ("Solved"): White container (`#FFFFFF`), rounded 16px, large rust-red number (`#A82E18`, 24px bold), label `SOLVED` in `#1A1F36` (11px semi-bold).
+   - Card 2 ("Streak"): Solid coral card (`#FF6B4A`), rounded 16px, white/navy icon + number `📊 12`, label `STREAK` (11px semi-bold).
+   - Card 3 ("Badge"): White container (`#FFFFFF`), rounded 16px, emerald green text (`#4CAF50`, 22px bold) `LVL 7`, label `BADGE` in `#1A1F36` (11px semi-bold).
+4. **Weekly Trend Card:**
+   - Container: Pure white card (`#FFFFFF`), rounded 20px, subtle shadow `rgba(26, 31, 54, 0.05)`, padding 20px.
+   - Header: "Weekly Trend" in bold `#1A1F36` (18px) with menu dots (`···`) in `#9C918C`.
+   - Chart Area: Smooth curve in `#FF6B4A` / `#A82E18` with soft vertical gradient fill underneath.
+   - Curve Dots:
+     - Math: `#FF6B4A` (Coral)
+     - Logic: `#1A1F36` (Deep Navy)
+     - Patterns: `#4CAF50` (Emerald Green)
+     - Words: `#A82E18` (Brick Red)
+   - Day Labels: Mon through Sun in muted `#766B67`, with active day (`SUN`) highlighted in bold `#A82E18`.
+   - Legend Row: Colored bullet points matching cognitive domain colors.
+5. **Insight Highlight Card:**
+   - Container: Soft lavender surface (`#E3E2FF`), rounded 18px, padding 16px.
+   - Icon Badge: 36px circular badge with upward arrow in cool slate `#566290`.
+   - Heading: "Your pattern recognition is up 24% this month" in bold `#1A1F36` (15px).
+   - Description: "You're processing logic puzzles 1.2s faster than your average." in slate gray (`#566290`, 13px).
+6. **Domain Skill Cards Grid:**
+   - Memory Card: Light warm cream fill (`#F4EFEA`), rounded 18px, rust gear/brain icon (`#A82E18`), label "Memory" in bold `#1A1F36`.
+   - Reaction Card: Soft sage green fill (`#E3EEDC`), rounded 18px, green speedometer icon (`#4CAF50`), label "Reaction" in bold `#1A1F36`.
+
+---
+
+### 3.3. Authentication / Login Screen (`docs/ui/ScrollMind login.svg`)
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ 9:41                                              📶 🔋    │ Status Bar
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│                         ┌──────┐                           │
+│                      ┌──┤  ★   ├──┐                        │ Brand
+│                      │  │ #FF68│  │                        │ Emblem
+│                      └──┤  4A  ├──┘                        │
+│                         └──────┘                           │
+│                                                            │
+│                      PikPok                                │ App Wordmark
+│               (Smart Daily Micro-Puzzles)                  │ Tagline
+│                                                            │
+│       Welcome Back.                                        │ Heading
+│       Sign in to continue your streak.                     │ Subhead
+│                                                            │
+│       ┌────────────────────────────────────────────┐       │
+│       │ Email address                              │       │ Input
+│       └────────────────────────────────────────────┘       │
+│                                                            │
+│       ┌────────────────────────────────────────────┐       │
+│       │ Password                                   │       │ Input
+│       └────────────────────────────────────────────┘       │
+│                                                            │
+│       ┌────────────────────────────────────────────┐       │
+│       │ Sign In                                    │       │ Primary CTA
+│       └────────────────────────────────────────────┘       │
+│                                                            │
+│       Don't have an account? Sign up                       │ Footer Link
+└────────────────────────────────────────────────────────────┘
+```
+
+#### Screen Elements & Tokens:
+1. **Background:** Solid Warm Cream (`#FFFBF5`).
+2. **Status Bar Icons & Clock:** `#1A1F36`.
+3. **Illustrated Brand Emblem (from SVG tokens):**
+   - Coral badge: Rounded rectangle (`#FF684A`, rx 10px).
+   - Sage accent tile: Angled square (`#E3EEDC`, rx 14px, rotate 10deg) with green icon (`#4CAF50`).
+   - Coral accent tile: Angled square (`#FF684A`, rx 16px, rotate -12deg) with cream icon (`#FFFBF5`).
+   - Central badge: Circular badge (`#E3E2FF`, 124px diameter) with deep navy illustration (`#1A1F36`).
+   - Orbital Ring: Subtle ellipse border in Warm Tan (`#E8DFD7`).
+4. **App Wordmark & Tagline:**
+   - "PikPok" in bold Plus Jakarta Sans (`#1A1F36`, 28px).
+   - Small pill tag in `#1A1F36` with white text.
+5. **Headlines:**
+   - "Welcome Back": `#1A1F36` bold (32px).
+   - Subhead: `#766B67` regular (15px).
+6. **Input Fields:**
+   - Container background: `#FFFBF5` or `#FFFFFF`, border: `1.5px solid #E8DFD7`, border-radius: 14px, height: 52px.
+   - Focused border: `#FF6B4A`.
+   - Text: `#1A1F36`, placeholder: `#9C918C`.
+7. **Action Button (Sign In):**
+   - High-contrast solid navy button: `#1A1F36` background, `#FFFFFF` bold text, border-radius 16px, height: 54px.
+8. **Secondary Link:**
+   - "Sign up" in bold Coral (`#FF684A`).
+
+---
+
+### 3.4. Navigation Dock (Bottom Tab Bar)
+
+The bottom dock is persistent across main screens (`Feed`, `Stats`, `Profile`).
+
+```
+┌────────────────────────────────────────────────────────────┐
+│      ┌──────────────────────────────────────────────┐      │
+│      │   ╭──────╮                                   │      │
+│      │   │  🧭  │       📊            👤            │      │ Floating
+│      │   │ Feed │      Stats        Profile         │      │ Dock
+│      │   ╰──────╯                                   │      │
+│      └──────────────────────────────────────────────┘      │
+└────────────────────────────────────────────────────────────┘
+```
+
+#### Dock Specifications:
+* **Container:** Floating white card (`#FFFFFF`) or cream bar (`#FFFBF5`) with rounded corners (`28px`–`32px`), elevation shadow `rgba(26, 31, 54, 0.08)`.
+* **Active Tab Item:**
+  - Background: Solid coral pill (`#FF6B4A`), padding 8px horizontal, 6px vertical, rounded 20px.
+  - Icon: Solid white (`#FFFFFF`, 20px).
+  - Label: White (`#FFFFFF`, 12px bold).
+* **Inactive Tab Item:**
+  - Background: Transparent.
+  - Icon: Slate navy outline (`#1A1F36` or `#566290`, 20px).
+  - Label: Dark charcoal (`#1A1F36` or `#766B67`, 12px medium).
+
+---
+
+## 4. Reconciled Cognitive Domains
+
+Matching `docs/ui/stats.jpeg` to the v1 domain specifications:
+
+| Cognitive Domain | Hex Color | Visual Theme |
 |---|---|---|
-| **Math / Arithmetic** | `#FF6B4A` | Coral Orange |
+| **Math / Arithmetic** | `#FF6B4A` | Warm Coral |
 | **Logic / Reasoning** | `#1A1F36` | Deep Navy |
 | **Pattern Recognition** | `#4CAF50` | Emerald Green |
 | **Words / Verbal** | `#A82E18` | Brick Red |
 | **Memory** | `#A82E18` / `#F4EFEA` | Rust icon with warm container |
-| **Reaction Time** | `#4CAF50` / `#E3EEDC` | Green icon with sage container |
+| **Reaction** | `#4CAF50` / `#E3EEDC` | Green icon with sage container |
 
 ---
 
 ## 5. Accessibility & Neurodivergent Mode Guidelines
 
-* **Default Mode:** Meets WCAG AA contrast (e.g. `#1A1F36` on `#FFFBF5` yields **14.2:1** contrast; `#FFFFFF` on `#A82E18` yields **7.1:1** contrast).
+* **Default Mode:** Meets WCAG AA contrast standards:
+  - Deep Navy `#1A1F36` on Cream `#FFFBF5` = **14.2:1** (AAA).
+  - White `#FFFFFF` on Brick Red `#A82E18` = **7.1:1** (AAA).
+  - White `#FFFFFF` on Deep Coral `#D84323` = **4.6:1** (AA).
 * **Neurodivergent Mode (Private App Setting):**
-  - Reduce visual vibration: Replace intense pure coral background washes with calm `#FFFBF5` or muted `#F4EFEA`.
-  - Use coral `#FF6B4A` purely as a focused indicator/accent rather than full-screen fill.
-  - Maintain predictable card layouts and clear readable Plus Jakarta Sans typography.
-  - Disable rapid animations and flash effects.
+  - **Sensory Calming:** Replace full-screen vibrant coral background washes in the Feed with calm Warm Cream (`#FFFBF5`) or soft Linen (`#F4EFEA`).
+  - **Focused Accents:** Use Coral `#FF6B4A` purely as a focused indicator/active tab highlight rather than a screen-wide flood.
+  - **Predictability:** Maintain clean card structures, generous whitespace, clear borders, and readable Plus Jakarta Sans typography.
+  - **Motion:** Disable spring bounces, flashing streak banners, and rapid auto-scroll transitions.

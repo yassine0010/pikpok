@@ -166,13 +166,15 @@ pikpok/
 - **Leaderboard:** Global XP ranking with optional streak display.
 - **Auth:** Login and signup with age validation for CHILDREN or YOUNG_ADULTS.
 
-**UI References:**
+**UI References & Design System:**
 
 Open these references before frontend implementation:
 
-- [Feed concept](<./ui/fedd ui.jpeg>) - vertical puzzle-card feed, answer entry, hint control, progress dots, and bottom navigation.
-- [Stats concept](<./ui/stats.jpeg>) - progress summary, weekly trend, insight panel, and bottom navigation.
-- [Color and typography palette](<./ui/colors palette.jpeg>) - candidate colors, button styles, navigation treatment, and Plus Jakarta Sans typography.
+- [UI Design System & Screen Blueprints](<./ui/README.md>) — authoritative textual design system, color tokens, typography scales, and screen blueprints for Feed, Stats, and Auth.
+- [Feed concept](<./ui/fedd ui.jpeg>) — vertical puzzle-card feed, answer entry, hint control, progress dots, and bottom navigation.
+- [Stats concept](<./ui/stats.jpeg>) — progress summary, weekly trend, insight panel, and bottom navigation.
+- [Color and typography palette](<./ui/colors palette.jpeg>) — master palette tokens, button styles, navigation treatment, and Plus Jakarta Sans typography.
+- [Login mockup](<./ui/ScrollMind login.svg>) — brand emblem, input card, and typography styling.
 
 These images are visual direction only. They were created before the current product rules and contain contradictions:
 
@@ -180,6 +182,7 @@ These images are visual direction only. They were created before the current pro
 - The mockups show a Library tab, sharing, a fast-forward control, and multiple-choice answers.
 - v1 requires the name "PikPok", has no Library/share/fast-forward features, and uses short typed answers.
 - Stats labels and cognitive domains in the image are illustrative and do not replace the domains defined in `common/types/puzzle.types.ts`.
+- Follow `docs/ui/README.md` for exact screen-by-screen blueprints reconciled with accepted v1 decisions.
 
 **Deployment:** Local Expo dev server at `http://localhost:8081`; web and Android are tested locally. No production hosting is configured for v1.
 

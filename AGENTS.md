@@ -11,7 +11,7 @@ This document defines how any AI coding agent must behave when working on the Pi
 3. **Read `implementation-contract.md` as a legacy migration reference.** If it conflicts with contracts.md, follow contracts.md and record the needed reconciliation.
 4. **Read `milestones.md` and `tasks.md`** to understand what phase the project is in and which tasks are assigned to whom.
 5. **Read `reference-map.md` before consulting `old work/`.** It explains which historical details still matter and where current decisions supersede them.
-6. **For client work, inspect the UI references linked from `architecture.md`.** They describe visual direction, not product requirements.
+6. **For client work, read `docs/ui/README.md` and inspect the visual references in `docs/ui/`.** All client screens, components, color tokens, and typography styles must follow the design system and screen blueprints in `docs/ui/README.md`.
 7. **Never start a feature that is not listed in the current milestone.** If you think something is missing, ask before implementing.
 
 ---
@@ -112,7 +112,7 @@ Use this priority order when sources disagree:
 4. " + tick + "implementation-contract.md" + tick + " — legacy implementation reference until reconciled with " + tick + "contracts.md" + tick + ".
 5. " + tick + "milestones.md" + tick + " and " + tick + "tasks.md" + tick + " — delivery phase and work tracking.
 6. " + tick + "common/types/" + tick + " — shared types to migrate to the accepted contract.
-7. " + tick + "docs/ui/" + tick + " — visual references only.
+7. `docs/ui/README.md` and `docs/ui/` — authoritative design system, screen blueprints, and visual references.
 8. " + tick + "old work/" + tick + " — historical design notes only.
 
 Rules for historical material:
