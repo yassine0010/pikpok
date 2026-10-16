@@ -1,0 +1,15 @@
+{
+  "name": "pikpok",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace=apps/client",
+    "web": "npm run web --workspace=apps/client",
+    "android": "npm run android --workspace=apps/client",
+    "ios": "npm run ios --workspace=apps/client",
+    "client": "npm run start --workspace=apps/client"
+  }
+}
