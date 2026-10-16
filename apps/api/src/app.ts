@@ -8,6 +8,7 @@ import { ApiError } from './errors.js';
 import { registerAuth } from './middleware/auth.js';
 import { authRoutes } from './routes/auth.js';
 import { healthRoutes } from './routes/health.js';
+import { leaderboardRoutes } from './routes/leaderboard.js';
 import { profileRoutes } from './routes/profile.js';
 
 interface ErrorBody {
@@ -118,6 +119,8 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   await app.register(healthRoutes);
   await app.register(authRoutes);
   await app.register(profileRoutes);
+  // Requires auth by default (not on the public allowlist).
+  await app.register(leaderboardRoutes);
 
   await app.ready();
   return app;

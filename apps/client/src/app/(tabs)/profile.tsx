@@ -235,7 +235,7 @@ export default function ProfileScreen() {
         {/* App Version Info */}
         <View style={styles.appFooter}>
           <Text style={styles.versionTitle}>PikPok Mobile v1.0.0</Text>
-          <Text style={styles.versionSub}>Milestone 2 — Online Accounts</Text>
+          <Text style={styles.versionSub}>Milestone 3 — XP & Leaderboard</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

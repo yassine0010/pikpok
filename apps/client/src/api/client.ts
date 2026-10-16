@@ -177,6 +177,76 @@ export async function updateProfile(token: string, patch: ProfilePatch): Promise
   return normalizeUser(data?.user);
 }
 
+/** One row of the global XP leaderboard. Defensively typed to the contract —
+ * it never carries `email` (or any credential material), so nothing sensitive
+ * can leak into the leaderboard UI. */
+export interface LeaderboardEntry {
+  rank: number;
+  id: string;
+  displayName: string;
+  xp: number;
+  streak: number;
+}
+
+/** The signed-in user's own ranking row; `null` when they aren't ranked yet. */
+export interface LeaderboardSelf {
+  rank: number;
+  id: string;
+  displayName: string;
+  xp: number;
+  streak: number;
+}
+
+export interface LeaderboardResponse {
+  /** Up to `limit` entries, ordered by XP descending, 1-based `rank` over the
+   * full ranking. */
+  entries: LeaderboardEntry[];
+  me: LeaderboardSelf | null;
+  /** Total number of ranked solvers (not just the returned page). */
+  total: number;
+}
+
+/** Defensive normalizer: coerces contract fields and drops anything extra. */
+function normalizeLeaderboardEntry(
+  raw: Partial<LeaderboardEntry> | null | undefined
+): LeaderboardEntry {
+  return {
+    rank: Number(raw?.rank ?? 0),
+    id: String(raw?.id ?? ''),
+    displayName: String(raw?.displayName ?? ''),
+    xp: Number(raw?.xp ?? 0),
+    streak: Number(raw?.streak ?? 0),
+  };
+}
+
+function toLeaderboardResponse(
+  data: LeaderboardResponse | null | undefined
+): LeaderboardResponse {
+  const entries = Array.isArray(data?.entries)
+    ? data.entries.map((entry) => normalizeLeaderboardEntry(entry))
+    : [];
+  return {
+    entries,
+    me: data?.me ? normalizeLeaderboardEntry(data.me) : null,
+    total: Number(data?.total ?? entries.length),
+  };
+}
+
+/** GET /leaderboard?limit=<int> (Bearer) → 200 { entries, me, total } */
+export async function fetchLeaderboard(
+  token: string,
+  limit?: number
+): Promise<LeaderboardResponse> {
+  // Only send `limit` when it's a sane positive integer; otherwise let the
+  // server apply its default (50) and surface VALIDATION_ERROR for bad input.
+  const query =
+    typeof limit === 'number' && Number.isFinite(limit) && limit >= 1
+      ? `?limit=${Math.floor(limit)}`
+      : '';
+  const data = await request<LeaderboardResponse>(`/leaderboard${query}`, { token });
+  return toLeaderboardResponse(data);
+}
+
 /**
  * Maps an unknown error from the auth flows to a message safe to show in the UI.
  * Server error codes are translated to friendly copy; `VALIDATION_ERROR`
