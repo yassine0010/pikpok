@@ -100,15 +100,31 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   if (!response.ok) {
-    const errorPayload = (data as { error?: { code?: string; message?: string } } | null)?.error;
-    throw new ApiError(
-      response.status,
-      errorPayload?.code ?? 'UNKNOWN_ERROR',
-      errorPayload?.message ?? `Request failed with status ${response.status}.`
-    );
+    throw toApiError(response.status, data);
   }
 
   return data as T;
+}
+
+/**
+ * Parses the `{ error: { code, message } }` envelope into an `ApiError`,
+ * falling back to a generic code/message when the body is missing or malformed.
+ *
+ * Exported so other API modules (see `puzzles.ts` — the future puzzle-service
+ * seam) share the exact same error handling instead of duplicating it. Existing
+ * behavior of `request()` is unchanged.
+ */
+export function toApiError(
+  status: number,
+  data: unknown,
+  fallbackMessage?: string
+): ApiError {
+  const errorPayload = (data as { error?: { code?: string; message?: string } } | null)?.error;
+  return new ApiError(
+    status,
+    errorPayload?.code ?? 'UNKNOWN_ERROR',
+    errorPayload?.message ?? fallbackMessage ?? `Request failed with status ${status}.`
+  );
 }
 
 /** Defensive normalizer: applies contract defaults and drops nullish values. */
