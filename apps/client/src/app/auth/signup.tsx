@@ -14,7 +14,9 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
+import { Typography } from '@/constants/typography';
 import { useAuth } from '@/context/AuthContext';
+import { formatAuthError } from '@/api/client';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -44,8 +46,8 @@ export default function SignupScreen() {
       setErrorMessage('Please enter a valid email address');
       return;
     }
-    if (!password || password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters');
+    if (!password || password.length < 8) {
+      setErrorMessage('Password must be at least 8 characters');
       return;
     }
     const ageNum = parseInt(age, 10);
@@ -57,10 +59,15 @@ export default function SignupScreen() {
     setErrorMessage(null);
     setLoading(true);
     try {
-      await signup(displayName.trim(), email.trim(), password, ageNum);
+      await signup({
+        displayName: displayName.trim(),
+        email: email.trim(),
+        password,
+        age: ageNum,
+      });
       router.replace('/(tabs)/feed');
-    } catch {
-      setErrorMessage('Registration failed. Please try again.');
+    } catch (error) {
+      setErrorMessage(formatAuthError(error, 'Registration failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -181,7 +188,7 @@ export default function SignupScreen() {
                 />
                 <TextInput
                   style={styles.textInputField}
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 characters"
                   placeholderTextColor={Colors.neutral[500]}
                   value={password}
                   onChangeText={setPassword}
@@ -311,7 +318,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   brandWordmark: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 22,
     color: Colors.secondary[800],
     letterSpacing: -0.5,
@@ -320,14 +327,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mainHeading: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 28,
     color: Colors.secondary[800],
     letterSpacing: -0.5,
     marginBottom: 6,
   },
   subHeading: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: Typography.fontFamily.regular,
     fontSize: 14,
     color: Colors.neutral[600],
     lineHeight: 20,
@@ -344,7 +351,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFCDD2',
   },
   errorText: {
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: Typography.fontFamily.medium,
     fontSize: 13,
     color: Colors.error,
     marginLeft: 8,
@@ -362,14 +369,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputLabel: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 14,
     color: Colors.secondary[800],
     letterSpacing: -0.2,
     marginBottom: 8,
   },
   badgeText: {
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: Typography.fontFamily.medium,
     fontSize: 12,
     color: Colors.neutral[500],
     marginLeft: 6,
@@ -399,7 +406,7 @@ const styles = StyleSheet.create({
   textInputField: {
     flex: 1,
     height: '100%',
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: Typography.fontFamily.medium,
     fontSize: 15,
     color: Colors.secondary[800],
   },
@@ -429,7 +436,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primaryButtonText: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 17,
     color: Colors.secondary[800],
     marginRight: 10,
@@ -442,12 +449,12 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   footerText: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: Typography.fontFamily.regular,
     fontSize: 14,
     color: Colors.neutral[600],
   },
   footerHighlight: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 14,
     color: Colors.secondary[800],
     textDecorationLine: 'underline',

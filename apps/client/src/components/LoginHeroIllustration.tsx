@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Svg, { Path, Rect, Circle, G } from 'react-native-svg';
 import { Colors } from '@/constants/colors';
+import { Typography } from '@/constants/typography';
 
 const SvgCanvas = Svg as any;
 const SvgPath = Path as any;
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   taglineText: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
+    fontFamily: Typography.fontFamily.semiBold,
     fontSize: 12,
     color: Colors.canvas,
     letterSpacing: 0.2,

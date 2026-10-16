@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import { Colors } from '@/constants/colors';
 import { Typography } from '@/constants/typography';

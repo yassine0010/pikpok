@@ -16,7 +16,7 @@ export function TopBar({ title = 'PikPok', showStreak = true }: TopBarProps) {
   const router = useRouter();
 
   const initial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'P';
-  const streak = user?.streak ?? 12;
+  const streak = user?.streak ?? 0;
 
   return (
     <View style={styles.container}>

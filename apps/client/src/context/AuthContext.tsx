@@ -1,4 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import {
+  ApiError,
+  getProfile,
+  login as apiLogin,
+  signup as apiSignup,
+  updateProfile as apiUpdateProfile,
+  type ApiUser,
+  type ProfilePatch,
+  type SignupInput,
+} from '@/api/client';
+import { clearAuthToken, getAuthToken, setAuthToken } from '@/api/tokenStorage';
 
 export interface User {
   id: string;
@@ -13,67 +24,94 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  /** True while the stored session is being restored on app boot. */
   isLoading: boolean;
-  login: (email: string, password?: string) => Promise<void>;
-  signup: (displayName: string, email: string, password: string, age: number) => Promise<void>;
-  logout: () => void;
-  updateDisplayName: (name: string) => void;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (input: SignupInput) => Promise<void>;
+  logout: () => Promise<void>;
+  updateProfile: (patch: ProfilePatch) => Promise<void>;
 }
 
-const DEMO_USER: User = {
-  id: 'usr_demo_123',
-  email: 'alex@pikpok.app',
-  displayName: 'Alex Rivers',
-  age: 24,
-  xp: 1450,
-  streak: 12,
-  level: 7,
-};
+/** Maps the API user onto the shape the screens already consume. */
+function toUser(apiUser: ApiUser): User {
+  return {
+    id: apiUser.id,
+    email: apiUser.email,
+    displayName: apiUser.displayName,
+    age: apiUser.age ?? undefined,
+    xp: apiUser.xp,
+    streak: apiUser.streak,
+    level: apiUser.level,
+  };
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(DEMO_USER);
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const login = async (email: string, _password?: string) => {
-    setIsLoading(true);
-    // Simulate brief network delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setUser({
-      id: `usr_${Date.now()}`,
-      email,
-      displayName: email.split('@')[0] || 'Puzzle Solver',
-      age: 22,
-      xp: 1200,
-      streak: 5,
-      level: 4,
-    });
-    setIsLoading(false);
+  // Boot restore: if a token was persisted, fetch the profile to re-establish
+  // the session. `isLoading` stays true for the whole restore so index.tsx
+  // doesn't flash the login screen for an already signed-in user.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const token = await getAuthToken();
+        if (!token) return;
+        const apiUser = await getProfile(token);
+        if (!cancelled) setUser(toUser(apiUser));
+      } catch (error) {
+        // A 401 means the token is invalid/expired — drop it. Other failures
+        // (e.g. server temporarily unreachable) keep the token so a flaky
+        // connection doesn't sign the user out for good.
+        if (error instanceof ApiError && error.status === 401) {
+          await clearAuthToken();
+        }
+        if (!cancelled) setUser(null);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const session = await apiLogin({ email, password });
+    await setAuthToken(session.token);
+    setUser(toUser(session.user));
   };
 
-  const signup = async (displayName: string, email: string, _password: string, age: number) => {
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setUser({
-      id: `usr_${Date.now()}`,
-      email,
-      displayName: displayName.trim() || 'New Solver',
-      age: age || 20,
-      xp: 100,
-      streak: 1,
-      level: 1,
-    });
-    setIsLoading(false);
+  const signup = async (input: SignupInput) => {
+    const session = await apiSignup(input);
+    await setAuthToken(session.token);
+    setUser(toUser(session.user));
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
+    await clearAuthToken();
   };
 
-  const updateDisplayName = (name: string) => {
-    if (user) {
-      setUser({ ...user, displayName: name });
+  const updateProfile = async (patch: ProfilePatch) => {
+    const token = await getAuthToken();
+    if (!token) {
+      throw new ApiError(401, 'UNAUTHORIZED', 'Your session has expired. Please sign in again.');
+    }
+    try {
+      const apiUser = await apiUpdateProfile(token, patch);
+      setUser(toUser(apiUser));
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        setUser(null);
+        await clearAuthToken();
+      }
+      throw error;
     }
   };
 
@@ -86,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         signup,
         logout,
-        updateDisplayName,
+        updateProfile,
       }}
     >
       {children}

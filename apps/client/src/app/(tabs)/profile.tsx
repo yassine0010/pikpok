@@ -15,30 +15,51 @@ import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
 import { TopBar } from '@/components/TopBar';
 import { useAuth } from '@/context/AuthContext';
+import { formatAuthError } from '@/api/client';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
-  const { user, logout, updateDisplayName } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const router = useRouter();
   const [editing, setEditing] = useState(false);
+  const [savingName, setSavingName] = useState(false);
   const [nameInput, setNameInput] = useState(user?.displayName ?? '');
 
   const initial = user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'P';
-  const age = user?.age ?? 24;
-  const xp = user?.xp ?? 1450;
-  const streak = user?.streak ?? 12;
-  const level = user?.level ?? 7;
+  const age = user?.age;
+  const xp = user?.xp ?? 0;
+  const streak = user?.streak ?? 0;
+  const level = user?.level ?? 0;
 
-  const handleSaveName = () => {
-    if (nameInput.trim()) {
-      updateDisplayName(nameInput.trim());
+  const handleSaveName = async () => {
+    const nextName = nameInput.trim();
+    if (!user || savingName) {
+      setEditing(false);
+      return;
     }
-    setEditing(false);
+    if (!nextName || nextName === user.displayName) {
+      setEditing(false);
+      return;
+    }
+    setSavingName(true);
+    try {
+      await updateProfile({ displayName: nextName });
+      setEditing(false);
+    } catch (error) {
+      Alert.alert('Could not save', formatAuthError(error, 'Please try again.'));
+    } finally {
+      setSavingName(false);
+    }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    if (!user) {
+      // Guest browsing the skeleton — just go back to the login screen.
+      router.replace('/auth/login');
+      return;
+    }
+    await logout();
     router.replace('/auth/login');
   };
 
@@ -67,27 +88,34 @@ export default function ProfileScreen() {
                 autoFocus
                 returnKeyType="done"
                 onSubmitEditing={handleSaveName}
+                editable={!savingName}
               />
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveName}>
+              <TouchableOpacity
+                style={[styles.saveButton, savingName && styles.saveButtonDisabled]}
+                onPress={handleSaveName}
+                disabled={savingName}
+              >
                 <Ionicons name="checkmark" size={18} color={Colors.white} />
               </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.nameRow}>
-              <Text style={styles.displayName}>{user?.displayName ?? 'Alex Rivers'}</Text>
-              <TouchableOpacity onPress={() => setEditing(true)} hitSlop={10}>
-                <Ionicons name="pencil-outline" size={18} color={Colors.neutral[500]} />
-              </TouchableOpacity>
+              <Text style={styles.displayName}>{user?.displayName ?? 'Guest'}</Text>
+              {user && (
+                <TouchableOpacity onPress={() => setEditing(true)} hitSlop={10}>
+                  <Ionicons name="pencil-outline" size={18} color={Colors.neutral[500]} />
+                </TouchableOpacity>
+              )}
             </View>
           )}
 
-          <Text style={styles.userEmail}>{user?.email ?? 'alex@pikpok.app'}</Text>
+          <Text style={styles.userEmail}>{user?.email ?? 'Not signed in'}</Text>
 
           {/* Age and Member Badge */}
           <View style={styles.badgeRow}>
             <View style={styles.badgePill}>
               <Ionicons name="calendar-outline" size={14} color={Colors.primary[600]} />
-              <Text style={styles.badgeText}>Age: {age}</Text>
+              <Text style={styles.badgeText}>{age != null ? `Age: ${age}` : 'Age: —'}</Text>
             </View>
             <View style={styles.badgePill}>
               <Ionicons name="shield-checkmark" size={14} color={Colors.tertiary[600]} />
@@ -125,7 +153,7 @@ export default function ProfileScreen() {
               </View>
               <View style={styles.menuContent}>
                 <Text style={styles.menuLabel}>Display Name</Text>
-                <Text style={styles.menuValue}>{user?.displayName ?? 'Alex Rivers'}</Text>
+                <Text style={styles.menuValue}>{user?.displayName ?? 'Guest'}</Text>
               </View>
             </View>
 
@@ -137,7 +165,7 @@ export default function ProfileScreen() {
               </View>
               <View style={styles.menuContent}>
                 <Text style={styles.menuLabel}>Email Address</Text>
-                <Text style={styles.menuValue}>{user?.email ?? 'alex@pikpok.app'}</Text>
+                <Text style={styles.menuValue}>{user?.email ?? 'Not signed in'}</Text>
               </View>
             </View>
 
@@ -149,7 +177,9 @@ export default function ProfileScreen() {
               </View>
               <View style={styles.menuContent}>
                 <Text style={styles.menuLabel}>Age</Text>
-                <Text style={styles.menuValue}>{age} years old</Text>
+                <Text style={styles.menuValue}>
+                  {age != null ? `${age} years old` : 'Not provided'}
+                </Text>
               </View>
             </View>
           </View>
@@ -189,8 +219,14 @@ export default function ProfileScreen() {
               onPress={handleLogout}
               activeOpacity={0.7}
             >
-              <Ionicons name="log-out-outline" size={20} color={Colors.error} />
-              <Text style={[styles.actionText, { color: Colors.error }]}>Sign Out</Text>
+              <Ionicons
+                name={user ? 'log-out-outline' : 'log-in-outline'}
+                size={20}
+                color={Colors.error}
+              />
+              <Text style={[styles.actionText, { color: Colors.error }]}>
+                {user ? 'Sign Out' : 'Sign In'}
+              </Text>
               <Ionicons name="chevron-forward" size={18} color={Colors.neutral[400]} />
             </TouchableOpacity>
           </View>
@@ -199,7 +235,7 @@ export default function ProfileScreen() {
         {/* App Version Info */}
         <View style={styles.appFooter}>
           <Text style={styles.versionTitle}>PikPok Mobile v1.0.0</Text>
-          <Text style={styles.versionSub}>Milestone 1 — App Skeleton & Navigation</Text>
+          <Text style={styles.versionSub}>Milestone 2 — Online Accounts</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -291,6 +327,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary[500],
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  saveButtonDisabled: {
+    opacity: 0.6,
   },
   userEmail: {
     fontSize: Typography.fontSize.sm,

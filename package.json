@@ -5,11 +5,21 @@
   "workspaces": [
     "apps/*"
   ],
+  "devDependencies": {
+    "expo-router": "~58.0.21"
+  },
   "scripts": {
     "start": "npm run start --workspace=apps/client",
     "web": "npm run web --workspace=apps/client",
     "android": "npm run android --workspace=apps/client",
     "ios": "npm run ios --workspace=apps/client",
-    "client": "npm run start --workspace=apps/client"
+    "client": "npm run start --workspace=apps/client",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "build:api": "npm run build --workspace=apps/api",
+    "start:api": "npm run start --workspace=apps/api",
+    "test:api": "npm run test --workspace=apps/api",
+    "typecheck:api": "npm run typecheck --workspace=apps/api",
+    "db:migrate": "npm run db:migrate --workspace=apps/api",
+    "db:reset": "npm run db:reset --workspace=apps/api"
   }
 }

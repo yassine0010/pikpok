@@ -20,14 +20,13 @@ interface LeaderboardEntry {
   displayName: string;
   xp: number;
   streak: number;
-  isCurrentUser?: boolean;
 }
 
 const SAMPLE_LEADERBOARD: LeaderboardEntry[] = [
   { rank: 1, displayName: 'Elena Rostova', xp: 3420, streak: 28 },
   { rank: 2, displayName: 'Marcus Vance', xp: 2890, streak: 19 },
   { rank: 3, displayName: 'Sofia Chen', xp: 2410, streak: 14 },
-  { rank: 4, displayName: 'Alex Rivers', xp: 1450, streak: 12, isCurrentUser: true },
+  { rank: 4, displayName: 'Alex Rivers', xp: 1450, streak: 12 },
   { rank: 5, displayName: 'Tariq Al-Mansoor', xp: 1320, streak: 9 },
   { rank: 6, displayName: 'Clara Dubois', xp: 1180, streak: 8 },
   { rank: 7, displayName: 'Liam O’Connor', xp: 950, streak: 5 },
@@ -39,8 +38,8 @@ export default function LeaderboardScreen() {
   const [filter, setFilter] = useState<'weekly' | 'allTime'>('allTime');
 
   const currentUserRank = 4;
-  const currentUserXp = user?.xp ?? 1450;
-  const currentUserStreak = user?.streak ?? 12;
+  const currentUserXp = user?.xp ?? 0;
+  const currentUserStreak = user?.streak ?? 0;
 
   const getRankBadge = (rank: number) => {
     if (rank === 1) return { icon: 'trophy', color: '#F59E0B', label: '1st' };
@@ -114,7 +113,7 @@ export default function LeaderboardScreen() {
             </View>
             <View style={styles.userInfo}>
               <Text style={styles.userLabel}>Your Standing</Text>
-              <Text style={styles.userName}>{user?.displayName ?? 'Alex Rivers'}</Text>
+              <Text style={styles.userName}>{user?.displayName ?? 'Guest'}</Text>
             </View>
           </View>
 
@@ -139,7 +138,9 @@ export default function LeaderboardScreen() {
           </View>
 
           {SAMPLE_LEADERBOARD.map((item) => {
-            const isUser = item.isCurrentUser;
+            // Highlight the real signed-in user's row (by display name) instead
+            // of a hardcoded sample entry. Guests never match.
+            const isUser = !!user && item.displayName === user.displayName;
             const rankBadge = getRankBadge(item.rank);
 
             return (

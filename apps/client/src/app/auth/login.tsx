@@ -18,6 +18,7 @@ import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
 import { LoginHeroIllustration } from '@/components/LoginHeroIllustration';
 import { useAuth } from '@/context/AuthContext';
+import { formatAuthError } from '@/api/client';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -46,8 +47,8 @@ export default function LoginScreen() {
     try {
       await login(email.trim(), password);
       router.replace('/(tabs)/feed');
-    } catch {
-      setErrorMessage('Failed to sign in. Please try again.');
+    } catch (error) {
+      setErrorMessage(formatAuthError(error, 'Failed to sign in. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -56,18 +57,14 @@ export default function LoginScreen() {
   const handleForgotPassword = () => {
     Alert.alert(
       'Forgot Password',
-      'Password recovery will be available with backend account integration in Milestone 2.'
+      'Password recovery is not available yet. Please contact support if you lost access to your account.'
     );
   };
 
-  const handleExploreGuest = async () => {
-    setLoading(true);
-    try {
-      await login('guest@pikpok.app', 'guest');
-      router.replace('/(tabs)/feed');
-    } finally {
-      setLoading(false);
-    }
+  // Guest mode: browse the skeleton feed without an account. All tab screens
+  // tolerate a null user.
+  const handleExploreGuest = () => {
+    router.replace('/(tabs)/feed');
   };
 
   return (
@@ -275,7 +272,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   brandWordmark: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 22,
     color: Colors.secondary[800],
     letterSpacing: -0.5,
@@ -285,14 +282,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mainHeading: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 30,
     color: Colors.secondary[800],
     letterSpacing: -0.6,
     marginBottom: 6,
   },
   subHeading: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: Typography.fontFamily.regular,
     fontSize: 15,
     color: Colors.neutral[600],
     letterSpacing: -0.2,
@@ -309,7 +306,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFCDD2',
   },
   errorText: {
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: Typography.fontFamily.medium,
     fontSize: 13,
     color: Colors.error,
     marginLeft: 8,
@@ -322,7 +319,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 14,
     color: Colors.secondary[800],
     marginBottom: 8,
@@ -352,7 +349,7 @@ const styles = StyleSheet.create({
   textInputField: {
     flex: 1,
     height: '100%',
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: Typography.fontFamily.medium,
     fontSize: 15,
     color: Colors.secondary[800],
   },
@@ -367,7 +364,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   forgotPasswordText: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
+    fontFamily: Typography.fontFamily.semiBold,
     fontSize: 13,
     color: Colors.secondary[800],
   },
@@ -392,7 +389,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginButtonText: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 17,
     color: Colors.secondary[800],
     marginRight: 10,
@@ -413,7 +410,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.neutral[200],
   },
   guestButtonText: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
+    fontFamily: Typography.fontFamily.semiBold,
     fontSize: 13,
     color: Colors.neutral[700],
     marginRight: 6,
@@ -425,12 +422,12 @@ const styles = StyleSheet.create({
     marginTop: 28,
   },
   footerText: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: Typography.fontFamily.regular,
     fontSize: 14,
     color: Colors.neutral[600],
   },
   signUpLink: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: Typography.fontFamily.bold,
     fontSize: 14,
     color: Colors.secondary[800],
     textDecorationLine: 'underline',

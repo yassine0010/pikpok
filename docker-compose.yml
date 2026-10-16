@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pikpok-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pikpok
+      POSTGRES_PASSWORD: pikpok
+      POSTGRES_DB: pikpok
+    ports:
+      - "5432:5432"
+    volumes:
+      - pikpok_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  pikpok_postgres_data:

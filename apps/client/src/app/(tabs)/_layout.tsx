@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 interface CustomTabBarProps {
   state: {
     index: number;
-    routes: Array<{ key: string; name: string }>;
+    routes: { key: string; name: string }[];
   };
   descriptors: Record<string, { options: { tabBarAccessibilityLabel?: string } }>;
   navigateToTab?: (routeKey: string) => void;

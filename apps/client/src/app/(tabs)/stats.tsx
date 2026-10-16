@@ -157,7 +157,7 @@ export default function StatsScreen() {
               Your pattern recognition is up 24% this month
             </Text>
             <Text style={styles.insightDescription}>
-              You're processing logic puzzles 1.2s faster than your average.
+              You’re processing logic puzzles 1.2s faster than your average.
             </Text>
           </View>
         </View>
