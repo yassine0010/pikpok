@@ -1,0 +1,166 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The aqueduct repair crew is investigating a critical leak along the ancient water channels. The precise location of the leak must be identified in one of three sections.\nPossible locations: Section Alpha, Section Beta, or Section Gamma.\n\nClues:\n- (1) The water leak is not in Section Alpha.\n- (2) The water leak is in Section Alpha.\n- (3) The water leak is not in Section Beta.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the water leak?",
+  "response": "Section Beta",
+  "hints": [
+    "Clue (1) and clue (2) are direct opposites, meaning one must be true and the other false. This establishes a relationship between clue (1) and clue (2) regarding their truthfulness.",
+    "If we examine Section Alpha, clue (1) would be false, and clue (2) would be true. Clue (3) would also be true. This scenario results in two true clues (clue (2) and clue (3)). This contradicts the rule that exactly one clue must be true, therefore Section Alpha cannot be the location of the water leak."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Section Alpha",
+      "Section Beta",
+      "Section Gamma"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Section Alpha"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Section Alpha"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Section Beta"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Section Beta",
+    "intermediate_trace": {
+      "eliminated_candidate": "Section Alpha",
+      "elimination_reason": "Testing Section Alpha results in 2 true clues (clue (2), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "Section Alpha",
+      "candidate_counts": {
+        "Section Alpha": 2,
+        "Section Beta": 1,
+        "Section Gamma": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (1)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": false
+        },
+        {
+          "speaker": "clue (2)",
+          "true": true
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": false,
+        "clue (2)": true,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (2) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.25,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.0,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          true
+        ],
+        "B": [
+          true,
+          false,
+          false
+        ],
+        "C": [
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.5
+    },
+    "themed_clues": [
+      "(1) The water leak is not in Section Alpha.",
+      "(2) The water leak is in Section Alpha.",
+      "(3) The water leak is not in Section Beta."
+    ],
+    "scenario_intro": "The aqueduct repair crew is investigating a critical leak along the ancient water channels. The precise location of the leak must be identified in one of three sections.",
+    "theme_title": "Aqueduct Repair",
+    "item": "water leak",
+    "entity_mapping": {
+      "A": "Section Alpha",
+      "B": "Section Beta",
+      "C": "Section Gamma"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "B",
+    "canonical_response": "B"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1061.5,
+  "seed": 101,
+  "theme": {
+    "setting": "High-Speed Rail Network, Volcano Monitoring Expedition, Wildland Firefighter Crew, Aqueduct Repair Crew",
+    "title": "Aqueduct Repair",
+    "scenario_intro": "The aqueduct repair crew is investigating a critical leak along the ancient water channels. The precise location of the leak must be identified in one of three sections.",
+    "item": "water leak",
+    "entity_mapping": {
+      "A": "Section Alpha",
+      "B": "Section Beta",
+      "C": "Section Gamma"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

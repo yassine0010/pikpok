@@ -1,0 +1,214 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "medium",
+  "question": "We are investigating the Orbital Watch facility for a critical component. The item is believed to be located in one of four designated sectors.\nPossible locations: Sector A, Sector B, Sector C, or Sector D.\n\nStatements:\n- Technician Anya: \"The solar array is not in Sector A.\"\n- Engineer Ben: \"The solar array is in Sector D.\"\n- Analyst Chloe: \"The solar array is in Sector B.\"\n- Director David: \"The solar array is not in Sector B.\"\n\nRULE: Exactly 1 of these statements is true (all others are false).\n\nWhere is the solar array?",
+  "response": "Sector A",
+  "hints": [
+    "Analyst Chloe and Director David directly contradict each other, meaning exactly one of them must be telling the truth.",
+    "Under Sector B, Technician Anya's claim is true, Engineer Ben's claim is false, Analyst Chloe's claim is true, and Director David's claim is false. This yields 2 true claims (Technician Anya and Analyst Chloe), which does not match the required 1 true claim. Therefore, Sector B is eliminated."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector A",
+      "Sector B",
+      "Sector C",
+      "Sector D"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector A"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector D"
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector B"
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector B"
+        },
+        "speaker": "Director David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Sector A",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector B",
+      "elimination_reason": "Testing Sector B results in 2 true claims (Technician Anya, Analyst Chloe are true) instead of exactly 1 true claim.",
+      "intermediate_value": "Sector B",
+      "candidate_counts": {
+        "Sector A": 1,
+        "Sector B": 2,
+        "Sector C": 2,
+        "Sector D": 3
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Analyst Chloe"
+      ],
+      "elim_cand_false_speakers": [
+        "Engineer Ben",
+        "Director David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": false
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Director David",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": false,
+        "Analyst Chloe": true,
+        "Director David": false
+      },
+      "clue_insight": "Analyst Chloe and Director David directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Analyst Chloe",
+        "Director David"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 13.26,
+      "structural_score": 10,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.75,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2,
+        "D": 3
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "B": [
+          true,
+          false,
+          true,
+          false
+        ],
+        "C": [
+          true,
+          false,
+          false,
+          true
+        ],
+        "D": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.811,
+      "clause_score": 1.8
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Director David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The solar array is not in Sector A.\"",
+      "Engineer Ben: \"The solar array is in Sector D.\"",
+      "Analyst Chloe: \"The solar array is in Sector B.\"",
+      "Director David: \"The solar array is not in Sector B.\""
+    ],
+    "scenario_intro": "We are investigating the Orbital Watch facility for a critical component. The item is believed to be located in one of four designated sectors.",
+    "theme_title": "orbital watch",
+    "item": "solar array",
+    "entity_mapping": {
+      "A": "Sector A",
+      "B": "Sector B",
+      "C": "Sector C",
+      "D": "Sector D",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1329.1,
+  "seed": 209,
+  "theme": {
+    "setting": "Deep Sea Sonar Mapping, Rare Manuscript Restoration, Quantum Computing Facilities, Orbital Watch",
+    "title": "orbital watch",
+    "scenario_intro": "We are investigating the Orbital Watch facility for a critical component. The item is believed to be located in one of four designated sectors.",
+    "item": "solar array",
+    "entity_mapping": {
+      "A": "Sector A",
+      "B": "Sector B",
+      "C": "Sector C",
+      "D": "Sector D",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

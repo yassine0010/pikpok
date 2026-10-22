@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The programmers for the independent film festival need to decide the order of the final three feature films to be screened, from first to last.\n\nLineup to order: Director Anya, Documentary Kai, and Comedy Sam.\n\nClues:\n- Documentary Kai is immediately after Comedy Sam.\n- Comedy Sam is not 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Comedy Sam, Documentary Kai, Director Anya",
+  "hints": [
+    "Look closely at the clues involving Documentary Kai: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Documentary Kai to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Director Anya",
+      "Documentary Kai",
+      "Comedy Sam"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Documentary Kai",
+        "y": "Comedy Sam"
+      },
+      {
+        "type": "not_position",
+        "x": "Comedy Sam",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Comedy Sam",
+      "Documentary Kai",
+      "Director Anya"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Documentary Kai",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Documentary Kai is in the 2nd position",
+      "intermediate_value": "Documentary Kai",
+      "entity_positions": {
+        "Comedy Sam": "1st",
+        "Documentary Kai": "2nd",
+        "Director Anya": "3rd"
+      },
+      "supporting_clues": [
+        "Documentary Kai is immediately after Comedy Sam.",
+        "Comedy Sam is not 2nd."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.83,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 0.9,
+      "near_miss_factor": 3.333
+    },
+    "themed_clues": [
+      "Documentary Kai is immediately after Comedy Sam.",
+      "Comedy Sam is not 2nd."
+    ],
+    "scenario_intro": "The programmers for the independent film festival need to decide the order of the final three feature films to be screened, from first to last.",
+    "theme_title": "Indie Film Festival Schedule",
+    "entity_mapping": {
+      "P1": "Director Anya",
+      "P2": "Documentary Kai",
+      "P3": "Comedy Sam"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P1"
+    ],
+    "canonical_response": "P3, P2, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1141.5,
+  "seed": 102,
+  "theme": {
+    "setting": "Urban Planning, Semiconductor Manufacturing, Ancient Numismatics, Film Festival Curation",
+    "title": "Indie Film Festival Schedule",
+    "scenario_intro": "The programmers for the independent film festival need to decide the order of the final three feature films to be screened, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Director Anya",
+      "P2": "Documentary Kai",
+      "P3": "Comedy Sam"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

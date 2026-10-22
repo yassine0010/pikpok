@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "hard",
+  "question": "Find the missing number in the sequence: 5, 13, 29, 61, ?, 253, 509",
+  "response": "125",
+  "hints": [
+    "Consider if a consistent two-step process, involving multiplication and then addition or subtraction, links each number to the next.",
+    "Let's test a potential rule. If we multiply the first term (5) by 2 and add 3, we get 13. Applying this same rule to 13 (13 * 2 + 3) gives 29. See if this pattern holds for the next visible numbers."
+  ],
+  "solution_data": {
+    "family": "recurrence",
+    "variant": "affine",
+    "tier": 3,
+    "mode": "middle",
+    "terms": [
+      5,
+      13,
+      29,
+      61,
+      125,
+      253,
+      509
+    ],
+    "target_index": 4,
+    "missing_position": 4,
+    "rule": "next = 2*prev + 3",
+    "expr": "next = 2*prev + 3",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "5 and 13",
+      "first_difference": 8,
+      "earlier_milestone": 29,
+      "intermediate_value": 29,
+      "preceding_term": 61
+    },
+    "difficulty_metrics": {
+      "raw_score": 28.51,
+      "tier": 3,
+      "variant": "affine",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 2.3,
+      "magnitude_factor": 2.031,
+      "step_var_factor": 1.529,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1889.3,
+  "seed": 301,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

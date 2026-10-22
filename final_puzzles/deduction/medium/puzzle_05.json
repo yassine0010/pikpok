@@ -1,0 +1,217 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "medium",
+  "question": "We are investigating the Arboretum's extensive grounds to locate a rare botanical specimen across four distinct cultivation zones.\nPossible locations: Zone 1, Zone 2, Zone 3, or Zone 4.\n\nStatements:\n- Botanist Anya: \"The rare orchid is in Zone 1.\"\n- Ranger Ben: \"The rare orchid is not in Zone 1.\"\n- Forester Chloe: \"The rare orchid is not in Zone 3.\"\n- Gardener David: \"The rare orchid is in neither Zone 3 nor Zone 4.\"\n\nRULE: Exactly 1 of these statements is true (all others are false).\n\nWhere is the rare orchid?",
+  "response": "Zone 3",
+  "hints": [
+    "Botanist Anya and Ranger Ben directly contradict each other, meaning exactly one of them must be telling the truth.",
+    "Under Zone 4, Botanist Anya's claim is false, Ranger Ben's claim is true, Forester Chloe's claim is true, and Gardener David's claim is false. This results in 2 true claims (Ranger Ben and Forester Chloe), which is not the required single true claim, eliminating Zone 4. The rare orchid is not in Zone 4."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Zone 1",
+      "Zone 2",
+      "Zone 3",
+      "Zone 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Zone 1"
+        },
+        "speaker": "Botanist Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Zone 1"
+        },
+        "speaker": "Ranger Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Zone 3"
+        },
+        "speaker": "Forester Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Zone 3",
+            "Zone 4"
+          ]
+        },
+        "speaker": "Gardener David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Zone 3",
+    "intermediate_trace": {
+      "eliminated_candidate": "Zone 4",
+      "elimination_reason": "Testing Zone 4 results in 2 true claims (Ranger Ben, Forester Chloe are true) instead of exactly 1 true claim.",
+      "intermediate_value": "Zone 4",
+      "candidate_counts": {
+        "Zone 1": 3,
+        "Zone 2": 3,
+        "Zone 3": 1,
+        "Zone 4": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Ranger Ben",
+        "Forester Chloe"
+      ],
+      "elim_cand_false_speakers": [
+        "Botanist Anya",
+        "Gardener David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Botanist Anya",
+          "true": false
+        },
+        {
+          "speaker": "Ranger Ben",
+          "true": true
+        },
+        {
+          "speaker": "Forester Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Gardener David",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "Botanist Anya": false,
+        "Ranger Ben": true,
+        "Forester Chloe": true,
+        "Gardener David": false
+      },
+      "clue_insight": "Botanist Anya and Ranger Ben directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Botanist Anya",
+        "Ranger Ben"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 13.64,
+      "structural_score": 10,
+      "near_misses": 1,
+      "logic_words": 4,
+      "statement_overlap": 1.5,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 3,
+        "B": 3,
+        "C": 1,
+        "D": 2
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true,
+          true
+        ],
+        "B": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "D": [
+          false,
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.858,
+      "clause_score": 3.3
+    },
+    "speakers": [
+      "Botanist Anya",
+      "Ranger Ben",
+      "Forester Chloe",
+      "Gardener David"
+    ],
+    "themed_clues": [
+      "Botanist Anya: \"The rare orchid is in Zone 1.\"",
+      "Ranger Ben: \"The rare orchid is not in Zone 1.\"",
+      "Forester Chloe: \"The rare orchid is not in Zone 3.\"",
+      "Gardener David: \"The rare orchid is in neither Zone 3 nor Zone 4.\""
+    ],
+    "scenario_intro": "We are investigating the Arboretum's extensive grounds to locate a rare botanical specimen across four distinct cultivation zones.",
+    "theme_title": "Arboretum Secrets",
+    "item": "rare orchid",
+    "entity_mapping": {
+      "A": "Zone 1",
+      "B": "Zone 2",
+      "C": "Zone 3",
+      "D": "Zone 4",
+      "Alice": "Botanist Anya",
+      "Bob": "Ranger Ben",
+      "Carol": "Forester Chloe",
+      "Dave": "Gardener David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1350.9,
+  "seed": 205,
+  "theme": {
+    "setting": "High-Speed Rail Network Dispatch, Deep Sea Sonar Mapping, Satellite Maintenance, Arboretum Secrets",
+    "title": "Arboretum Secrets",
+    "scenario_intro": "We are investigating the Arboretum's extensive grounds to locate a rare botanical specimen across four distinct cultivation zones.",
+    "item": "rare orchid",
+    "entity_mapping": {
+      "A": "Zone 1",
+      "B": "Zone 2",
+      "C": "Zone 3",
+      "D": "Zone 4",
+      "Alice": "Botanist Anya",
+      "Bob": "Ranger Ben",
+      "Carol": "Forester Chloe",
+      "Dave": "Gardener David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

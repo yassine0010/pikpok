@@ -1,0 +1,96 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "medium",
+  "question": "Find the missing operators to balance both sides: 4 ? 16 = 61 ? 3\nAllowed operators: +, -, *, /\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "*, +",
+  "hints": [
+    "To find the correct operators, first determine the value that both sides of the equation must equal. Evaluate any complete numerical expressions to find this target value.",
+    "The left side of the equation has a known value of 64. Consider the operator that connects 61 and 3. Which symbol, when applied to 61 and 3, would result in a value that balances with 64?"
+  ],
+  "solution_data": {
+    "template": "{a} ? {b} = {c} ? {d}",
+    "operands": [
+      4,
+      16,
+      61,
+      3
+    ],
+    "operators": [
+      "*",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "result": 64,
+    "archetype": "balanced_eq",
+    "missing_indices": [
+      0,
+      1
+    ],
+    "intermediate_trace": {
+      "first_pair": "4 and 16",
+      "target_pair": "4 and 16",
+      "target_subtotal": "64",
+      "target_result": 64,
+      "intermediate_value": "64",
+      "approx_magnitude": "approximately 65 (near 59-69)",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        1
+      ],
+      "prior_fixed_desc": null,
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [],
+      "first_step_direction": "larger",
+      "true_first_op": "*",
+      "scale_type": "moderate",
+      "scale_guidance": "The target result is close in magnitude to the operands, indicating modest step-by-step adjustments.",
+      "subsequent_goal": "With the left side equaling 64, determine which operator combines 61 and 3 to balance both sides at 64.",
+      "target_slot_desc": "the operator between 4 and 16",
+      "precedence_note": "Evaluate each side independently to reach a balanced target.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "64",
+          "operand": "16"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 4 and 16 evaluates to 64"
+    },
+    "difficulty_metrics": {
+      "raw_score": 45.83,
+      "search_space": 16,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "balanced_eq",
+      "search_factor": 3.066,
+      "transition_factor": 0.75,
+      "operand_mag_factor": 1.621,
+      "target_scale_factor": 1.088
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1600.0,
+  "seed": 204,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

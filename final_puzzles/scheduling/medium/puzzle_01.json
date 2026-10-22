@@ -1,0 +1,126 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The Zoological Park needs a schedule for its animal enrichment activities, from first to last. Help plan the order of these engaging sessions.\n\nLineup to order: Enrichment Specialist Kai, Behaviorist Anya, Trainer Ben, and Curator Chloe.\n\nClues:\n- Behaviorist Anya is not 1st.\n- Behaviorist Anya arrives earlier than Enrichment Specialist Kai.\n- Trainer Ben is immediately after Behaviorist Anya.\n\nWhat is the complete order from first to last?",
+  "response": "Curator Chloe, Behaviorist Anya, Trainer Ben, Enrichment Specialist Kai",
+  "hints": [
+    "Look closely at the clues involving Curator Chloe: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Curator Chloe to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Enrichment Specialist Kai",
+      "Behaviorist Anya",
+      "Trainer Ben",
+      "Curator Chloe"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Behaviorist Anya",
+        "k": 1
+      },
+      {
+        "type": "before",
+        "x": "Behaviorist Anya",
+        "y": "Enrichment Specialist Kai"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Trainer Ben",
+        "y": "Behaviorist Anya"
+      }
+    ],
+    "solution": [
+      "Curator Chloe",
+      "Behaviorist Anya",
+      "Trainer Ben",
+      "Enrichment Specialist Kai"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Curator Chloe",
+      "fixed_slot": "1st",
+      "partial_assignment": "Curator Chloe is in the 1st position",
+      "intermediate_value": "Curator Chloe",
+      "entity_positions": {
+        "Curator Chloe": "1st",
+        "Behaviorist Anya": "2nd",
+        "Trainer Ben": "3rd",
+        "Enrichment Specialist Kai": "4th"
+      },
+      "supporting_clues": [
+        "Behaviorist Anya is not 1st.",
+        "Behaviorist Anya is before Enrichment Specialist Kai."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 34.86,
+      "num_entities": 4,
+      "num_constraints": 3,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 1.875,
+      "near_miss_factor": 2.083
+    },
+    "themed_clues": [
+      "Behaviorist Anya is not 1st.",
+      "Behaviorist Anya arrives earlier than Enrichment Specialist Kai.",
+      "Trainer Ben is immediately after Behaviorist Anya."
+    ],
+    "scenario_intro": "The Zoological Park needs a schedule for its animal enrichment activities, from first to last. Help plan the order of these engaging sessions.",
+    "theme_title": "Zoo Enrichment Planner",
+    "entity_mapping": {
+      "P1": "Enrichment Specialist Kai",
+      "P2": "Behaviorist Anya",
+      "P3": "Trainer Ben",
+      "P4": "Curator Chloe"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P4",
+      "P2",
+      "P3",
+      "P1"
+    ],
+    "canonical_response": "P4, P2, P3, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1449.5,
+  "seed": 201,
+  "theme": {
+    "setting": "Quantum Computing Simulation, Horticultural Greenhouse Management, Urban Planning Zoning Board, Zoological Park Animal Enrichment",
+    "title": "Zoo Enrichment Planner",
+    "scenario_intro": "The Zoological Park needs a schedule for its animal enrichment activities, from first to last. Help plan the order of these engaging sessions.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Enrichment Specialist Kai",
+      "P2": "Behaviorist Anya",
+      "P3": "Trainer Ben",
+      "P4": "Curator Chloe"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

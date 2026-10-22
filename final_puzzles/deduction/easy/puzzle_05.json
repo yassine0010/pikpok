@@ -1,0 +1,169 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The extreme weather forecasting station is shrouded in a blizzard, and the critical atmospheric sensor must be located within one of three remote monitoring outposts.\nPossible locations: Outpost Alpha, Outpost Beta, or Outpost Gamma.\n\nClues:\n- (1) The atmospheric sensor is not in Outpost Gamma.\n- (2) The atmospheric sensor is in Outpost Alpha.\n- (3) The atmospheric sensor is in Outpost Beta or Outpost Gamma.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the atmospheric sensor?",
+  "response": "Outpost Gamma",
+  "hints": [
+    "Clue (2) and clue (3) are contradictory, meaning exactly one of them must be true.",
+    "If the atmospheric sensor were in Outpost Alpha, clue (1) would be true and clue (2) would also be true. This would mean two clues are true, which contradicts the rule that exactly one clue is true. Therefore, Outpost Alpha is not the location of the atmospheric sensor."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Outpost Alpha",
+      "Outpost Beta",
+      "Outpost Gamma"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Outpost Gamma"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Outpost Alpha"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Outpost Beta",
+            "Outpost Gamma"
+          ]
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Outpost Gamma",
+    "intermediate_trace": {
+      "eliminated_candidate": "Outpost Alpha",
+      "elimination_reason": "Testing Outpost Alpha results in 2 true clues (clue (1), clue (2) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "Outpost Alpha",
+      "candidate_counts": {
+        "Outpost Alpha": 2,
+        "Outpost Beta": 2,
+        "Outpost Gamma": 1
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (3)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": true
+        },
+        {
+          "speaker": "clue (3)",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": true,
+        "clue (3)": false
+      },
+      "clue_insight": "Clue (2) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.52,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.33,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 2,
+        "C": 1
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          false,
+          true
+        ],
+        "C": [
+          false,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.8
+    },
+    "themed_clues": [
+      "(1) The atmospheric sensor is not in Outpost Gamma.",
+      "(2) The atmospheric sensor is in Outpost Alpha.",
+      "(3) The atmospheric sensor is in Outpost Beta or Outpost Gamma."
+    ],
+    "scenario_intro": "The extreme weather forecasting station is shrouded in a blizzard, and the critical atmospheric sensor must be located within one of three remote monitoring outposts.",
+    "theme_title": "weather station",
+    "item": "atmospheric sensor",
+    "entity_mapping": {
+      "A": "Outpost Alpha",
+      "B": "Outpost Beta",
+      "C": "Outpost Gamma"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1078.2,
+  "seed": 105,
+  "theme": {
+    "setting": "Aqueduct Repair Crew, Apiary Bee Colony Order, Jousting Knight Lineup, Extreme Weather Forecasting",
+    "title": "weather station",
+    "scenario_intro": "The extreme weather forecasting station is shrouded in a blizzard, and the critical atmospheric sensor must be located within one of three remote monitoring outposts.",
+    "item": "atmospheric sensor",
+    "entity_mapping": {
+      "A": "Outpost Alpha",
+      "B": "Outpost Beta",
+      "C": "Outpost Gamma"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

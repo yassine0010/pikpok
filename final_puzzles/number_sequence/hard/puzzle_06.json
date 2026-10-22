@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "hard",
+  "question": "One number is hidden in the sequence: 1, 4, 7, 10, ?, 16. What is it?",
+  "response": "13",
+  "hints": [
+    "Consider how each number in the sequence relates to the ones that came immediately before it.",
+    "Notice how the first two numbers, 1 and 4, add up to the third number, 7. Try applying this same pattern to find the missing number."
+  ],
+  "solution_data": {
+    "family": "recurrence",
+    "variant": "fib_like",
+    "tier": 3,
+    "mode": "middle",
+    "terms": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16
+    ],
+    "target_index": 4,
+    "missing_position": 4,
+    "rule": "a(n) = 2*a(n-1) - 1*a(n-2)",
+    "expr": "a(n) = 2*a(n-1) - 1*a(n-2)",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "1 and 4",
+      "first_difference": 3,
+      "earlier_milestone": 7,
+      "intermediate_value": 7,
+      "preceding_term": 10
+    },
+    "difficulty_metrics": {
+      "raw_score": 25.22,
+      "tier": 3,
+      "variant": "fib_like",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 1.8,
+      "magnitude_factor": 0.923,
+      "step_var_factor": 0.0,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1743.1,
+  "seed": 306,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

@@ -1,0 +1,110 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "hard",
+  "question": "Find the missing operators: ( 10 ? 3 ) ? ( 14 - 9 ) = 65\nAllowed operators: +, -, *, /, ^\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+, *",
+  "hints": [
+    "Begin by simplifying the expression within the second set of parentheses. Then, focus on the expression inside the first set of parentheses, considering how its result will interact with the simplified second set using the outer operator.",
+    "Consider the expression ( 10 ? 3 ). If this part evaluates to 13, what operator would achieve that? Now, with the result of the first bracket and the result of the second bracket (which is 5), what outer operator would combine them to reach 65?"
+  ],
+  "solution_data": {
+    "template": "( {a} ? {b} ) ? ( {c} - {d} ) = {r}",
+    "operands": [
+      10,
+      3,
+      14,
+      9
+    ],
+    "operators": [
+      "+",
+      "*",
+      "-"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "^"
+    ],
+    "result": 65,
+    "archetype": "parentheses_both",
+    "missing_indices": [
+      0,
+      1
+    ],
+    "intermediate_trace": {
+      "first_pair": "10 and 3",
+      "target_pair": "10 and 3",
+      "target_subtotal": "13",
+      "target_result": 65,
+      "intermediate_value": "13",
+      "approx_magnitude": "close to 13",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        1
+      ],
+      "prior_fixed_desc": "Evaluating the visible second parentheses (14 - 9 = 5)",
+      "safe_fixed_pairs": [
+        "14 and 9"
+      ],
+      "fixed_pairs": [
+        "14 and 9"
+      ],
+      "visible_fixed_ops": [
+        "'-' between 14 and 9"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "+",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "Once the first bracket is evaluated, determine the outer connecting operator to reach 65.",
+      "target_slot_desc": "the operator inside the first parentheses (10 ? 3)",
+      "precedence_note": "Parentheses must be evaluated before the outer connecting operator.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "13",
+          "operand": "3"
+        },
+        {
+          "step": 2,
+          "is_missing": false,
+          "subtotal": "5",
+          "operand": "9"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 10 and 3 evaluates to 13"
+    },
+    "difficulty_metrics": {
+      "raw_score": 45.85,
+      "search_space": 25,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "parentheses_both",
+      "search_factor": 3.525,
+      "transition_factor": 1.5,
+      "operand_mag_factor": 1.432,
+      "target_scale_factor": 1.092
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1824.3,
+  "seed": 308,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

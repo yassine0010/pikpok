@@ -1,0 +1,146 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five valiant knights are preparing for the grand jousting tournament, and their order of entry into the arena must be determined from first to last.\n\nLineup to order: Knight Gareth, Knight Percival, Knight Tristan, Knight Lancelot, and Knight Gawain.\n\nClues:\n- Knight Percival comes directly after Knight Gawain.\n- Knight Tristan is before Knight Percival.\n- Knight Gareth is before Knight Gawain.\n- Knight Percival is positioned ahead of Knight Lancelot.\n- Knight Tristan is not placed 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Knight Tristan, Knight Gareth, Knight Gawain, Knight Percival, Knight Lancelot",
+  "hints": [
+    "Knight Percival must be immediately after Knight Gawain, and Knight Tristan is not second in line. Considering these, we can deduce Knight Gawain's placement.",
+    "The clue that Knight Percival is immediately after Knight Gawain, along with Knight Tristan not being second, significantly restricts their possible positions. This leads to the conclusion that Knight Gawain is positioned third."
+  ],
+  "solution_data": {
+    "entities": [
+      "Knight Gareth",
+      "Knight Percival",
+      "Knight Tristan",
+      "Knight Lancelot",
+      "Knight Gawain"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Knight Percival",
+        "y": "Knight Gawain"
+      },
+      {
+        "type": "before",
+        "x": "Knight Tristan",
+        "y": "Knight Percival"
+      },
+      {
+        "type": "before",
+        "x": "Knight Gareth",
+        "y": "Knight Gawain"
+      },
+      {
+        "type": "before",
+        "x": "Knight Percival",
+        "y": "Knight Lancelot"
+      },
+      {
+        "type": "not_position",
+        "x": "Knight Tristan",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Knight Tristan",
+      "Knight Gareth",
+      "Knight Gawain",
+      "Knight Percival",
+      "Knight Lancelot"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Knight Gawain",
+      "fixed_slot": "3rd",
+      "partial_assignment": "Knight Gawain is in the 3rd position",
+      "intermediate_value": "Knight Gawain",
+      "entity_positions": {
+        "Knight Tristan": "1st",
+        "Knight Gareth": "2nd",
+        "Knight Gawain": "3rd",
+        "Knight Percival": "4th",
+        "Knight Lancelot": "5th"
+      },
+      "supporting_clues": [
+        "Knight Percival is immediately after Knight Gawain.",
+        "Knight Gareth is before Knight Gawain."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 47.43,
+      "num_entities": 5,
+      "num_constraints": 5,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 0.705,
+      "near_miss_factor": 0.625
+    },
+    "themed_clues": [
+      "Knight Percival comes directly after Knight Gawain.",
+      "Knight Tristan is before Knight Percival.",
+      "Knight Gareth is before Knight Gawain.",
+      "Knight Percival is positioned ahead of Knight Lancelot.",
+      "Knight Tristan is not placed 2nd."
+    ],
+    "scenario_intro": "Five valiant knights are preparing for the grand jousting tournament, and their order of entry into the arena must be determined from first to last.",
+    "theme_title": "Jousting Knight Lineup",
+    "entity_mapping": {
+      "P1": "Knight Gareth",
+      "P2": "Knight Percival",
+      "P3": "Knight Tristan",
+      "P4": "Knight Lancelot",
+      "P5": "Knight Gawain"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P1",
+      "P5",
+      "P2",
+      "P4"
+    ],
+    "canonical_response": "P3, P1, P5, P2, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1755.1,
+  "seed": 306,
+  "theme": {
+    "setting": "Quantum Field Theory Research, Ancient Manuscript Restoration, Urban Vertical Farming, Renaissance Faire Jousting Tournament",
+    "title": "Jousting Knight Lineup",
+    "scenario_intro": "Five valiant knights are preparing for the grand jousting tournament, and their order of entry into the arena must be determined from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Knight Gareth",
+      "P2": "Knight Percival",
+      "P3": "Knight Tristan",
+      "P4": "Knight Lancelot",
+      "P5": "Knight Gawain"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

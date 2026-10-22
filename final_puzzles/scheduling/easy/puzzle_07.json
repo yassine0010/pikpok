@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The Head Librarian needs to organize the placement of three crucial archival boxes on the special display shelf, from first to last.\n\nLineup to order: Archivist Elias, Conservator Maya, and Curator Ben.\n\nClues:\n- Conservator Maya is immediately after Curator Ben.\n- Curator Ben is not placed 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Curator Ben, Conservator Maya, Archivist Elias",
+  "hints": [
+    "Look closely at the clues involving Conservator Maya: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Conservator Maya to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Archivist Elias",
+      "Conservator Maya",
+      "Curator Ben"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Conservator Maya",
+        "y": "Curator Ben"
+      },
+      {
+        "type": "not_position",
+        "x": "Curator Ben",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Curator Ben",
+      "Conservator Maya",
+      "Archivist Elias"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Conservator Maya",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Conservator Maya is in the 2nd position",
+      "intermediate_value": "Conservator Maya",
+      "entity_positions": {
+        "Curator Ben": "1st",
+        "Conservator Maya": "2nd",
+        "Archivist Elias": "3rd"
+      },
+      "supporting_clues": [
+        "Conservator Maya is immediately after Curator Ben.",
+        "Curator Ben is not 2nd."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.83,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 0.9,
+      "near_miss_factor": 3.333
+    },
+    "themed_clues": [
+      "Conservator Maya is immediately after Curator Ben.",
+      "Curator Ben is not placed 2nd."
+    ],
+    "scenario_intro": "The Head Librarian needs to organize the placement of three crucial archival boxes on the special display shelf, from first to last.",
+    "theme_title": "Library Archival",
+    "entity_mapping": {
+      "P1": "Archivist Elias",
+      "P2": "Conservator Maya",
+      "P3": "Curator Ben"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P1"
+    ],
+    "canonical_response": "P3, P2, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1141.5,
+  "seed": 107,
+  "theme": {
+    "setting": "Urban Planning, Theoretical Physics, Renaissance Fair Management, Library Archival",
+    "title": "Library Archival",
+    "scenario_intro": "The Head Librarian needs to organize the placement of three crucial archival boxes on the special display shelf, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Archivist Elias",
+      "P2": "Conservator Maya",
+      "P3": "Curator Ben"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

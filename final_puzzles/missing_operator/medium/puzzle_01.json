@@ -1,0 +1,108 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "medium",
+  "question": "Find the missing operators: 19 ? 9 ? 8 + 8 = 99\nAllowed operators: +, -, *, /\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+, *",
+  "hints": [],
+  "solution_data": {
+    "template": "{a} ? {b} ? {c} + {d} = {r}",
+    "operands": [
+      19,
+      9,
+      8,
+      8
+    ],
+    "operators": [
+      "+",
+      "*",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "result": 99,
+    "archetype": "flat",
+    "missing_indices": [
+      0,
+      1
+    ],
+    "intermediate_trace": {
+      "first_pair": "9 and 8",
+      "target_pair": "9 and 8",
+      "target_subtotal": "72",
+      "target_result": 99,
+      "intermediate_value": "72",
+      "approx_magnitude": "approximately 70 (near 67-77)",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        1
+      ],
+      "prior_fixed_desc": "",
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'+' between 8 and 8"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "*",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "Carrying 72 forward to reach 91, determine which operator completes the equation to reach 99.",
+      "target_slot_desc": "the operator between 9 and 8 (which binds first by precedence)",
+      "precedence_note": "Order of operations: The operator between 9 and 8 binds first by standard precedence, even though the blank between 19 and 9 appears earlier in reading order.",
+      "is_precedence_out_of_order": true,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "72",
+          "operand": ""
+        },
+        {
+          "step": 2,
+          "is_missing": true,
+          "subtotal": "91",
+          "operand": ""
+        },
+        {
+          "step": 3,
+          "is_missing": false,
+          "subtotal": "99",
+          "operand": ""
+        }
+      ],
+      "reasoning_nudge": "The target operation between 9 and 8 evaluates to 72"
+    },
+    "difficulty_metrics": {
+      "raw_score": 33.14,
+      "search_space": 16,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "flat",
+      "search_factor": 3.066,
+      "transition_factor": 1.5,
+      "operand_mag_factor": 1.579,
+      "target_scale_factor": 1.2
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1472.0,
+  "seed": 201,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

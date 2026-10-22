@@ -1,0 +1,267 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "An anomaly has been detected on Orbital Station Epsilon, and the critical component must be located. We are investigating across four sectors.\nPossible locations: Sector 1, Sector 2, Sector 3, Sector 4, or Sector 5.\n\nStatements:\n- Technician Anya: \"The critical component is in Sector 5.\"\n- Engineer Ben: \"The critical component is in Sector 1 or Sector 5.\"\n- Analyst Chloe: \"If the critical component is not in Sector 5, then it is not in Sector 3.\"\n- Operator David: \"The critical component is in neither Sector 2 nor Sector 3.\"\n- Technician Eva: \"The critical component is in neither Sector 3 nor Sector 5.\"\n\nRULE: Exactly 3 of these statements are true (all others are false).\n\nWhere is the critical component?",
+  "response": "Sector 4",
+  "hints": [
+    "Technician Anya and Technician Eva make claims that cannot both be true because their stated locations for the critical component are mutually exclusive. This suggests one of them is truthful and the other is not, a key piece of information for narrowing down possibilities.",
+    "Let's test candidate Sector 1. If the critical component were in Sector 1, Technician Anya's claim ('The item is in Sector 5') would be false. Engineer Ben's claim ('The item is in Sector 1 or Sector 5') would be true. Analyst Chloe's claim ('If the item is NOT in Sector 5, then it is NOT in Sector 3') would be true. Operator David's claim ('The item is in neither Sector 2 nor Sector 3') would be true. Technician Eva's claim ('The item is in neither Sector 3 nor Sector 5') would be true. This scenario results in four true claims (Engineer Ben, Analyst Chloe, Operator David, Technician Eva), which violates the rule that exactly three claims must be true. Therefore, the critical component cannot be in Sector 1."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4",
+      "Sector 5"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector 5"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 5"
+          ]
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 5"
+          },
+          "consequent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 3"
+          }
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 2",
+            "Sector 3"
+          ]
+        },
+        "speaker": "Operator David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 3",
+            "Sector 5"
+          ]
+        },
+        "speaker": "Technician Eva"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 3
+    },
+    "solution": "Sector 4",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 1",
+      "elimination_reason": "Testing Sector 1 results in 4 true claims (Engineer Ben, Analyst Chloe, Operator David, Technician Eva are true) instead of exactly 3 true claims.",
+      "intermediate_value": "Sector 1",
+      "candidate_counts": {
+        "Sector 1": 4,
+        "Sector 2": 2,
+        "Sector 3": 0,
+        "Sector 4": 3,
+        "Sector 5": 4
+      },
+      "expected_count": 3,
+      "elim_cand_count": 4,
+      "elim_cand_true_speakers": [
+        "Engineer Ben",
+        "Analyst Chloe",
+        "Operator David",
+        "Technician Eva"
+      ],
+      "elim_cand_false_speakers": [
+        "Technician Anya"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": false
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": true
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        },
+        {
+          "speaker": "Technician Eva",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": false,
+        "Engineer Ben": true,
+        "Analyst Chloe": true,
+        "Operator David": true,
+        "Technician Eva": true
+      },
+      "clue_insight": "Technician Anya and Technician Eva describe mutually exclusive possibilities, so they can never both be true together.",
+      "interaction_type": "mutually_exclusive",
+      "interaction_speakers": [
+        "Technician Anya",
+        "Technician Eva"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 29.11,
+      "structural_score": 23,
+      "near_misses": 3,
+      "logic_words": 9,
+      "statement_overlap": 2.4,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 4,
+        "B": 2,
+        "C": 0,
+        "D": 3,
+        "E": 4
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          true,
+          true,
+          true
+        ],
+        "B": [
+          false,
+          false,
+          true,
+          false,
+          true
+        ],
+        "C": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "D": [
+          false,
+          false,
+          true,
+          true,
+          true
+        ],
+        "E": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.871,
+      "clause_score": 7.2
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David",
+      "Technician Eva"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The critical component is in Sector 5.\"",
+      "Engineer Ben: \"The critical component is in Sector 1 or Sector 5.\"",
+      "Analyst Chloe: \"If the critical component is not in Sector 5, then it is not in Sector 3.\"",
+      "Operator David: \"The critical component is in neither Sector 2 nor Sector 3.\"",
+      "Technician Eva: \"The critical component is in neither Sector 3 nor Sector 5.\""
+    ],
+    "scenario_intro": "An anomaly has been detected on Orbital Station Epsilon, and the critical component must be located. We are investigating across four sectors.",
+    "theme_title": "Orbital Watch",
+    "item": "critical component",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Technician Eva"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "D",
+    "canonical_response": "D"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1858.7,
+  "seed": 306,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Deep-Sea Hydrothermal Vents, Orbital Satellite Maintenance",
+    "title": "Orbital Watch",
+    "scenario_intro": "An anomaly has been detected on Orbital Station Epsilon, and the critical component must be located. We are investigating across four sectors.",
+    "item": "critical component",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Technician Eva"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

@@ -1,0 +1,169 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The ancient library archives hold many secrets, and a valuable ancient folio has gone missing within its halls. An investigation is underway to locate the item within one of three possible zones.\nPossible locations: West Wing, Reading Room, or Scriptorium.\n\nClues:\n- (1) The ancient folio is in West Wing.\n- (2) The ancient folio is in Reading Room or Scriptorium.\n- (3) The ancient folio is not in Reading Room.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the ancient folio?",
+  "response": "Reading Room",
+  "hints": [
+    "Clue (1) and clue (2) are contradictory, meaning exactly one of them must be true. This directly impacts the possible truth values of the other clues.",
+    "Under West Wing (West Wing), clue (1) is true, and clue (2) is false. Clue (3) is also true. This results in two true clues, which contradicts the rule that exactly one clue is true. Therefore, the ancient folio is not under West Wing (West Wing)."
+  ],
+  "solution_data": {
+    "candidates": [
+      "West Wing",
+      "Reading Room",
+      "Scriptorium"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "West Wing"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Reading Room",
+            "Scriptorium"
+          ]
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Reading Room"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Reading Room",
+    "intermediate_trace": {
+      "eliminated_candidate": "West Wing",
+      "elimination_reason": "Testing West Wing results in 2 true clues (clue (1), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "West Wing",
+      "candidate_counts": {
+        "West Wing": 2,
+        "Reading Room": 1,
+        "Scriptorium": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (2)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": false
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": false,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (2) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.52,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.33,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true
+        ],
+        "B": [
+          false,
+          true,
+          false
+        ],
+        "C": [
+          false,
+          true,
+          true
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.8
+    },
+    "themed_clues": [
+      "(1) The ancient folio is in West Wing.",
+      "(2) The ancient folio is in Reading Room or Scriptorium.",
+      "(3) The ancient folio is not in Reading Room."
+    ],
+    "scenario_intro": "The ancient library archives hold many secrets, and a valuable ancient folio has gone missing within its halls. An investigation is underway to locate the item within one of three possible zones.",
+    "theme_title": "library archives",
+    "item": "ancient folio",
+    "entity_mapping": {
+      "A": "West Wing",
+      "B": "Reading Room",
+      "C": "Scriptorium"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "B",
+    "canonical_response": "B"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1078.2,
+  "seed": 102,
+  "theme": {
+    "setting": "Deep Sea Vent Ecosystems, Subterranean Crystal Caves, High-Altitude Weather Balloons, Ancient Library Archives",
+    "title": "library archives",
+    "scenario_intro": "The ancient library archives hold many secrets, and a valuable ancient folio has gone missing within its halls. An investigation is underway to locate the item within one of three possible zones.",
+    "item": "ancient folio",
+    "entity_mapping": {
+      "A": "West Wing",
+      "B": "Reading Room",
+      "C": "Scriptorium"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

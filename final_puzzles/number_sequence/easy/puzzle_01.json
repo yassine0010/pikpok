@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "Find the missing number in the sequence: 2, 4, ?, 16, 32, 64",
+  "response": "8",
+  "hints": [
+    "Examine how each number relates to the next by a consistent scaling factor.",
+    "Notice that 4 is double 2. Test if doubling the number consistently generates the next term in the sequence."
+  ],
+  "solution_data": {
+    "family": "geometric",
+    "variant": "up_2",
+    "tier": 1,
+    "mode": "middle",
+    "terms": [
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "target_index": 2,
+    "missing_position": 2,
+    "rule": "start 2, multiply by 2",
+    "expr": "start 2, multiply by 2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "2 and 4",
+      "first_difference": 2,
+      "growth_factor": 2,
+      "preceding_term": 4,
+      "intermediate_value": 2
+    },
+    "difficulty_metrics": {
+      "raw_score": 9.58,
+      "tier": 1,
+      "variant": "up_2",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.36,
+      "step_var_factor": 1.221,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1200.0,
+  "seed": 101,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

@@ -1,0 +1,83 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "easy",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (1, 12, 3) -> 16; (1, 3, 2) -> 6; (3, 2, 2) -> 7. Find the center for (11, 6, 6).",
+  "response": "23",
+  "hints": [
+    "Examine a single triangle to see how two corner values can be combined to relate to the center value, then verify this relationship in the other triangles.",
+    "The result of combining two corner numbers is then used with the third corner number.",
+    "Combining the left and top corners of the last triangle gives 17."
+  ],
+  "solution_data": {
+    "rule_id": "E01",
+    "rule_expr": "(top + left) + right",
+    "rule_ops": [
+      "add",
+      "add"
+    ],
+    "archetype": "forward_basic",
+    "unknown": "center",
+    "orientation": "down",
+    "result_style": "caption",
+    "examples": [
+      {
+        "top": 1,
+        "left": 12,
+        "right": 3,
+        "center": 16
+      },
+      {
+        "top": 1,
+        "left": 3,
+        "right": 2,
+        "center": 6
+      },
+      {
+        "top": 3,
+        "left": 2,
+        "right": 2,
+        "center": 7
+      }
+    ],
+    "query": {
+      "top": 11,
+      "left": 6,
+      "right": 6,
+      "center": null
+    },
+    "difficulty_metrics": {
+      "raw_score": 3.169,
+      "n_ops": 2,
+      "op_kinds": 1,
+      "const_used": 0,
+      "special_ops": 0,
+      "inverse": 0,
+      "examples_shown": 3,
+      "max_value": 16
+    },
+    "intermediate_trace": {
+      "kind": "forward_first_op",
+      "expr": "top and left",
+      "slots": [
+        "left",
+        "top"
+      ],
+      "value": 17
+    },
+    "response_value": 23,
+    "tier": "easy"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "18d6e9cca2852b1067e4c6e5ab814acbf8b4c7b42f0589f6a6f5de1ac841fd2b",
+  "score": 947.6,
+  "seed": 104,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

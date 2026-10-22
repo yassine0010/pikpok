@@ -1,0 +1,139 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five intrepid scientists are being deployed to monitor an active volcano. Determine the order of their deployment from first to last.\n\nLineup to order: Geologist Eva, Navigator Liam, Analyst Noah, Technician Ben, and Expedition Leader Liam.\n\nClues:\n- Technician Ben is immediately after Analyst Noah.\n- Expedition Leader Liam follows right after Technician Ben.\n- Technician Ben is before Navigator Liam.\n- Geologist Eva arrives earlier than Analyst Noah.\n\nWhat is the complete order from first to last?",
+  "response": "Geologist Eva, Analyst Noah, Technician Ben, Expedition Leader Liam, Navigator Liam",
+  "hints": [
+    "Look closely at the clues involving Analyst Noah: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Analyst Noah to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Geologist Eva",
+      "Navigator Liam",
+      "Analyst Noah",
+      "Technician Ben",
+      "Expedition Leader Liam"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Technician Ben",
+        "y": "Analyst Noah"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Expedition Leader Liam",
+        "y": "Technician Ben"
+      },
+      {
+        "type": "before",
+        "x": "Technician Ben",
+        "y": "Navigator Liam"
+      },
+      {
+        "type": "before",
+        "x": "Geologist Eva",
+        "y": "Analyst Noah"
+      }
+    ],
+    "solution": [
+      "Geologist Eva",
+      "Analyst Noah",
+      "Technician Ben",
+      "Expedition Leader Liam",
+      "Navigator Liam"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Analyst Noah",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Analyst Noah is in the 2nd position",
+      "intermediate_value": "Analyst Noah",
+      "entity_positions": {
+        "Geologist Eva": "1st",
+        "Analyst Noah": "2nd",
+        "Technician Ben": "3rd",
+        "Expedition Leader Liam": "4th",
+        "Navigator Liam": "5th"
+      },
+      "supporting_clues": [
+        "Technician Ben is immediately after Analyst Noah.",
+        "Geologist Eva is before Analyst Noah."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 44.01,
+      "num_entities": 5,
+      "num_constraints": 4,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after"
+      ],
+      "has_immediate": true,
+      "has_exclusion": false,
+      "decay_factor": 0.51,
+      "near_miss_factor": 0.5
+    },
+    "themed_clues": [
+      "Technician Ben is immediately after Analyst Noah.",
+      "Expedition Leader Liam follows right after Technician Ben.",
+      "Technician Ben is before Navigator Liam.",
+      "Geologist Eva arrives earlier than Analyst Noah."
+    ],
+    "scenario_intro": "Five intrepid scientists are being deployed to monitor an active volcano. Determine the order of their deployment from first to last.",
+    "theme_title": "Volcano Monitoring Expedition",
+    "entity_mapping": {
+      "P1": "Geologist Eva",
+      "P2": "Navigator Liam",
+      "P3": "Analyst Noah",
+      "P4": "Technician Ben",
+      "P5": "Expedition Leader Liam"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P3",
+      "P4",
+      "P5",
+      "P2"
+    ],
+    "canonical_response": "P1, P3, P4, P5, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1657.4,
+  "seed": 304,
+  "theme": {
+    "setting": "Underwater Basket Weaving Competition, Extreme Ironing Championship, Competitive Dog Grooming, Volcano Monitoring Expedition",
+    "title": "Volcano Monitoring Expedition",
+    "scenario_intro": "Five intrepid scientists are being deployed to monitor an active volcano. Determine the order of their deployment from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Geologist Eva",
+      "P2": "Navigator Liam",
+      "P3": "Analyst Noah",
+      "P4": "Technician Ben",
+      "P5": "Expedition Leader Liam"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

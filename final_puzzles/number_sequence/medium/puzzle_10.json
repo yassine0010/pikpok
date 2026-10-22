@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "What number comes next? 2, 5, 10, 17, 26, 37, ?",
+  "response": "50",
+  "hints": [
+    "Observe how the differences between consecutive terms are changing.",
+    "The gap between 2 and 5 is 3. The gap between 5 and 10 is 5. Continue this pattern of increasing gaps to find the next difference."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "shifted_square",
+    "tier": 2,
+    "mode": "next",
+    "terms": [
+      2,
+      5,
+      10,
+      17,
+      26,
+      37,
+      50
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "(n+0)^2 + 1",
+    "expr": "(n+0)^2 + 1",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "2 and 5",
+      "first_difference": 3,
+      "first_step": "2 to 5 (diff 3)",
+      "preceding_term": 37,
+      "intermediate_value": 3
+    },
+    "difficulty_metrics": {
+      "raw_score": 15.4,
+      "tier": 2,
+      "variant": "shifted_square",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.281,
+      "step_var_factor": 0.569,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1347.7,
+  "seed": 210,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

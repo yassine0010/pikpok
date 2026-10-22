@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "A machine prints these numbers: 74, 66, 58, 50, 42, 34, ?. What does it print next?",
+  "response": "26",
+  "hints": [
+    "Notice how the difference between each number and the next one stays the same.",
+    "The difference between 74 and 66 is -8. Check if this same difference applies to the next pair of numbers, 66 and 58."
+  ],
+  "solution_data": {
+    "family": "arithmetic",
+    "variant": "down",
+    "tier": 1,
+    "mode": "next",
+    "terms": [
+      74,
+      66,
+      58,
+      50,
+      42,
+      34,
+      26
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "start 74, subtract 8",
+    "expr": "start 74, subtract 8",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "74 and 66",
+      "first_difference": -8,
+      "first_step": "74 to 66 (diff -8)",
+      "preceding_term": 34,
+      "intermediate_value": -8
+    },
+    "difficulty_metrics": {
+      "raw_score": 6.96,
+      "tier": 1,
+      "variant": "down",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.406,
+      "step_var_factor": 0.0,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 974.2,
+  "seed": 110,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

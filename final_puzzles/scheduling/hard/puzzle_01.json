@@ -1,0 +1,139 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five meteorologists are presenting their latest forecasts, ordered from first to last. Determine the correct sequence of their presentations.\n\nLineup to order: Forecaster Anya, Analyst Ben, Technician Chloe, Meteorologist David, and Researcher Elias.\n\nClues:\n- Meteorologist David comes directly after Researcher Elias.\n- Technician Chloe is immediately after Analyst Ben.\n- Analyst Ben is before Meteorologist David.\n- Forecaster Anya arrives earlier than Technician Chloe.\n\nWhat is the complete order from first to last?",
+  "response": "Forecaster Anya, Analyst Ben, Technician Chloe, Researcher Elias, Meteorologist David",
+  "hints": [
+    "Look closely at the clues involving Analyst Ben: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Analyst Ben to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Forecaster Anya",
+      "Analyst Ben",
+      "Technician Chloe",
+      "Meteorologist David",
+      "Researcher Elias"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Meteorologist David",
+        "y": "Researcher Elias"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Technician Chloe",
+        "y": "Analyst Ben"
+      },
+      {
+        "type": "before",
+        "x": "Analyst Ben",
+        "y": "Meteorologist David"
+      },
+      {
+        "type": "before",
+        "x": "Forecaster Anya",
+        "y": "Technician Chloe"
+      }
+    ],
+    "solution": [
+      "Forecaster Anya",
+      "Analyst Ben",
+      "Technician Chloe",
+      "Researcher Elias",
+      "Meteorologist David"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Analyst Ben",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Analyst Ben is in the 2nd position",
+      "intermediate_value": "Analyst Ben",
+      "entity_positions": {
+        "Forecaster Anya": "1st",
+        "Analyst Ben": "2nd",
+        "Technician Chloe": "3rd",
+        "Researcher Elias": "4th",
+        "Meteorologist David": "5th"
+      },
+      "supporting_clues": [
+        "Technician Chloe is immediately after Analyst Ben.",
+        "Analyst Ben is before Meteorologist David."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 44.01,
+      "num_entities": 5,
+      "num_constraints": 4,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after"
+      ],
+      "has_immediate": true,
+      "has_exclusion": false,
+      "decay_factor": 0.51,
+      "near_miss_factor": 0.5
+    },
+    "themed_clues": [
+      "Meteorologist David comes directly after Researcher Elias.",
+      "Technician Chloe is immediately after Analyst Ben.",
+      "Analyst Ben is before Meteorologist David.",
+      "Forecaster Anya arrives earlier than Technician Chloe."
+    ],
+    "scenario_intro": "Five meteorologists are presenting their latest forecasts, ordered from first to last. Determine the correct sequence of their presentations.",
+    "theme_title": "Extreme Weather Forecasting",
+    "entity_mapping": {
+      "P1": "Forecaster Anya",
+      "P2": "Analyst Ben",
+      "P3": "Technician Chloe",
+      "P4": "Meteorologist David",
+      "P5": "Researcher Elias"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P3",
+      "P5",
+      "P4"
+    ],
+    "canonical_response": "P1, P2, P3, P5, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1657.4,
+  "seed": 301,
+  "theme": {
+    "setting": "Professional Gaming Tournament, Urban Planning Simulation, Ancient Manuscript Restoration, Extreme Weather Forecasting",
+    "title": "Extreme Weather Forecasting",
+    "scenario_intro": "Five meteorologists are presenting their latest forecasts, ordered from first to last. Determine the correct sequence of their presentations.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Forecaster Anya",
+      "P2": "Analyst Ben",
+      "P3": "Technician Chloe",
+      "P4": "Meteorologist David",
+      "P5": "Researcher Elias"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

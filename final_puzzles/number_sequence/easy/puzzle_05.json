@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "Find the next number in the sequence: 1, 2, 4, 8, 16, 32, ?",
+  "response": "64",
+  "hints": [
+    "Consider if the numbers in the sequence are related by multiplication or by powers, rather than addition.",
+    "The first term is 2 to the power of 0 (2^0), and the second term is 2 to the power of 1 (2^1). See if you can use this relationship to find the next term."
+  ],
+  "solution_data": {
+    "family": "special",
+    "variant": "powers_2",
+    "tier": 1,
+    "mode": "next",
+    "terms": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "powers of 2",
+    "expr": "powers of 2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "1 and 2",
+      "first_difference": 1,
+      "preceding_term": 32,
+      "intermediate_value": 2
+    },
+    "difficulty_metrics": {
+      "raw_score": 8.32,
+      "tier": 1,
+      "variant": "powers_2",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.36,
+      "step_var_factor": 1.412,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1095.1,
+  "seed": 105,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

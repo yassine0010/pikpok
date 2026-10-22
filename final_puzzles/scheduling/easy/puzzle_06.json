@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The top three darts players are preparing for their final exhibition match. We need to determine the order they will walk out to the stage, from first to last.\n\nLineup to order: Commentator Bob, Player Anya, and Player Charles.\n\nClues:\n- Player Anya is positioned ahead of Player Charles.\n- Player Anya is immediately after Commentator Bob.\n\nWhat is the complete order from first to last?",
+  "response": "Commentator Bob, Player Anya, Player Charles",
+  "hints": [
+    "Look closely at the clues involving Player Charles: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Player Charles to 3rd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Commentator Bob",
+      "Player Anya",
+      "Player Charles"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Player Anya",
+        "y": "Player Charles"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Player Anya",
+        "y": "Commentator Bob"
+      }
+    ],
+    "solution": [
+      "Commentator Bob",
+      "Player Anya",
+      "Player Charles"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Player Charles",
+      "fixed_slot": "3rd",
+      "partial_assignment": "Player Charles is in the 3rd position",
+      "intermediate_value": "Player Charles",
+      "entity_positions": {
+        "Commentator Bob": "1st",
+        "Player Anya": "2nd",
+        "Player Charles": "3rd"
+      },
+      "supporting_clues": [
+        "Player Anya is before Player Charles.",
+        "Player Anya is immediately after Commentator Bob."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 19.5,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "immediately_after"
+      ],
+      "has_immediate": true,
+      "has_exclusion": false,
+      "decay_factor": 1.2,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Player Anya is positioned ahead of Player Charles.",
+      "Player Anya is immediately after Commentator Bob."
+    ],
+    "scenario_intro": "The top three darts players are preparing for their final exhibition match. We need to determine the order they will walk out to the stage, from first to last.",
+    "theme_title": "Darts Championship Lineup",
+    "entity_mapping": {
+      "P1": "Commentator Bob",
+      "P2": "Player Anya",
+      "P3": "Player Charles"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_response": "P1, P2, P3"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1025.0,
+  "seed": 106,
+  "theme": {
+    "setting": "Urban Planning, Deep-sea Hydrothermal Vents, Ancient Egyptian Hieroglyphs, Professional Darts Tournament",
+    "title": "Darts Championship Lineup",
+    "scenario_intro": "The top three darts players are preparing for their final exhibition match. We need to determine the order they will walk out to the stage, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Commentator Bob",
+      "P2": "Player Anya",
+      "P3": "Player Charles"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

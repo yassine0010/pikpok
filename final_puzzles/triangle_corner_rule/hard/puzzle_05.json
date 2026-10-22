@@ -1,0 +1,87 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "hard",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (21, 17, 19) -> 78; (25, 25, 5) -> 2; (20, 4, 23) -> 370; (11, 10, 6) -> 8. Find the right corner for (15, 4, ?) -> 310.",
+  "response": "28",
+  "hints": [
+    "A rule connects two corner values, then incorporates the third. Test this rule on all full triangles before applying it to the incomplete one.",
+    "Two corner values are combined, then altered by a small constant before or after the third corner value is involved.",
+    "Undoing the last step on the last triangle leaves 308, which is the value the two other corners make together."
+  ],
+  "solution_data": {
+    "rule_id": "H21",
+    "rule_expr": "(top - left) * right + 2",
+    "rule_ops": [
+      "sub",
+      "mul",
+      "add"
+    ],
+    "archetype": "inverse_deep",
+    "unknown": "right",
+    "orientation": "up",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 21,
+        "left": 17,
+        "right": 19,
+        "center": 78
+      },
+      {
+        "top": 25,
+        "left": 25,
+        "right": 5,
+        "center": 2
+      },
+      {
+        "top": 20,
+        "left": 4,
+        "right": 23,
+        "center": 370
+      },
+      {
+        "top": 11,
+        "left": 10,
+        "right": 6,
+        "center": 8
+      }
+    ],
+    "query": {
+      "top": 15,
+      "left": 4,
+      "right": null,
+      "center": 310
+    },
+    "difficulty_metrics": {
+      "raw_score": 6.471,
+      "n_ops": 3,
+      "op_kinds": 3,
+      "const_used": 1,
+      "special_ops": 0,
+      "inverse": 1,
+      "examples_shown": 4,
+      "max_value": 370
+    },
+    "intermediate_trace": {
+      "kind": "inverse_undo_outer",
+      "expr": "undo_outer",
+      "slots": [],
+      "value": 308
+    },
+    "response_value": 28,
+    "tier": "hard"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "9419c48e3b0f7422dae03cd873440152f0a1c2c4ddb4dd8b8b76e33887f75ab6",
+  "score": 1857.1,
+  "seed": 305,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

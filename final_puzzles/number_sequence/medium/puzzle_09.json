@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "What number comes next? 6, 10, 15, 21, 28, ?",
+  "response": "36",
+  "hints": [
+    "Observe how the difference between consecutive terms changes.",
+    "The difference between 6 and 10 is 4. The difference between 10 and 15 is 5. Continue this pattern of differences to find the next gap."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "triangular",
+    "tier": 2,
+    "mode": "next",
+    "terms": [
+      6,
+      10,
+      15,
+      21,
+      28,
+      36
+    ],
+    "target_index": 5,
+    "missing_position": 5,
+    "rule": "triangular numbers",
+    "expr": "triangular numbers",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "6 and 10",
+      "first_difference": 4,
+      "first_step": "6 to 10 (diff 4)",
+      "preceding_term": 28,
+      "intermediate_value": 4
+    },
+    "difficulty_metrics": {
+      "raw_score": 14.98,
+      "tier": 2,
+      "variant": "triangular",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.6,
+      "magnitude_factor": 1.176,
+      "step_var_factor": 0.303,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1321.8,
+  "seed": 209,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

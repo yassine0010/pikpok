@@ -1,0 +1,104 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "easy",
+  "question": "Find the missing operator: 12 ? 11 * 7 = 89\nAllowed operators: +, -, *\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+",
+  "hints": [
+    "The fixed operator binds its operands first. Consider how this impacts the remaining calculation to reach the final value.",
+    "The operator between 12 and 11 needs to adjust the value derived from 11 * 7. To get to 89, the first part of the expression must be close to 12. Think about how to combine 12 with the result of 11 * 7 to achieve 89."
+  ],
+  "solution_data": {
+    "template": "{a} ? {b} * {c} = {r}",
+    "operands": [
+      12,
+      11,
+      7
+    ],
+    "operators": [
+      "+",
+      "*"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*"
+    ],
+    "result": 89,
+    "archetype": "flat",
+    "missing_indices": [
+      0
+    ],
+    "intermediate_trace": {
+      "first_pair": "12 and 77",
+      "target_pair": "12 and 77",
+      "target_subtotal": "89",
+      "target_result": 89,
+      "intermediate_value": "89",
+      "approx_magnitude": "approximately 90 (near 84-94)",
+      "num_missing": 1,
+      "missing_indices": [
+        0
+      ],
+      "prior_fixed_desc": "Evaluating the visible operation (11 * 7 = 77)",
+      "safe_fixed_pairs": [
+        "11 and 7"
+      ],
+      "fixed_pairs": [
+        "11 and 7"
+      ],
+      "visible_fixed_ops": [
+        "'*' between 11 and 7"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "+",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "Carrying 89 forward, determine which operator completes the equation with 7 to reach 89.",
+      "target_slot_desc": "the operator between 12 and 11",
+      "precedence_note": "Standard order of operations applies.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": false,
+          "subtotal": "77",
+          "operand": ""
+        },
+        {
+          "step": 2,
+          "is_missing": true,
+          "subtotal": "89",
+          "operand": ""
+        }
+      ],
+      "reasoning_nudge": "The target operation between 12 and 77 evaluates to 89"
+    },
+    "difficulty_metrics": {
+      "raw_score": 20.77,
+      "search_space": 3,
+      "num_operands": 3,
+      "num_missing": 1,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "flat",
+      "search_factor": 1.5,
+      "transition_factor": 0.75,
+      "operand_mag_factor": 1.548,
+      "target_scale_factor": 1.173
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1054.4,
+  "seed": 102,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

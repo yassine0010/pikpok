@@ -1,0 +1,121 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "hard",
+  "question": "Find the missing operators: 13 ? 10 ? 10 + 3 * 12 = 50\nAllowed operators: +, -, *, /, ^\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+, /",
+  "hints": [
+    "The fixed operators in the expression do not necessarily bind first. Standard order of operations dictates that certain operations must be evaluated before others, regardless of their position.",
+    "Focus on the operator between 10 and 10. To make the overall equation balance, this operation needs to result in a value that, when combined with 13, allows the subsequent operations to correctly yield 50. Consider how scaling the operands 10 and 10 might achieve this."
+  ],
+  "solution_data": {
+    "template": "{a} ? {b} ? {c} + {d} * {e} = {r}",
+    "operands": [
+      13,
+      10,
+      10,
+      3,
+      12
+    ],
+    "operators": [
+      "+",
+      "/",
+      "+",
+      "*"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "^"
+    ],
+    "result": 50,
+    "archetype": "flat",
+    "missing_indices": [
+      0,
+      1
+    ],
+    "intermediate_trace": {
+      "first_pair": "10 and 10",
+      "target_pair": "10 and 10",
+      "target_subtotal": "1",
+      "target_result": 50,
+      "intermediate_value": "1",
+      "approx_magnitude": "close to 1",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        1
+      ],
+      "prior_fixed_desc": "",
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'+' between 10 and 3",
+        "'*' between 3 and 12"
+      ],
+      "first_step_direction": "smaller",
+      "true_first_op": "/",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "After resolving the operator between 10 and 10, determine the remaining missing operator between 13 and 10 to reach 50.",
+      "target_slot_desc": "the operator between 10 and 10 (which binds first by precedence)",
+      "precedence_note": "Order of operations: The operator between 10 and 10 binds first by standard precedence, even though the blank between 13 and 10 appears earlier in reading order.",
+      "is_precedence_out_of_order": true,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "1",
+          "operand": ""
+        },
+        {
+          "step": 2,
+          "is_missing": false,
+          "subtotal": "36",
+          "operand": ""
+        },
+        {
+          "step": 3,
+          "is_missing": true,
+          "subtotal": "14",
+          "operand": ""
+        },
+        {
+          "step": 4,
+          "is_missing": false,
+          "subtotal": "50",
+          "operand": ""
+        }
+      ],
+      "reasoning_nudge": "The target operation between 10 and 10 evaluates to 1"
+    },
+    "difficulty_metrics": {
+      "raw_score": 45.58,
+      "search_space": 25,
+      "num_operands": 5,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": true,
+      "has_power": false,
+      "archetype": "flat",
+      "search_factor": 3.525,
+      "transition_factor": 2.25,
+      "operand_mag_factor": 1.483,
+      "target_scale_factor": 1.025
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1816.6,
+  "seed": 309,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

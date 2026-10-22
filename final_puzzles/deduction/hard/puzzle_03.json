@@ -1,0 +1,262 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "We are investigating the location of a critical component across four sectors of the orbital satellite. The item is somewhere in one of these four sectors.\nPossible locations: Sector 1, Sector 2, Sector 3, Sector 4, or Sector 5.\n\nStatements:\n- Technician Anya: \"The stabilizer unit is not in Sector 1.\"\n- Engineer Ben: \"Technician Anya's statement is false.\"\n- Analyst Chloe: \"The stabilizer unit is in Sector 2.\"\n- Operator David: \"The stabilizer unit is in neither Sector 1 nor Sector 3.\"\n- Director Eve: \"If the stabilizer unit is not in Sector 2, then it is in Sector 5.\"\n\nRULE: Exactly 3 of these statements are true (all others are false).\n\nWhere is the stabilizer unit?",
+  "response": "Sector 5",
+  "hints": [
+    "Technician Anya and Ben make directly contradictory statements, meaning exactly one of them must be true. Chloe's statement directly conflicts with David's.",
+    "If the stabilizer unit were in Sector 2 (Sector 2), then Anya would be true, Ben would be false, Chloe would be true, David would be true, and Director Eve would be true. This scenario results in four true claims (Anya, Chloe, David, and Director Eve), which violates the rule that exactly three claims must be true. Therefore, the stabilizer unit cannot be in Sector 2."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4",
+      "Sector 5"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector 1"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ref",
+          "target_id": "s1",
+          "target_speaker": "Technician Anya",
+          "claims_true": false
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector 2"
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 3"
+          ]
+        },
+        "speaker": "Operator David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 2"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Sector 5"
+          }
+        },
+        "speaker": "Director Eve"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 3
+    },
+    "solution": "Sector 5",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 2",
+      "elimination_reason": "Testing Sector 2 results in 4 true claims (Technician Anya, Analyst Chloe, Operator David, Director Eve are true) instead of exactly 3 true claims.",
+      "intermediate_value": "Sector 2",
+      "candidate_counts": {
+        "Sector 1": 1,
+        "Sector 2": 4,
+        "Sector 3": 1,
+        "Sector 4": 2,
+        "Sector 5": 3
+      },
+      "expected_count": 3,
+      "elim_cand_count": 4,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Analyst Chloe",
+        "Operator David",
+        "Director Eve"
+      ],
+      "elim_cand_false_speakers": [
+        "Engineer Ben"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": false
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        },
+        {
+          "speaker": "Director Eve",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": false,
+        "Analyst Chloe": true,
+        "Operator David": true,
+        "Director Eve": true
+      },
+      "clue_insight": "Technician Anya and Engineer Ben directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Technician Anya",
+        "Engineer Ben"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 24.9,
+      "structural_score": 19,
+      "near_misses": 2,
+      "logic_words": 7,
+      "statement_overlap": 2.0,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 1,
+        "B": 4,
+        "C": 1,
+        "D": 2,
+        "E": 3
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "B": [
+          true,
+          false,
+          true,
+          true,
+          true
+        ],
+        "C": [
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        "D": [
+          true,
+          false,
+          false,
+          true,
+          false
+        ],
+        "E": [
+          true,
+          false,
+          false,
+          true,
+          true
+        ]
+      },
+      "mean_entropy": 0.822,
+      "clause_score": 7.7
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David",
+      "Director Eve"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The stabilizer unit is not in Sector 1.\"",
+      "Engineer Ben: \"Technician Anya's statement is false.\"",
+      "Analyst Chloe: \"The stabilizer unit is in Sector 2.\"",
+      "Operator David: \"The stabilizer unit is in neither Sector 1 nor Sector 3.\"",
+      "Director Eve: \"If the stabilizer unit is not in Sector 2, then it is in Sector 5.\""
+    ],
+    "scenario_intro": "We are investigating the location of a critical component across four sectors of the orbital satellite. The item is somewhere in one of these four sectors.",
+    "theme_title": "orbital maintenance",
+    "item": "stabilizer unit",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Director Eve"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "E",
+    "canonical_response": "E"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1772.3,
+  "seed": 303,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Botanical Arboretums, Orbital Satellite Maintenance",
+    "title": "orbital maintenance",
+    "scenario_intro": "We are investigating the location of a critical component across four sectors of the orbital satellite. The item is somewhere in one of these four sectors.",
+    "item": "stabilizer unit",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Director Eve"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

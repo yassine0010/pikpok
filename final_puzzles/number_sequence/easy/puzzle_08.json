@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "Find the missing number in the sequence: 17, 25, ?, 41, 49, 57",
+  "response": "33",
+  "hints": [
+    "Notice how the numbers change from one to the next.",
+    "The difference between 17 and 25 is 8. Check if this same difference holds for the other visible numbers in the sequence."
+  ],
+  "solution_data": {
+    "family": "arithmetic",
+    "variant": "up",
+    "tier": 1,
+    "mode": "middle",
+    "terms": [
+      17,
+      25,
+      33,
+      41,
+      49,
+      57
+    ],
+    "target_index": 2,
+    "missing_position": 2,
+    "rule": "start 17, add 8",
+    "expr": "start 17, add 8",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "17 and 25",
+      "first_difference": 8,
+      "first_step": "17 to 25 (diff 8)",
+      "preceding_term": 25,
+      "intermediate_value": 8
+    },
+    "difficulty_metrics": {
+      "raw_score": 8.32,
+      "tier": 1,
+      "variant": "up",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.323,
+      "step_var_factor": 0.0,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1095.1,
+  "seed": 108,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

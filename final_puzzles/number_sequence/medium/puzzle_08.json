@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "A machine prints these numbers: 4, 10, 18, 28, 40, ?. What does it print next?",
+  "response": "54",
+  "hints": [
+    "Observe how the difference between consecutive terms changes.",
+    "The difference between the first two terms (4 and 10) is 6. The difference between the next pair (10 and 18) is 8. Continue this pattern of differences to find the next difference."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "product_n_n_plus_k",
+    "tier": 2,
+    "mode": "next",
+    "terms": [
+      4,
+      10,
+      18,
+      28,
+      40,
+      54
+    ],
+    "target_index": 5,
+    "missing_position": 5,
+    "rule": "n(n+3)",
+    "expr": "n(n+3)",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "4 and 10",
+      "first_difference": 6,
+      "first_step": "4 to 10 (diff 6)",
+      "preceding_term": 40,
+      "intermediate_value": 6
+    },
+    "difficulty_metrics": {
+      "raw_score": 15.09,
+      "tier": 2,
+      "variant": "product_n_n_plus_k",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.305,
+      "step_var_factor": 0.386,
+      "term_factor": 0.9
+    },
+    "variant_name": "product_n_n_plus_k"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1328.6,
+  "seed": 208,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

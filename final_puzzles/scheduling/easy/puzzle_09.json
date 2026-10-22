@@ -1,0 +1,117 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The conductor needs to arrange the order of the musicians for the upcoming rehearsal, from first to last, to ensure a smooth flow of practice.\n\nLineup to order: Concertmaster Elias, Principal Oboist Fiona, and Principal Cellist David.\n\nClues:\n- Principal Cellist David is not placed 3rd.\n- Principal Cellist David is not 2nd.\n- Concertmaster Elias is before Principal Oboist Fiona.\n\nWhat is the complete order from first to last?",
+  "response": "Principal Cellist David, Concertmaster Elias, Principal Oboist Fiona",
+  "hints": [
+    "Look closely at the clues involving Principal Cellist David: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Principal Cellist David to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Concertmaster Elias",
+      "Principal Oboist Fiona",
+      "Principal Cellist David"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Principal Cellist David",
+        "k": 3
+      },
+      {
+        "type": "not_position",
+        "x": "Principal Cellist David",
+        "k": 2
+      },
+      {
+        "type": "before",
+        "x": "Concertmaster Elias",
+        "y": "Principal Oboist Fiona"
+      }
+    ],
+    "solution": [
+      "Principal Cellist David",
+      "Concertmaster Elias",
+      "Principal Oboist Fiona"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Principal Cellist David",
+      "fixed_slot": "1st",
+      "partial_assignment": "Principal Cellist David is in the 1st position",
+      "intermediate_value": "Principal Cellist David",
+      "entity_positions": {
+        "Principal Cellist David": "1st",
+        "Concertmaster Elias": "2nd",
+        "Principal Oboist Fiona": "3rd"
+      },
+      "supporting_clues": [
+        "Principal Cellist David is not 3rd.",
+        "Principal Cellist David is not 2nd."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.6,
+      "num_entities": 3,
+      "num_constraints": 3,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 2.1,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Principal Cellist David is not placed 3rd.",
+      "Principal Cellist David is not 2nd.",
+      "Concertmaster Elias is before Principal Oboist Fiona."
+    ],
+    "scenario_intro": "The conductor needs to arrange the order of the musicians for the upcoming rehearsal, from first to last, to ensure a smooth flow of practice.",
+    "theme_title": "Orchestra Rehearsal Order",
+    "entity_mapping": {
+      "P1": "Concertmaster Elias",
+      "P2": "Principal Oboist Fiona",
+      "P3": "Principal Cellist David"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P1",
+      "P2"
+    ],
+    "canonical_response": "P3, P1, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1130.0,
+  "seed": 109,
+  "theme": {
+    "setting": "Urban Planning, Ancient Coin Numismatics, Renewable Energy Grid Management, Orchestral Performance Scheduling",
+    "title": "Orchestra Rehearsal Order",
+    "scenario_intro": "The conductor needs to arrange the order of the musicians for the upcoming rehearsal, from first to last, to ensure a smooth flow of practice.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Concertmaster Elias",
+      "P2": "Principal Oboist Fiona",
+      "P3": "Principal Cellist David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

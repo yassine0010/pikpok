@@ -1,0 +1,128 @@
+{
+  "puzzle_type": "route",
+  "difficulty": "medium",
+  "question": "Find the shortest route from S to E in the fewest moves.\nOne move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Pass through checkpoint 1 before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow.\nS.v.1..\n....##.\n.....#.\n####.#.\n.....#.\n...#...\n...#.E.",
+  "response": "15",
+  "hints": [
+    "One-way arrows restrict passage, forcing you to move in their indicated direction. You must also visit checkpoint 1 before proceeding to E.",
+    "From start cell S at row 1, col 1, the optimal opening move is to go right toward row 1, col 2."
+  ],
+  "solution_data": {
+    "grid": [
+      "S.v.1..",
+      "....##.",
+      ".....#.",
+      "####.#.",
+      ".....#.",
+      "...#...",
+      "...#.E."
+    ],
+    "start": [
+      0,
+      0
+    ],
+    "end": [
+      6,
+      5
+    ],
+    "moves": "4-neighbors",
+    "cell_cost": null,
+    "min_distance": 15,
+    "checkpoints": [
+      {
+        "pos": [
+          0,
+          4
+        ],
+        "label": "1"
+      }
+    ],
+    "arrows": [
+      {
+        "pos": [
+          0,
+          2
+        ],
+        "direction": "down"
+      }
+    ],
+    "gates": [],
+    "mud": [],
+    "rule_text": "One move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Pass through checkpoint 1 before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow.",
+    "description": "Find the shortest route from S to E",
+    "title": "Dungeon Catacombs",
+    "theme": "dungeon",
+    "intermediate_trace": {
+      "start": [
+        1,
+        1
+      ],
+      "start_desc": "start cell S at row 1, col 1",
+      "waypoint": [
+        1,
+        0
+      ],
+      "waypoint_desc": "row 2, col 1",
+      "first_move_direction": "down",
+      "optimal_first_moves": [
+        {
+          "direction": "down",
+          "cell": [
+            2,
+            1
+          ],
+          "desc": "row 2, col 1"
+        },
+        {
+          "direction": "right",
+          "cell": [
+            1,
+            2
+          ],
+          "desc": "row 1, col 2"
+        }
+      ],
+      "step_number": 1,
+      "intermediate_value": "(2, 1)",
+      "focus_desc": "checkpoint 1 at row 1, col 5",
+      "rule_impact_deltas": {
+        "arrows": 2,
+        "checkpoints": 4
+      },
+      "verified_wall_fact": "a wall at row 2, col 5 blocks direct passage",
+      "arrow_desc": "the one-way cell at row 1, col 3 pointing down"
+    },
+    "difficulty_metrics": {
+      "raw_score": 46.25,
+      "area": 49,
+      "walls": 11,
+      "num_mud": 0,
+      "detour": 3,
+      "detour_ratio": 1.25,
+      "num_checkpoints": 1,
+      "num_arrows": 1,
+      "num_gates": 0,
+      "turn_count": 10,
+      "branching_forks": 12
+    },
+    "rule_analysis": {
+      "plain_distance": 11,
+      "constrained_distance": 15,
+      "no_checkpoints_distance": 11,
+      "no_arrows_distance": 13
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1211.1,
+  "seed": 201,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

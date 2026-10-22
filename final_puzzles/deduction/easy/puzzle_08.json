@@ -1,0 +1,172 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The high-speed rail network requires the urgent location of a critical component across three control points. Each control point is a potential location for the missing item.\nPossible locations: control room, maintenance shed, or station hub.\n\nClues:\n- (1) The dispatch module is in control room or station hub.\n- (2) The dispatch module is in maintenance shed or station hub.\n- (3) The dispatch module is in maintenance shed.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the dispatch module?",
+  "response": "control room",
+  "hints": [
+    "Clue (1) and clue (3) have a direct logical relationship: exactly one of them must be true. This means their truth values are always opposite.",
+    "Under maintenance shed, clue (1) is false and clue (3) is true. Clue (2) is also true. This results in two true clues, which contradicts the rule that exactly one clue is true. Therefore, the maintenance shed is not the location of the dispatch module."
+  ],
+  "solution_data": {
+    "candidates": [
+      "control room",
+      "maintenance shed",
+      "station hub"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "control room",
+            "station hub"
+          ]
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "maintenance shed",
+            "station hub"
+          ]
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "maintenance shed"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "control room",
+    "intermediate_trace": {
+      "eliminated_candidate": "maintenance shed",
+      "elimination_reason": "Testing maintenance shed results in 2 true clues (clue (2), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "maintenance shed",
+      "candidate_counts": {
+        "control room": 1,
+        "maintenance shed": 2,
+        "station hub": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (1)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": false
+        },
+        {
+          "speaker": "clue (2)",
+          "true": true
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": false,
+        "clue (2)": true,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.79,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.67,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          false
+        ],
+        "B": [
+          false,
+          true,
+          true
+        ],
+        "C": [
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 2.1
+    },
+    "themed_clues": [
+      "(1) The dispatch module is in control room or station hub.",
+      "(2) The dispatch module is in maintenance shed or station hub.",
+      "(3) The dispatch module is in maintenance shed."
+    ],
+    "scenario_intro": "The high-speed rail network requires the urgent location of a critical component across three control points. Each control point is a potential location for the missing item.",
+    "theme_title": "rail network",
+    "item": "dispatch module",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1094.8,
+  "seed": 108,
+  "theme": {
+    "setting": "Extreme Weather Forecasting, Ancient Manuscript Preservation, Volcano Monitoring Expedition, High-Speed Rail Network Dispatch",
+    "title": "rail network",
+    "scenario_intro": "The high-speed rail network requires the urgent location of a critical component across three control points. Each control point is a potential location for the missing item.",
+    "item": "dispatch module",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

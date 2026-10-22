@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "route",
+  "difficulty": "medium",
+  "question": "Find the shortest route from S to E in the fewest moves.\nOne move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Pass through checkpoint 1 before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow.\n......S\n..##1..\n..#....\n#..#..#\n#<.#..#\n....###\nE.^....",
+  "response": "16",
+  "hints": [
+    "One-way arrows restrict passage, and you must visit checkpoint 1 before reaching E.",
+    "From start cell S at row 1, col 7, the optimal opening move is down toward row 2, col 7."
+  ],
+  "solution_data": {
+    "grid": [
+      "......S",
+      "..##1..",
+      "..#....",
+      "#..#..#",
+      "#<.#..#",
+      "....###",
+      "E.^...."
+    ],
+    "start": [
+      0,
+      6
+    ],
+    "end": [
+      6,
+      0
+    ],
+    "moves": "4-neighbors",
+    "cell_cost": null,
+    "min_distance": 16,
+    "checkpoints": [
+      {
+        "pos": [
+          1,
+          4
+        ],
+        "label": "1"
+      }
+    ],
+    "arrows": [
+      {
+        "pos": [
+          4,
+          1
+        ],
+        "direction": "left"
+      },
+      {
+        "pos": [
+          6,
+          2
+        ],
+        "direction": "up"
+      }
+    ],
+    "gates": [],
+    "mud": [],
+    "rule_text": "One move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Pass through checkpoint 1 before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow.",
+    "description": "Find the shortest route from S to E",
+    "title": "Cyber Grid Corridors",
+    "theme": "cyber",
+    "intermediate_trace": {
+      "start": [
+        1,
+        7
+      ],
+      "start_desc": "start cell S at row 1, col 7",
+      "waypoint": [
+        1,
+        6
+      ],
+      "waypoint_desc": "row 2, col 7",
+      "first_move_direction": "down",
+      "optimal_first_moves": [
+        {
+          "direction": "down",
+          "cell": [
+            2,
+            7
+          ],
+          "desc": "row 2, col 7"
+        },
+        {
+          "direction": "left",
+          "cell": [
+            1,
+            6
+          ],
+          "desc": "row 1, col 6"
+        }
+      ],
+      "step_number": 1,
+      "intermediate_value": "(2, 7)",
+      "focus_desc": "checkpoint 1 at row 2, col 5",
+      "rule_impact_deltas": {
+        "arrows": 2,
+        "checkpoints": 2
+      },
+      "verified_wall_fact": "a wall at row 2, col 3 blocks direct passage",
+      "arrow_desc": "the one-way cell at row 5, col 2 pointing left"
+    },
+    "difficulty_metrics": {
+      "raw_score": 50.83,
+      "area": 49,
+      "walls": 12,
+      "num_mud": 0,
+      "detour": 4,
+      "detour_ratio": 1.333,
+      "num_checkpoints": 1,
+      "num_arrows": 2,
+      "num_gates": 0,
+      "turn_count": 8,
+      "branching_forks": 11
+    },
+    "rule_analysis": {
+      "plain_distance": 12,
+      "constrained_distance": 16,
+      "no_checkpoints_distance": 14,
+      "no_arrows_distance": 14
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1251.8,
+  "seed": 204,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

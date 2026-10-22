@@ -1,0 +1,85 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "medium",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (18, 1, 10) -> 179; (11, 19, 8) -> 69; (14, 2, 1) -> 12. Find the left corner for (17, ?, 9) -> 146.",
+  "response": "7",
+  "hints": [
+    "A relationship between two corner values is established, and then the third corner value is incorporated. Verify this relationship across all provided examples before applying it to the final case.",
+    "The process involves a comparison of two corner values to determine a subsequent operation.",
+    "In the first complete triangle, the two corners other than the 1 are joined into 180."
+  ],
+  "solution_data": {
+    "rule_id": "M10",
+    "rule_expr": "absdiff(left, top * right)",
+    "rule_ops": [
+      "absdiff",
+      "mul"
+    ],
+    "archetype": "forward_compound",
+    "unknown": "left",
+    "orientation": "down",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 18,
+        "left": 1,
+        "right": 10,
+        "center": 179
+      },
+      {
+        "top": 11,
+        "left": 19,
+        "right": 8,
+        "center": 69
+      },
+      {
+        "top": 14,
+        "left": 2,
+        "right": 1,
+        "center": 12
+      }
+    ],
+    "query": {
+      "top": 17,
+      "left": null,
+      "right": 9,
+      "center": 146
+    },
+    "difficulty_metrics": {
+      "raw_score": 5.277,
+      "n_ops": 2,
+      "op_kinds": 2,
+      "const_used": 0,
+      "special_ops": 1,
+      "inverse": 1,
+      "examples_shown": 3,
+      "max_value": 179
+    },
+    "intermediate_trace": {
+      "kind": "example_first_op",
+      "expr": "top and right on ex1",
+      "slots": [
+        "top",
+        "right"
+      ],
+      "value": 180,
+      "third_val": 1,
+      "example_index": 1
+    },
+    "response_value": 7,
+    "tier": "medium"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "7a9d58a60b3f8e19b3ee0e9d8a845e4c320d489c030b196a4441fe66c0f76b3d",
+  "score": 1569.2,
+  "seed": 201,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

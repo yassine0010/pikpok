@@ -1,0 +1,147 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "You are tasked with organizing the careful preservation of five ancient, irreplaceable manuscripts. Your goal is to determine the precise order from first to last, ensuring each manuscript receives the optimal treatment sequence.\n\nLineup to order: Archivist Elara, Conservator Rhys, Restorer Finnian, Examiner Mateo, and Scholar Anya.\n\nClues:\n- Scholar Anya is not in the 3rd position.\n- Archivist Elara is not placed 3rd.\n- Restorer Finnian comes directly after Examiner Mateo.\n- Archivist Elara arrives earlier than Scholar Anya.\n- Conservator Rhys follows right after Archivist Elara.\n\nWhat is the complete order from first to last?",
+  "response": "Archivist Elara, Conservator Rhys, Examiner Mateo, Restorer Finnian, Scholar Anya",
+  "hints": [
+    "Archivist Elara is not in the 3rd position, and Examiner Mateo must be immediately before Conservator Rhys. Considering these facts, Archivist Elara's placement is highly restricted.",
+    "Since Archivist Elara cannot be in the 3rd position and must precede Conservator Rhys, and Examiner Mateo must be immediately before Conservator Rhys, their possible arrangements are limited. Archivist Elara is confirmed to be in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Archivist Elara",
+      "Conservator Rhys",
+      "Restorer Finnian",
+      "Examiner Mateo",
+      "Scholar Anya"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Scholar Anya",
+        "k": 3
+      },
+      {
+        "type": "not_position",
+        "x": "Archivist Elara",
+        "k": 3
+      },
+      {
+        "type": "immediately_after",
+        "x": "Restorer Finnian",
+        "y": "Examiner Mateo"
+      },
+      {
+        "type": "before",
+        "x": "Archivist Elara",
+        "y": "Scholar Anya"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Conservator Rhys",
+        "y": "Archivist Elara"
+      }
+    ],
+    "solution": [
+      "Archivist Elara",
+      "Conservator Rhys",
+      "Examiner Mateo",
+      "Restorer Finnian",
+      "Scholar Anya"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Archivist Elara",
+      "fixed_slot": "1st",
+      "partial_assignment": "Archivist Elara is in the 1st position",
+      "intermediate_value": "Archivist Elara",
+      "entity_positions": {
+        "Archivist Elara": "1st",
+        "Conservator Rhys": "2nd",
+        "Examiner Mateo": "3rd",
+        "Restorer Finnian": "4th",
+        "Scholar Anya": "5th"
+      },
+      "supporting_clues": [
+        "Archivist Elara is not 3rd.",
+        "Archivist Elara is before Scholar Anya.",
+        "Conservator Rhys is immediately after Archivist Elara."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 49.75,
+      "num_entities": 5,
+      "num_constraints": 5,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 2.895,
+      "near_miss_factor": 0.75
+    },
+    "themed_clues": [
+      "Scholar Anya is not in the 3rd position.",
+      "Archivist Elara is not placed 3rd.",
+      "Restorer Finnian comes directly after Examiner Mateo.",
+      "Archivist Elara arrives earlier than Scholar Anya.",
+      "Conservator Rhys follows right after Archivist Elara."
+    ],
+    "scenario_intro": "You are tasked with organizing the careful preservation of five ancient, irreplaceable manuscripts. Your goal is to determine the precise order from first to last, ensuring each manuscript receives the optimal treatment sequence.",
+    "theme_title": "Ancient Manuscript Preservation",
+    "entity_mapping": {
+      "P1": "Archivist Elara",
+      "P2": "Conservator Rhys",
+      "P3": "Restorer Finnian",
+      "P4": "Examiner Mateo",
+      "P5": "Scholar Anya"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P4",
+      "P3",
+      "P5"
+    ],
+    "canonical_response": "P1, P2, P4, P3, P5"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1821.4,
+  "seed": 307,
+  "theme": {
+    "setting": "Advanced Robotics Engineering, Renaissance Art Restoration, Deep-Sea Submersible Piloting, Ancient Manuscript Preservation",
+    "title": "Ancient Manuscript Preservation",
+    "scenario_intro": "You are tasked with organizing the careful preservation of five ancient, irreplaceable manuscripts. Your goal is to determine the precise order from first to last, ensuring each manuscript receives the optimal treatment sequence.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Archivist Elara",
+      "P2": "Conservator Rhys",
+      "P3": "Restorer Finnian",
+      "P4": "Examiner Mateo",
+      "P5": "Scholar Anya"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

@@ -1,0 +1,269 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "We are investigating a potential equipment malfunction within the high-altitude astronomical observatory, searching for the misplaced calibration lens across five sectors.\nPossible locations: Sector 1, Sector 2, Sector 3, Sector 4, or Sector 5.\n\nStatements:\n- Analyst Anya: \"If the calibration lens is not in Sector 2, then it is in Sector 1.\"\n- Technician Ben: \"The calibration lens is not in Sector 3.\"\n- Director Chloe: \"If the calibration lens is not in Sector 3, then it is not in Sector 1.\"\n- Operator David: \"The calibration lens is in Sector 1.\"\n- Technician Eva: \"The calibration lens is in neither Sector 1 nor Sector 2.\"\n\nRULE: Exactly 2 of these statements are true (all others are false).\n\nWhere is the calibration lens?",
+  "response": "Sector 3",
+  "hints": [
+    "Monk Kael's statement implies a condition about the folio's location relative to Chamber 2, while Monk Finn's statement asserts the folio is not in Chamber 1 or Chamber 2. These claims present a logical dependency that must be considered when evaluating their truthfulness together.",
+    "Let's test Chamber 1. If the ancient folio is in Chamber 1, then Monk Kael is TRUE, Monk Liam is TRUE, Monk Noah is FALSE, Monk Owen is TRUE, and Monk Finn is FALSE. This scenario yields 3 true claims (Monk Kael, Monk Liam, and Monk Owen), which violates the rule that exactly 2 claims must be true. Therefore, the ancient folio cannot be in Chamber 1."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4",
+      "Sector 5"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 2"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Sector 1"
+          }
+        },
+        "speaker": "Analyst Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector 3"
+        },
+        "speaker": "Technician Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 3"
+          },
+          "consequent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 1"
+          }
+        },
+        "speaker": "Director Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector 1"
+        },
+        "speaker": "Operator David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 2"
+          ]
+        },
+        "speaker": "Technician Eva"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 2
+    },
+    "solution": "Sector 3",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 1",
+      "elimination_reason": "Testing Sector 1 results in 3 true claims (Analyst Anya, Technician Ben, Operator David are true) instead of exactly 2 true claims.",
+      "intermediate_value": "Sector 1",
+      "candidate_counts": {
+        "Sector 1": 3,
+        "Sector 2": 3,
+        "Sector 3": 2,
+        "Sector 4": 3,
+        "Sector 5": 3
+      },
+      "expected_count": 2,
+      "elim_cand_count": 3,
+      "elim_cand_true_speakers": [
+        "Analyst Anya",
+        "Technician Ben",
+        "Operator David"
+      ],
+      "elim_cand_false_speakers": [
+        "Director Chloe",
+        "Technician Eva"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Analyst Anya",
+          "true": true
+        },
+        {
+          "speaker": "Technician Ben",
+          "true": true
+        },
+        {
+          "speaker": "Director Chloe",
+          "true": false
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        },
+        {
+          "speaker": "Technician Eva",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "Analyst Anya": true,
+        "Technician Ben": true,
+        "Director Chloe": false,
+        "Operator David": true,
+        "Technician Eva": false
+      },
+      "clue_insight": "Analyst Anya and Technician Eva directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Analyst Anya",
+        "Technician Eva"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 31.29,
+      "structural_score": 25,
+      "near_misses": 4,
+      "logic_words": 10,
+      "statement_overlap": 2.2,
+      "rule_complexity_bonus": 2,
+      "candidate_counts": {
+        "A": 3,
+        "B": 3,
+        "C": 2,
+        "D": 3,
+        "E": 3
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          true,
+          false,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        "C": [
+          false,
+          false,
+          true,
+          false,
+          true
+        ],
+        "D": [
+          false,
+          true,
+          true,
+          false,
+          true
+        ],
+        "E": [
+          false,
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.822,
+      "clause_score": 7.5
+    },
+    "speakers": [
+      "Analyst Anya",
+      "Technician Ben",
+      "Director Chloe",
+      "Operator David",
+      "Technician Eva"
+    ],
+    "themed_clues": [
+      "Analyst Anya: \"If the calibration lens is not in Sector 2, then it is in Sector 1.\"",
+      "Technician Ben: \"The calibration lens is not in Sector 3.\"",
+      "Director Chloe: \"If the calibration lens is not in Sector 3, then it is not in Sector 1.\"",
+      "Operator David: \"The calibration lens is in Sector 1.\"",
+      "Technician Eva: \"The calibration lens is in neither Sector 1 nor Sector 2.\""
+    ],
+    "scenario_intro": "We are investigating a potential equipment malfunction within the high-altitude astronomical observatory, searching for the misplaced calibration lens across five sectors.",
+    "theme_title": "Observatory Secrets",
+    "item": "calibration lens",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Analyst Anya",
+      "Bob": "Technician Ben",
+      "Carol": "Director Chloe",
+      "Dave": "Operator David",
+      "Eve": "Technician Eva"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1903.4,
+  "seed": 309,
+  "theme": {
+    "setting": "Deep-Sea Hydrothermal Vents, Subterranean Fungal Networks, Arctic Seed Vaults, High-Altitude Astronomical Observatories",
+    "title": "Observatory Secrets",
+    "scenario_intro": "We are investigating a potential equipment malfunction within the high-altitude astronomical observatory, searching for the misplaced calibration lens across five sectors.",
+    "item": "calibration lens",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Analyst Anya",
+      "Bob": "Technician Ben",
+      "Carol": "Director Chloe",
+      "Dave": "Operator David",
+      "Eve": "Technician Eva"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

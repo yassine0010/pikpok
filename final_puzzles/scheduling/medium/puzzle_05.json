@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "Four lighthouse keepers must be scheduled for their weekly duty shifts, from first to last, ensuring the beacon remains operational around the clock.\n\nLineup to order: Keeper Silas, Keeper Rowan, Keeper Finnian, and Keeper Jasper.\n\nClues:\n- Keeper Finnian is not placed 2nd.\n- Keeper Jasper is not placed 3rd.\n- Keeper Silas arrives earlier than Keeper Jasper.\n- Keeper Jasper is immediately after Keeper Rowan.\n\nWhat is the complete order from first to last?",
+  "response": "Keeper Finnian, Keeper Silas, Keeper Rowan, Keeper Jasper",
+  "hints": [
+    "Keeper Rowan must immediately precede Keeper Jasper, forming a two-person block. Keeper Finnian cannot be in the second position.",
+    "The clue that Keeper Rowan must immediately precede Keeper Jasper, combined with Keeper Finnian not being second, restricts Keeper Finnian to the first position. Keeper Finnian is confirmed to be in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Keeper Silas",
+      "Keeper Rowan",
+      "Keeper Finnian",
+      "Keeper Jasper"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Keeper Finnian",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Keeper Jasper",
+        "k": 3
+      },
+      {
+        "type": "before",
+        "x": "Keeper Silas",
+        "y": "Keeper Jasper"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Keeper Jasper",
+        "y": "Keeper Rowan"
+      }
+    ],
+    "solution": [
+      "Keeper Finnian",
+      "Keeper Silas",
+      "Keeper Rowan",
+      "Keeper Jasper"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Keeper Finnian",
+      "fixed_slot": "1st",
+      "partial_assignment": "Keeper Finnian is in the 1st position",
+      "intermediate_value": "Keeper Finnian",
+      "entity_positions": {
+        "Keeper Finnian": "1st",
+        "Keeper Silas": "2nd",
+        "Keeper Rowan": "3rd",
+        "Keeper Jasper": "4th"
+      },
+      "supporting_clues": [
+        "Keeper Finnian is not 2nd.",
+        "Keeper Jasper is not 3rd."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 36.3,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 2.925,
+      "near_miss_factor": 1.875
+    },
+    "themed_clues": [
+      "Keeper Finnian is not placed 2nd.",
+      "Keeper Jasper is not placed 3rd.",
+      "Keeper Silas arrives earlier than Keeper Jasper.",
+      "Keeper Jasper is immediately after Keeper Rowan."
+    ],
+    "scenario_intro": "Four lighthouse keepers must be scheduled for their weekly duty shifts, from first to last, ensuring the beacon remains operational around the clock.",
+    "theme_title": "Lighthouse Keeper Rotation",
+    "entity_mapping": {
+      "P1": "Keeper Silas",
+      "P2": "Keeper Rowan",
+      "P3": "Keeper Finnian",
+      "P4": "Keeper Jasper"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P1",
+      "P2",
+      "P4"
+    ],
+    "canonical_response": "P3, P1, P2, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1501.8,
+  "seed": 205,
+  "theme": {
+    "setting": "Urban Planning Bureau, Deep-sea Trench Cartography, Artisan Cheese Aging Room, Historic Lighthouse Restoration",
+    "title": "Lighthouse Keeper Rotation",
+    "scenario_intro": "Four lighthouse keepers must be scheduled for their weekly duty shifts, from first to last, ensuring the beacon remains operational around the clock.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Keeper Silas",
+      "P2": "Keeper Rowan",
+      "P3": "Keeper Finnian",
+      "P4": "Keeper Jasper"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

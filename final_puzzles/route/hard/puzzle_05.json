@@ -1,0 +1,159 @@
+{
+  "puzzle_type": "route",
+  "difficulty": "hard",
+  "question": "Find the shortest route from S to E in the lowest movement cost.\nOne move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Mud (~) tiles cost 2 moves to enter. Pass through checkpoints 1 then 2 in that order before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow. Gate G stays locked until checkpoint 1 is collected.\n.E......\n....#...\n>#..##..\n##~###..\n##.####2\n~..##...\n...#..~.\n.1<.G.S.",
+  "response": "50",
+  "hints": [
+    "You must collect checkpoint 1 before you can pass through gate G. The one-way cell at row 8, col 3 forces a specific path.",
+    "From start cell S at row 8, col 7, move right toward row 8, col 8."
+  ],
+  "solution_data": {
+    "grid": [
+      ".E......",
+      "....#...",
+      ">#..##..",
+      "##~###..",
+      "##.####2",
+      "~..##...",
+      "...#..~.",
+      ".1<.G.S."
+    ],
+    "start": [
+      7,
+      6
+    ],
+    "end": [
+      0,
+      1
+    ],
+    "moves": "4-neighbors",
+    "cell_cost": null,
+    "min_distance": 50,
+    "checkpoints": [
+      {
+        "pos": [
+          7,
+          1
+        ],
+        "label": "1"
+      },
+      {
+        "pos": [
+          4,
+          7
+        ],
+        "label": "2"
+      }
+    ],
+    "arrows": [
+      {
+        "pos": [
+          7,
+          2
+        ],
+        "direction": "left"
+      },
+      {
+        "pos": [
+          2,
+          0
+        ],
+        "direction": "right"
+      }
+    ],
+    "gates": [
+      {
+        "pos": [
+          7,
+          4
+        ],
+        "after": 1
+      }
+    ],
+    "mud": [
+      [
+        3,
+        2
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        6,
+        6
+      ]
+    ],
+    "rule_text": "One move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Mud (~) tiles cost 2 moves to enter. Pass through checkpoints 1 then 2 in that order before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow. Gate G stays locked until checkpoint 1 is collected.",
+    "description": "Find the shortest route from S to E",
+    "title": "Warehouse Logistics",
+    "theme": "warehouse",
+    "intermediate_trace": {
+      "start": [
+        8,
+        7
+      ],
+      "start_desc": "start cell S at row 8, col 7",
+      "waypoint": [
+        7,
+        7
+      ],
+      "waypoint_desc": "row 8, col 8",
+      "first_move_direction": "right",
+      "optimal_first_moves": [
+        {
+          "direction": "right",
+          "cell": [
+            8,
+            8
+          ],
+          "desc": "row 8, col 8"
+        }
+      ],
+      "step_number": 1,
+      "intermediate_value": "(8, 8)",
+      "focus_desc": "checkpoint 1 at row 8, col 2",
+      "rule_impact_deltas": {
+        "arrows": 9,
+        "checkpoints": 36,
+        "gates": 17
+      },
+      "verified_wall_fact": "a wall at row 2, col 5 blocks direct passage",
+      "arrow_desc": "the one-way cell at row 8, col 3 pointing left"
+    },
+    "difficulty_metrics": {
+      "raw_score": 151.86,
+      "area": 64,
+      "walls": 18,
+      "num_mud": 3,
+      "detour": 36,
+      "detour_ratio": 3.571,
+      "num_checkpoints": 2,
+      "num_arrows": 2,
+      "num_gates": 1,
+      "turn_count": 12,
+      "branching_forks": 36
+    },
+    "rule_analysis": {
+      "plain_distance": 13,
+      "constrained_distance": 50,
+      "no_checkpoints_distance": 14,
+      "reversed_order_distance": 32,
+      "no_arrows_distance": 41,
+      "no_gates_distance": 33
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1949.9,
+  "seed": 305,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

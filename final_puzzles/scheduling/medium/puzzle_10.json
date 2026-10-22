@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The monitoring team needs to establish the order for deploying seismic sensors from first to last.\n\nLineup to order: Geologist Eva, Hydrologist Liam, Seismologist Noah, and Cartographer Ben.\n\nClues:\n- Geologist Eva is not placed 1st.\n- Hydrologist Liam arrives earlier than Cartographer Ben.\n- Cartographer Ben is not 3rd.\n- Hydrologist Liam is not placed 1st.\n- Hydrologist Liam is not 3rd.\n\nWhat is the complete order from first to last?",
+  "response": "Seismologist Noah, Hydrologist Liam, Geologist Eva, Cartographer Ben",
+  "hints": [
+    "Seismologist Noah must immediately follow Hydrologist Liam, creating a two-person block. This block cannot start in the first position.",
+    "The sequence of Hydrologist Liam immediately followed by Seismologist Noah is established. Given the constraints, this block must be placed starting in the second position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Geologist Eva",
+      "Hydrologist Liam",
+      "Seismologist Noah",
+      "Cartographer Ben"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Geologist Eva",
+        "k": 1
+      },
+      {
+        "type": "before",
+        "x": "Hydrologist Liam",
+        "y": "Cartographer Ben"
+      },
+      {
+        "type": "not_position",
+        "x": "Cartographer Ben",
+        "k": 3
+      },
+      {
+        "type": "not_position",
+        "x": "Hydrologist Liam",
+        "k": 1
+      },
+      {
+        "type": "not_position",
+        "x": "Hydrologist Liam",
+        "k": 3
+      }
+    ],
+    "solution": [
+      "Seismologist Noah",
+      "Hydrologist Liam",
+      "Geologist Eva",
+      "Cartographer Ben"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Seismologist Noah",
+      "fixed_slot": "1st",
+      "partial_assignment": "Seismologist Noah is in the 1st position",
+      "intermediate_value": "Seismologist Noah",
+      "entity_positions": {
+        "Seismologist Noah": "1st",
+        "Hydrologist Liam": "2nd",
+        "Geologist Eva": "3rd",
+        "Cartographer Ben": "4th"
+      },
+      "supporting_clues": [
+        "Geologist Eva is not 1st.",
+        "Hydrologist Liam is before Cartographer Ben."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 35.4,
+      "num_entities": 4,
+      "num_constraints": 5,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 2.7,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Geologist Eva is not placed 1st.",
+      "Hydrologist Liam arrives earlier than Cartographer Ben.",
+      "Cartographer Ben is not 3rd.",
+      "Hydrologist Liam is not placed 1st.",
+      "Hydrologist Liam is not 3rd."
+    ],
+    "scenario_intro": "The monitoring team needs to establish the order for deploying seismic sensors from first to last.",
+    "theme_title": "Volcano Monitoring Expedition",
+    "entity_mapping": {
+      "P1": "Geologist Eva",
+      "P2": "Hydrologist Liam",
+      "P3": "Seismologist Noah",
+      "P4": "Cartographer Ben"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P1",
+      "P4"
+    ],
+    "canonical_response": "P3, P2, P1, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1469.1,
+  "seed": 210,
+  "theme": {
+    "setting": "Urban Planning Department, Quantum Physics Research Lab, Medieval Tapestry Weaving, Volcano Monitoring Expedition",
+    "title": "Volcano Monitoring Expedition",
+    "scenario_intro": "The monitoring team needs to establish the order for deploying seismic sensors from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Geologist Eva",
+      "P2": "Hydrologist Liam",
+      "P3": "Seismologist Noah",
+      "P4": "Cartographer Ben"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

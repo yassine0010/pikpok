@@ -1,0 +1,226 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "medium",
+  "question": "We are investigating an orbital satellite maintenance bay, searching for a critical component across four possible docking arms.\nPossible locations: Arm 1, Arm 2, Arm 3, or Arm 4.\n\nStatements:\n- Technician Anya: \"The power coupling is in Arm 1 or Arm 4.\"\n- Engineer Ben: \"The power coupling is in Arm 3 or Arm 4.\"\n- Analyst Chloe: \"The power coupling is in neither Arm 1 nor Arm 4.\"\n- Director David: \"The power coupling is in neither Arm 1 nor Arm 3.\"\n\nRULE: Exactly 1 of these statements is true (all others are false).\n\nWhere is the power coupling?",
+  "response": "Arm 1",
+  "hints": [
+    "Technician Anya and Analyst Chloe make claims that are logical opposites. Thus, exactly one of them must be true.",
+    "Under Arm 2, Technician Anya's claim is false and Engineer Ben's claim is false. Analyst Chloe's claim is true and Director David's claim is true. This results in 2 true claims, which is not exactly 1 true claim. Therefore, Arm 2 is not the location of the power coupling."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Arm 1",
+      "Arm 2",
+      "Arm 3",
+      "Arm 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Arm 1",
+            "Arm 4"
+          ]
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Arm 3",
+            "Arm 4"
+          ]
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Arm 1",
+            "Arm 4"
+          ]
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Arm 1",
+            "Arm 3"
+          ]
+        },
+        "speaker": "Director David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Arm 1",
+    "intermediate_trace": {
+      "eliminated_candidate": "Arm 2",
+      "elimination_reason": "Testing Arm 2 results in 2 true claims (Analyst Chloe, Director David are true) instead of exactly 1 true claim.",
+      "intermediate_value": "Arm 2",
+      "candidate_counts": {
+        "Arm 1": 1,
+        "Arm 2": 2,
+        "Arm 3": 2,
+        "Arm 4": 3
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Analyst Chloe",
+        "Director David"
+      ],
+      "elim_cand_false_speakers": [
+        "Technician Anya",
+        "Engineer Ben"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": false
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": false
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Director David",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": false,
+        "Engineer Ben": false,
+        "Analyst Chloe": true,
+        "Director David": true
+      },
+      "clue_insight": "Technician Anya and Analyst Chloe directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Technician Anya",
+        "Analyst Chloe"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 19.56,
+      "structural_score": 14,
+      "near_misses": 2,
+      "logic_words": 6,
+      "statement_overlap": 2.75,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2,
+        "D": 3
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "B": [
+          false,
+          false,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          true,
+          false
+        ],
+        "D": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 1.0,
+      "clause_score": 5.4
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Director David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The power coupling is in Arm 1 or Arm 4.\"",
+      "Engineer Ben: \"The power coupling is in Arm 3 or Arm 4.\"",
+      "Analyst Chloe: \"The power coupling is in neither Arm 1 nor Arm 4.\"",
+      "Director David: \"The power coupling is in neither Arm 1 nor Arm 3.\""
+    ],
+    "scenario_intro": "We are investigating an orbital satellite maintenance bay, searching for a critical component across four possible docking arms.",
+    "theme_title": "satellite maintenance",
+    "item": "power coupling",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1600.0,
+  "seed": 201,
+  "theme": {
+    "setting": "High-Speed Rail Network Dispatch, Deep Sea Sonar Mapping, Botanical Arboretum Survey, Orbital Satellite Maintenance",
+    "title": "satellite maintenance",
+    "scenario_intro": "We are investigating an orbital satellite maintenance bay, searching for a critical component across four possible docking arms.",
+    "item": "power coupling",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

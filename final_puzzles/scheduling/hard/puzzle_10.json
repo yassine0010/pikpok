@@ -1,0 +1,146 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five sonar technicians are preparing for a critical mapping mission. Determine their order from first to last based on their assigned deployment slots.\n\nLineup to order: Sonar Specialist Anya, Lead Technician Ben, Data Analyst Chloe, Research Assistant David, and Navigator Elias.\n\nClues:\n- Sonar Specialist Anya is not in the 3rd position.\n- Lead Technician Ben arrives earlier than Sonar Specialist Anya.\n- Data Analyst Chloe is not in the 2nd position.\n- Lead Technician Ben follows right after Data Analyst Chloe.\n- Sonar Specialist Anya is before Navigator Elias.\n\nWhat is the complete order from first to last?",
+  "response": "Data Analyst Chloe, Lead Technician Ben, Research Assistant David, Sonar Specialist Anya, Navigator Elias",
+  "hints": [
+    "Look closely at the clues involving Lead Technician Ben: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Lead Technician Ben to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Sonar Specialist Anya",
+      "Lead Technician Ben",
+      "Data Analyst Chloe",
+      "Research Assistant David",
+      "Navigator Elias"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Sonar Specialist Anya",
+        "k": 3
+      },
+      {
+        "type": "before",
+        "x": "Lead Technician Ben",
+        "y": "Sonar Specialist Anya"
+      },
+      {
+        "type": "not_position",
+        "x": "Data Analyst Chloe",
+        "k": 2
+      },
+      {
+        "type": "immediately_after",
+        "x": "Lead Technician Ben",
+        "y": "Data Analyst Chloe"
+      },
+      {
+        "type": "before",
+        "x": "Sonar Specialist Anya",
+        "y": "Navigator Elias"
+      }
+    ],
+    "solution": [
+      "Data Analyst Chloe",
+      "Lead Technician Ben",
+      "Research Assistant David",
+      "Sonar Specialist Anya",
+      "Navigator Elias"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Lead Technician Ben",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Lead Technician Ben is in the 2nd position",
+      "intermediate_value": "Lead Technician Ben",
+      "entity_positions": {
+        "Data Analyst Chloe": "1st",
+        "Lead Technician Ben": "2nd",
+        "Research Assistant David": "3rd",
+        "Sonar Specialist Anya": "4th",
+        "Navigator Elias": "5th"
+      },
+      "supporting_clues": [
+        "Lead Technician Ben is before Sonar Specialist Anya.",
+        "Lead Technician Ben is immediately after Data Analyst Chloe."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 49.89,
+      "num_entities": 5,
+      "num_constraints": 5,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 2.835,
+      "near_miss_factor": 0.958
+    },
+    "themed_clues": [
+      "Sonar Specialist Anya is not in the 3rd position.",
+      "Lead Technician Ben arrives earlier than Sonar Specialist Anya.",
+      "Data Analyst Chloe is not in the 2nd position.",
+      "Lead Technician Ben follows right after Data Analyst Chloe.",
+      "Sonar Specialist Anya is before Navigator Elias."
+    ],
+    "scenario_intro": "Five sonar technicians are preparing for a critical mapping mission. Determine their order from first to last based on their assigned deployment slots.",
+    "theme_title": "Deep Sea Sonar Mapping",
+    "entity_mapping": {
+      "P1": "Sonar Specialist Anya",
+      "P2": "Lead Technician Ben",
+      "P3": "Data Analyst Chloe",
+      "P4": "Research Assistant David",
+      "P5": "Navigator Elias"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P4",
+      "P1",
+      "P5"
+    ],
+    "canonical_response": "P3, P2, P4, P1, P5"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1825.4,
+  "seed": 310,
+  "theme": {
+    "setting": "Documentary Film Production, Urban Planning Department, Antique Clock Restoration, Oceanographic Research Vessel",
+    "title": "Deep Sea Sonar Mapping",
+    "scenario_intro": "Five sonar technicians are preparing for a critical mapping mission. Determine their order from first to last based on their assigned deployment slots.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Sonar Specialist Anya",
+      "P2": "Lead Technician Ben",
+      "P3": "Data Analyst Chloe",
+      "P4": "Research Assistant David",
+      "P5": "Navigator Elias"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

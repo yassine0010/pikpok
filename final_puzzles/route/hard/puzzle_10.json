@@ -1,0 +1,159 @@
+{
+  "puzzle_type": "route",
+  "difficulty": "hard",
+  "question": "Find the shortest route from S to E in the lowest movement cost.\nOne move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Mud (~) tiles cost 2 moves to enter. Pass through checkpoints 1 then 2 in that order before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow. Gate G stays locked until checkpoint 1 is collected.\nE~####vS\n........\n...####.\n~.2>.1#G\n....#...\n....#...\n.#...##.\n.#..#..~",
+  "response": "29",
+  "hints": [
+    "You must visit checkpoint 1 before checkpoint 2, and the gate G is locked until checkpoint 1 is collected. The one-way cell at row 4, col 4 must be navigated in the direction of the arrow.",
+    "From start cell S at row 1, col 8, your first move is down toward row 2, col 8."
+  ],
+  "solution_data": {
+    "grid": [
+      "E~####vS",
+      "........",
+      "...####.",
+      "~.2>.1#G",
+      "....#...",
+      "....#...",
+      ".#...##.",
+      ".#..#..~"
+    ],
+    "start": [
+      0,
+      7
+    ],
+    "end": [
+      0,
+      0
+    ],
+    "moves": "4-neighbors",
+    "cell_cost": null,
+    "min_distance": 29,
+    "checkpoints": [
+      {
+        "pos": [
+          3,
+          5
+        ],
+        "label": "1"
+      },
+      {
+        "pos": [
+          3,
+          2
+        ],
+        "label": "2"
+      }
+    ],
+    "arrows": [
+      {
+        "pos": [
+          3,
+          3
+        ],
+        "direction": "right"
+      },
+      {
+        "pos": [
+          0,
+          6
+        ],
+        "direction": "down"
+      }
+    ],
+    "gates": [
+      {
+        "pos": [
+          3,
+          7
+        ],
+        "after": 1
+      }
+    ],
+    "mud": [
+      [
+        0,
+        1
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        7,
+        7
+      ]
+    ],
+    "rule_text": "One move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column). Mud (~) tiles cost 2 moves to enter. Pass through checkpoints 1 then 2 in that order before reaching E. One-way cells (arrows) can only be entered and exited in the direction of the arrow. Gate G stays locked until checkpoint 1 is collected.",
+    "description": "Find the shortest route from S to E",
+    "title": "Research Facility",
+    "theme": "laboratory",
+    "intermediate_trace": {
+      "start": [
+        1,
+        8
+      ],
+      "start_desc": "start cell S at row 1, col 8",
+      "waypoint": [
+        1,
+        7
+      ],
+      "waypoint_desc": "row 2, col 8",
+      "first_move_direction": "down",
+      "optimal_first_moves": [
+        {
+          "direction": "down",
+          "cell": [
+            2,
+            8
+          ],
+          "desc": "row 2, col 8"
+        }
+      ],
+      "step_number": 1,
+      "intermediate_value": "(2, 8)",
+      "focus_desc": "checkpoint 1 at row 4, col 6",
+      "rule_impact_deltas": {
+        "arrows": 10,
+        "checkpoints": 20,
+        "gates": 4
+      },
+      "verified_wall_fact": "a wall at row 1, col 3 blocks direct passage",
+      "arrow_desc": "the one-way cell at row 4, col 4 pointing right"
+    },
+    "difficulty_metrics": {
+      "raw_score": 97.71,
+      "area": 64,
+      "walls": 16,
+      "num_mud": 3,
+      "detour": 15,
+      "detour_ratio": 2.071,
+      "num_checkpoints": 2,
+      "num_arrows": 2,
+      "num_gates": 1,
+      "turn_count": 11,
+      "branching_forks": 18
+    },
+    "rule_analysis": {
+      "plain_distance": 9,
+      "constrained_distance": 29,
+      "no_checkpoints_distance": 9,
+      "reversed_order_distance": 25,
+      "no_arrows_distance": 19,
+      "no_gates_distance": 25
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1616.7,
+  "seed": 310,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

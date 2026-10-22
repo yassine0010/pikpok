@@ -1,0 +1,81 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "hard",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (6, 12, 14) -> 97; (8, 11, 2) -> 28; (25, 17, 6) -> 168. Find the right corner for (21, 24, ?) -> 403.",
+  "response": "18",
+  "hints": [
+    "A relationship between two corner values is established, then influenced by the third. Verify this connection across all given triangles before applying it to the final one.",
+    "A pair of corner values are combined, then this result is modified by a constant value, either before or after incorporating the third corner's value.",
+    "Undoing the last step on the last triangle leaves 402, which is the value the two other corners make together."
+  ],
+  "solution_data": {
+    "rule_id": "H44",
+    "rule_expr": "(top * right) + left + 1",
+    "rule_ops": [
+      "mul",
+      "add",
+      "add"
+    ],
+    "archetype": "inverse_deep",
+    "unknown": "right",
+    "orientation": "down",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 6,
+        "left": 12,
+        "right": 14,
+        "center": 97
+      },
+      {
+        "top": 8,
+        "left": 11,
+        "right": 2,
+        "center": 28
+      },
+      {
+        "top": 25,
+        "left": 17,
+        "right": 6,
+        "center": 168
+      }
+    ],
+    "query": {
+      "top": 21,
+      "left": 24,
+      "right": null,
+      "center": 403
+    },
+    "difficulty_metrics": {
+      "raw_score": 6.268,
+      "n_ops": 3,
+      "op_kinds": 2,
+      "const_used": 1,
+      "special_ops": 0,
+      "inverse": 1,
+      "examples_shown": 3,
+      "max_value": 168
+    },
+    "intermediate_trace": {
+      "kind": "inverse_undo_outer",
+      "expr": "undo_outer",
+      "slots": [],
+      "value": 402
+    },
+    "response_value": 18,
+    "tier": "hard"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "322cb1044b47c715b5a1caa6923b55ef6299ea0823c4658370f691ed1a5915bb",
+  "score": 1825.8,
+  "seed": 309,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

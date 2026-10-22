@@ -1,0 +1,166 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The apiary's bee handler schedule needs to be located. The schedule is hidden within one of three designated zones.\nPossible locations: Hive A, Hive B, or Hive C.\n\nClues:\n- (1) The handler schedule is in Hive C.\n- (2) The handler schedule is not in Hive B.\n- (3) The handler schedule is not in Hive C.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the handler schedule?",
+  "response": "Hive B",
+  "hints": [
+    "Compare the clues across the candidate locations to identify claims that directly conflict with one another.",
+    "If the target were at Hive A, this would result in 2 true clues, which contradicts the rule requiring exactly 1 true clue, ruling out Hive A."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Hive A",
+      "Hive B",
+      "Hive C"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Hive C"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Hive B"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Hive C"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Hive B",
+    "intermediate_trace": {
+      "eliminated_candidate": "Hive A",
+      "elimination_reason": "Testing Hive A results in 2 true clues (clue (2), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "Hive A",
+      "candidate_counts": {
+        "Hive A": 2,
+        "Hive B": 1,
+        "Hive C": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (1)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": false
+        },
+        {
+          "speaker": "clue (2)",
+          "true": true
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": false,
+        "clue (2)": true,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.25,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.0,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          true
+        ],
+        "B": [
+          false,
+          false,
+          true
+        ],
+        "C": [
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.5
+    },
+    "themed_clues": [
+      "(1) The handler schedule is in Hive C.",
+      "(2) The handler schedule is not in Hive B.",
+      "(3) The handler schedule is not in Hive C."
+    ],
+    "scenario_intro": "The apiary's bee handler schedule needs to be located. The schedule is hidden within one of three designated zones.",
+    "theme_title": "Apiary Schedule",
+    "item": "handler schedule",
+    "entity_mapping": {
+      "A": "Hive A",
+      "B": "Hive B",
+      "C": "Hive C"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "B",
+    "canonical_response": "B"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1061.5,
+  "seed": 106,
+  "theme": {
+    "setting": "Jousting Knight Lineup, Extreme Weather Forecasting, Ancient Manuscript Preservation, Apiary Bee Handler Schedule",
+    "title": "Apiary Schedule",
+    "scenario_intro": "The apiary's bee handler schedule needs to be located. The schedule is hidden within one of three designated zones.",
+    "item": "handler schedule",
+    "entity_mapping": {
+      "A": "Hive A",
+      "B": "Hive B",
+      "C": "Hive C"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

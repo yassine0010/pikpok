@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "We need to arrange four antique books for restoration, from the first book needing delicate repair to the last book ready for display. The order matters greatly for the workflow.\n\nLineup to order: Restorer Alistair, Conservator Beatrice, and Archivist Charles.\n\nClues:\n- Archivist Charles follows right after Conservator Beatrice.\n- Conservator Beatrice is not 1st.\n\nWhat is the complete order from first to last?",
+  "response": "Restorer Alistair, Conservator Beatrice, Archivist Charles",
+  "hints": [
+    "Consider which book has the most freedom to be placed at either end of the restoration line.",
+    "The clues about Archivist Charles being immediately after Conservator Beatrice, and Conservator Beatrice not being first, help narrow down the possibilities. With these constraints, Restorer Alistair must be in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Restorer Alistair",
+      "Conservator Beatrice",
+      "Archivist Charles"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Archivist Charles",
+        "y": "Conservator Beatrice"
+      },
+      {
+        "type": "not_position",
+        "x": "Conservator Beatrice",
+        "k": 1
+      }
+    ],
+    "solution": [
+      "Restorer Alistair",
+      "Conservator Beatrice",
+      "Archivist Charles"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Restorer Alistair",
+      "fixed_slot": "1st",
+      "partial_assignment": "Restorer Alistair is in the 1st position",
+      "intermediate_value": "Restorer Alistair",
+      "entity_positions": {
+        "Restorer Alistair": "1st",
+        "Conservator Beatrice": "2nd",
+        "Archivist Charles": "3rd"
+      },
+      "supporting_clues": [
+        "Archivist Charles is immediately after Conservator Beatrice.",
+        "Conservator Beatrice is not 1st."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.83,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 0.9,
+      "near_miss_factor": 3.333
+    },
+    "themed_clues": [
+      "Archivist Charles follows right after Conservator Beatrice.",
+      "Conservator Beatrice is not 1st."
+    ],
+    "scenario_intro": "We need to arrange four antique books for restoration, from the first book needing delicate repair to the last book ready for display. The order matters greatly for the workflow.",
+    "theme_title": "Antique Book Restoration",
+    "entity_mapping": {
+      "P1": "Restorer Alistair",
+      "P2": "Conservator Beatrice",
+      "P3": "Archivist Charles"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_response": "P1, P2, P3"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1141.5,
+  "seed": 103,
+  "theme": {
+    "setting": "Urban Planning, Classical Music Composition, Professional Chess Tournament, Antique Book Restoration",
+    "title": "Antique Book Restoration",
+    "scenario_intro": "We need to arrange four antique books for restoration, from the first book needing delicate repair to the last book ready for display. The order matters greatly for the workflow.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Restorer Alistair",
+      "P2": "Conservator Beatrice",
+      "P3": "Archivist Charles"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

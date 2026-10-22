@@ -1,0 +1,217 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "medium",
+  "question": "Anomalies have been detected across six sectors of the orbital satellite, and the precise location of the faulty component must be identified.\nPossible locations: Sector 1, Sector 2, Sector 3, or Sector 4.\n\nStatements:\n- Technician Anya: \"The damaged sensor is in Sector 2.\"\n- Engineer Ben: \"The damaged sensor is in neither Sector 1 nor Sector 2.\"\n- Analyst Chloe: \"The damaged sensor is in Sector 3.\"\n- Operator David: \"The damaged sensor is not in Sector 3.\"\n\nRULE: Exactly 1 of these statements is true (all others are false).\n\nWhere is the damaged sensor?",
+  "response": "Sector 1",
+  "hints": [
+    "Analyst Chloe and Operator David make claims about the location of the damaged sensor that cannot both be true, as they directly contradict.",
+    "Under Sector 2, Technician Anya's claim is true, but Engineer Ben's claim is false. Analyst Chloe's claim is false, while Operator David's claim is true. This results in 2 true claims (Technician Anya, Operator David) instead of the required 1, eliminating Sector 2."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector 2"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 2"
+          ]
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector 3"
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector 3"
+        },
+        "speaker": "Operator David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Sector 1",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 2",
+      "elimination_reason": "Testing Sector 2 results in 2 true claims (Technician Anya, Operator David are true) instead of exactly 1 true claim.",
+      "intermediate_value": "Sector 2",
+      "candidate_counts": {
+        "Sector 1": 1,
+        "Sector 2": 2,
+        "Sector 3": 2,
+        "Sector 4": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Operator David"
+      ],
+      "elim_cand_false_speakers": [
+        "Engineer Ben",
+        "Analyst Chloe"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": false
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": false
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": false,
+        "Analyst Chloe": false,
+        "Operator David": true
+      },
+      "clue_insight": "Analyst Chloe and Operator David directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Analyst Chloe",
+        "Operator David"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 17.14,
+      "structural_score": 13,
+      "near_misses": 3,
+      "logic_words": 3,
+      "statement_overlap": 1.75,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2,
+        "D": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "B": [
+          true,
+          false,
+          false,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          true,
+          false
+        ],
+        "D": [
+          false,
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.858,
+      "clause_score": 3.0
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The damaged sensor is in Sector 2.\"",
+      "Engineer Ben: \"The damaged sensor is in neither Sector 1 nor Sector 2.\"",
+      "Analyst Chloe: \"The damaged sensor is in Sector 3.\"",
+      "Operator David: \"The damaged sensor is not in Sector 3.\""
+    ],
+    "scenario_intro": "Anomalies have been detected across six sectors of the orbital satellite, and the precise location of the faulty component must be identified.",
+    "theme_title": "orbital maintenance",
+    "item": "damaged sensor",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1550.9,
+  "seed": 203,
+  "theme": {
+    "setting": "Deep Sea Sonar Mapping, High-Altitude Observatories, Rare Manuscript Restoration, Orbital Satellite Maintenance",
+    "title": "orbital maintenance",
+    "scenario_intro": "Anomalies have been detected across six sectors of the orbital satellite, and the precise location of the faulty component must be identified.",
+    "item": "damaged sensor",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

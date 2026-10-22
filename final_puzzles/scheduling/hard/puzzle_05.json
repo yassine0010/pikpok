@@ -1,0 +1,159 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five critical maintenance engineers are scheduled for inspection duties along the high-speed rail network, from first to last.\n\nLineup to order: Technician Anya, Engineer Chloe, Supervisor David, Inspector Ben, and Operator Ben.\n\nClues:\n- Supervisor David is not 5th.\n- Technician Anya is before Inspector Ben.\n- Supervisor David is not 2nd.\n- Engineer Chloe comes directly after Inspector Ben.\n- Inspector Ben is not 2nd.\n- Technician Anya is positioned ahead of Supervisor David.\n- Technician Anya arrives earlier than Operator Ben.\n\nWhat is the complete order from first to last?",
+  "response": "Technician Anya, Operator Ben, Supervisor David, Inspector Ben, Engineer Chloe",
+  "hints": [
+    "Look closely at the clues involving Technician Anya: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Technician Anya to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Technician Anya",
+      "Engineer Chloe",
+      "Supervisor David",
+      "Inspector Ben",
+      "Operator Ben"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Supervisor David",
+        "k": 5
+      },
+      {
+        "type": "before",
+        "x": "Technician Anya",
+        "y": "Inspector Ben"
+      },
+      {
+        "type": "not_position",
+        "x": "Supervisor David",
+        "k": 2
+      },
+      {
+        "type": "immediately_after",
+        "x": "Engineer Chloe",
+        "y": "Inspector Ben"
+      },
+      {
+        "type": "not_position",
+        "x": "Inspector Ben",
+        "k": 2
+      },
+      {
+        "type": "before",
+        "x": "Technician Anya",
+        "y": "Supervisor David"
+      },
+      {
+        "type": "before",
+        "x": "Technician Anya",
+        "y": "Operator Ben"
+      }
+    ],
+    "solution": [
+      "Technician Anya",
+      "Operator Ben",
+      "Supervisor David",
+      "Inspector Ben",
+      "Engineer Chloe"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Technician Anya",
+      "fixed_slot": "1st",
+      "partial_assignment": "Technician Anya is in the 1st position",
+      "intermediate_value": "Technician Anya",
+      "entity_positions": {
+        "Technician Anya": "1st",
+        "Operator Ben": "2nd",
+        "Supervisor David": "3rd",
+        "Inspector Ben": "4th",
+        "Engineer Chloe": "5th"
+      },
+      "supporting_clues": [
+        "Technician Anya is before Inspector Ben.",
+        "Technician Anya is before Supervisor David.",
+        "Technician Anya is before Operator Ben."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 51.0,
+      "num_entities": 5,
+      "num_constraints": 7,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 2.91,
+      "near_miss_factor": 0.792
+    },
+    "themed_clues": [
+      "Supervisor David is not 5th.",
+      "Technician Anya is before Inspector Ben.",
+      "Supervisor David is not 2nd.",
+      "Engineer Chloe comes directly after Inspector Ben.",
+      "Inspector Ben is not 2nd.",
+      "Technician Anya is positioned ahead of Supervisor David.",
+      "Technician Anya arrives earlier than Operator Ben."
+    ],
+    "scenario_intro": "Five critical maintenance engineers are scheduled for inspection duties along the high-speed rail network, from first to last.",
+    "theme_title": "High-Speed Rail Network",
+    "entity_mapping": {
+      "P1": "Technician Anya",
+      "P2": "Engineer Chloe",
+      "P3": "Supervisor David",
+      "P4": "Inspector Ben",
+      "P5": "Operator Ben"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P5",
+      "P3",
+      "P4",
+      "P2"
+    ],
+    "canonical_response": "P1, P5, P3, P4, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1857.1,
+  "seed": 305,
+  "theme": {
+    "setting": "Alpine Ski Patrol Dispatch, Archaeological Site Survey, Commercial Beekeeping Apiary, High-Speed Rail Network",
+    "title": "High-Speed Rail Network",
+    "scenario_intro": "Five critical maintenance engineers are scheduled for inspection duties along the high-speed rail network, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Technician Anya",
+      "P2": "Engineer Chloe",
+      "P3": "Supervisor David",
+      "P4": "Inspector Ben",
+      "P5": "Operator Ben"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

@@ -1,0 +1,114 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "easy",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "31",
+  "hints": [
+    "Go through the complete triples separately. For each, note whether the result is larger or smaller than the two cells it is built from, and look for what stays true in every triple.",
+    "Check the pair 3 and 9 against the result 15, then test your relation on the two cells the question mark is built from."
+  ],
+  "solution_data": {
+    "rule_id": "add_p3",
+    "rule_kind": "uniform",
+    "rule_label": "sum plus 3",
+    "archetype": "uniform_simple",
+    "direction": "forward",
+    "height": 4,
+    "rows": [
+      [
+        3,
+        9,
+        3,
+        7
+      ],
+      [
+        15,
+        15,
+        13
+      ],
+      [
+        33,
+        31
+      ],
+      [
+        67
+      ]
+    ],
+    "question_cell": [
+      2,
+      1
+    ],
+    "hidden_cells": [
+      [
+        2,
+        1
+      ]
+    ],
+    "blank_class": 0,
+    "witness_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 31,
+    "difficulty_metrics": {
+      "rule_complexity": 1.5,
+      "chain_depth": 1,
+      "height": 4,
+      "scarcity_log2": 2.0,
+      "magnitude": 1.833,
+      "backward": false,
+      "n_witnesses": 4,
+      "raw_score": 4.066
+    },
+    "intermediate_trace": {
+      "hint_form": "witness",
+      "hint1_key": "easy",
+      "schedule_kind": "uniform",
+      "evidence_cells": [
+        [
+          1,
+          0
+        ]
+      ],
+      "evidence": [
+        [
+          3,
+          9,
+          15
+        ]
+      ],
+      "first_step": null,
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 15
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 1,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "b9db7789eb323d09",
+  "score": 993.2,
+  "seed": 102,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

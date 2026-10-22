@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "hard",
+  "question": "A machine prints these numbers: 8, 18, 34, 56, 84, 118, ?. What does it print next?",
+  "response": "158",
+  "hints": [
+    "Observe the differences between consecutive terms; notice if these differences are increasing by a constant amount.",
+    "The difference between the first two terms (8 and 18) is 10. The difference between the next pair (18 and 34) is 16. See how the difference is changing?"
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "quadratic",
+    "tier": 3,
+    "mode": "next",
+    "terms": [
+      8,
+      18,
+      34,
+      56,
+      84,
+      118,
+      158
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "3n^2+1n+4",
+    "expr": "3n^2+1n+4",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "8 and 18",
+      "first_difference": 10,
+      "first_step": "8 to 18 (diff 10)",
+      "preceding_term": 118,
+      "intermediate_value": 10
+    },
+    "difficulty_metrics": {
+      "raw_score": 23.79,
+      "tier": 3,
+      "variant": "quadratic",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.651,
+      "step_var_factor": 0.591,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1679.6,
+  "seed": 303,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

@@ -1,0 +1,166 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "An investigation is underway within the ancient manuscript preservation facility to locate a specific missing artifact. The artifact could be in one of three specialized preservation chambers.\nPossible locations: chamber alpha, chamber beta, or chamber gamma.\n\nClues:\n- (1) The fragile scroll is in chamber alpha.\n- (2) The fragile scroll is not in chamber alpha.\n- (3) The fragile scroll is not in chamber gamma.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the fragile scroll?",
+  "response": "chamber gamma",
+  "hints": [
+    "Clue (1) and clue (2) cannot both be true. Clue (2) and clue (3) cannot both be false.",
+    "If the ornate lance were in the East Stables, clue (1) would be true and clue (2) would be false. Clue (3) would also be true. This would result in 2 true clues, contradicting the rule that exactly 1 clue is true. Therefore, the East Stables is not the location of the ornate lance."
+  ],
+  "solution_data": {
+    "candidates": [
+      "chamber alpha",
+      "chamber beta",
+      "chamber gamma"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "chamber alpha"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "chamber alpha"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "chamber gamma"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "chamber gamma",
+    "intermediate_trace": {
+      "eliminated_candidate": "chamber alpha",
+      "elimination_reason": "Testing chamber alpha results in 2 true clues (clue (1), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "chamber alpha",
+      "candidate_counts": {
+        "chamber alpha": 2,
+        "chamber beta": 2,
+        "chamber gamma": 1
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (2)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": false
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": false,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (2) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.25,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.0,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 2,
+        "C": 1
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true
+        ],
+        "B": [
+          false,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.5
+    },
+    "themed_clues": [
+      "(1) The fragile scroll is in chamber alpha.",
+      "(2) The fragile scroll is not in chamber alpha.",
+      "(3) The fragile scroll is not in chamber gamma."
+    ],
+    "scenario_intro": "An investigation is underway within the ancient manuscript preservation facility to locate a specific missing artifact. The artifact could be in one of three specialized preservation chambers.",
+    "theme_title": "Manuscript Mystery",
+    "item": "fragile scroll",
+    "entity_mapping": {
+      "A": "chamber alpha",
+      "B": "chamber beta",
+      "C": "chamber gamma"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1061.5,
+  "seed": 103,
+  "theme": {
+    "setting": "Wildland Firefighter Crew, Extreme Weather Forecasting, Forest Firefighting Crew Deployment, Ancient Manuscript Preservation",
+    "title": "Manuscript Mystery",
+    "scenario_intro": "An investigation is underway within the ancient manuscript preservation facility to locate a specific missing artifact. The artifact could be in one of three specialized preservation chambers.",
+    "item": "fragile scroll",
+    "entity_mapping": {
+      "A": "chamber alpha",
+      "B": "chamber beta",
+      "C": "chamber gamma"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

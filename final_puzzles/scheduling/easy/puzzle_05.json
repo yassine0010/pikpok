@@ -1,0 +1,117 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The Alpine Rescue Team needs to assemble their final lineup for a critical mountain ascent. Determine the order of the rescue specialists from first to last.\n\nLineup to order: Team Leader Anya, Medic Ben, and Navigator Chloe.\n\nClues:\n- Medic Ben is positioned ahead of Navigator Chloe.\n- Navigator Chloe is not in the 2nd position.\n- Team Leader Anya is not 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Team Leader Anya, Medic Ben, Navigator Chloe",
+  "hints": [
+    "Consider the constraints on who can be in the middle or at the end. This will help you determine who must be at the very beginning of the rescue operation.",
+    "The clues about Navigator Chloe not being second and Team Leader Anya not being second are key. Based on these exclusions, Navigator Chloe must be in the 3rd position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Team Leader Anya",
+      "Medic Ben",
+      "Navigator Chloe"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Medic Ben",
+        "y": "Navigator Chloe"
+      },
+      {
+        "type": "not_position",
+        "x": "Navigator Chloe",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Team Leader Anya",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Team Leader Anya",
+      "Medic Ben",
+      "Navigator Chloe"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Team Leader Anya",
+      "fixed_slot": "1st",
+      "partial_assignment": "Team Leader Anya is in the 1st position",
+      "intermediate_value": "Team Leader Anya",
+      "entity_positions": {
+        "Team Leader Anya": "1st",
+        "Medic Ben": "2nd",
+        "Navigator Chloe": "3rd"
+      },
+      "supporting_clues": [
+        "Team Leader Anya is not 2nd.",
+        "Medic Ben is before Navigator Chloe."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.3,
+      "num_entities": 3,
+      "num_constraints": 3,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 1.8,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Medic Ben is positioned ahead of Navigator Chloe.",
+      "Navigator Chloe is not in the 2nd position.",
+      "Team Leader Anya is not 2nd."
+    ],
+    "scenario_intro": "The Alpine Rescue Team needs to assemble their final lineup for a critical mountain ascent. Determine the order of the rescue specialists from first to last.",
+    "theme_title": "Alpine Rescue Team",
+    "entity_mapping": {
+      "P1": "Team Leader Anya",
+      "P2": "Medic Ben",
+      "P3": "Navigator Chloe"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_response": "P1, P2, P3"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1115.0,
+  "seed": 105,
+  "theme": {
+    "setting": "Urban Planning, Independent Bookstore Management, Antique Clock Restoration, Mountain Rescue Operations",
+    "title": "Alpine Rescue Team",
+    "scenario_intro": "The Alpine Rescue Team needs to assemble their final lineup for a critical mountain ascent. Determine the order of the rescue specialists from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Team Leader Anya",
+      "P2": "Medic Ben",
+      "P3": "Navigator Chloe"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

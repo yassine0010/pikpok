@@ -1,0 +1,89 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "easy",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (3, 7, 9) -> 19; (1, 3, 7) -> 11; (6, 7, 7) -> 20; (5, 2, 8) -> 15. Find the center for (9, 1, 7).",
+  "response": "17",
+  "hints": [
+    "Examine a complete triangle to see how two corner values can be combined to produce a value that relates to the center. Then, confirm this relationship holds for the other triangles.",
+    "The sum of two corner values is found, and then the third corner value is used with that sum.",
+    "Combining the left and top corners of the last triangle gives 10."
+  ],
+  "solution_data": {
+    "rule_id": "E01",
+    "rule_expr": "(top + left) + right",
+    "rule_ops": [
+      "add",
+      "add"
+    ],
+    "archetype": "forward_basic",
+    "unknown": "center",
+    "orientation": "down",
+    "result_style": "caption",
+    "examples": [
+      {
+        "top": 3,
+        "left": 7,
+        "right": 9,
+        "center": 19
+      },
+      {
+        "top": 1,
+        "left": 3,
+        "right": 7,
+        "center": 11
+      },
+      {
+        "top": 6,
+        "left": 7,
+        "right": 7,
+        "center": 20
+      },
+      {
+        "top": 5,
+        "left": 2,
+        "right": 8,
+        "center": 15
+      }
+    ],
+    "query": {
+      "top": 9,
+      "left": 1,
+      "right": 7,
+      "center": null
+    },
+    "difficulty_metrics": {
+      "raw_score": 2.797,
+      "n_ops": 2,
+      "op_kinds": 1,
+      "const_used": 0,
+      "special_ops": 0,
+      "inverse": 0,
+      "examples_shown": 4,
+      "max_value": 20
+    },
+    "intermediate_trace": {
+      "kind": "forward_first_op",
+      "expr": "top and left",
+      "slots": [
+        "left",
+        "top"
+      ],
+      "value": 10
+    },
+    "response_value": 17,
+    "tier": "easy"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "6f43570de50e2f55076a0729cbe8bb093aefbad59832d42ae09bb589ecf9d4d2",
+  "score": 800.0,
+  "seed": 107,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

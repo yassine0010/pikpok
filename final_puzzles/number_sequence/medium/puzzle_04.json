@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "Find the next number in the sequence: 7, 12, 19, 28, 39, ?",
+  "response": "52",
+  "hints": [
+    "Observe the differences between consecutive terms; they are not constant but change in a predictable way.",
+    "The gap between 7 and 12 is 5. The gap between 12 and 19 is 7. Continue this pattern of increasing gaps to find the next difference."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "shifted_square",
+    "tier": 2,
+    "mode": "next",
+    "terms": [
+      7,
+      12,
+      19,
+      28,
+      39,
+      52
+    ],
+    "target_index": 5,
+    "missing_position": 5,
+    "rule": "(n+1)^2 + 3",
+    "expr": "(n+1)^2 + 3",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "7 and 12",
+      "first_difference": 5,
+      "first_step": "7 to 12 (diff 5)",
+      "preceding_term": 39,
+      "intermediate_value": 5
+    },
+    "difficulty_metrics": {
+      "raw_score": 15.12,
+      "tier": 2,
+      "variant": "shifted_square",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.293,
+      "step_var_factor": 0.424,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1330.5,
+  "seed": 204,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

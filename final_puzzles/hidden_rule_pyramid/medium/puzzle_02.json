@@ -1,0 +1,165 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "medium",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "1",
+  "hints": [
+    "Check what each result has in common with both of the cells it is built from.",
+    "Check the pair 16 and 14 against the result 2, then test your relation on the two cells the question mark is built from."
+  ],
+  "solution_data": {
+    "rule_id": "gcd",
+    "rule_kind": "uniform",
+    "rule_label": "gcd",
+    "archetype": "uniform_compound",
+    "direction": "forward",
+    "height": 6,
+    "rows": [
+      [
+        16,
+        14,
+        7,
+        7,
+        13,
+        2
+      ],
+      [
+        2,
+        7,
+        7,
+        1,
+        1
+      ],
+      [
+        1,
+        7,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1
+      ]
+    ],
+    "question_cell": [
+      2,
+      3
+    ],
+    "hidden_cells": [
+      [
+        2,
+        3
+      ]
+    ],
+    "blank_class": 0,
+    "witness_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        0
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 1,
+    "difficulty_metrics": {
+      "rule_complexity": 3.0,
+      "chain_depth": 1,
+      "height": 6,
+      "scarcity_log2": 4.322,
+      "magnitude": 1.23,
+      "backward": false,
+      "n_witnesses": 13,
+      "raw_score": 6.697
+    },
+    "intermediate_trace": {
+      "hint_form": "witness",
+      "hint1_key": "gcd",
+      "schedule_kind": "uniform",
+      "evidence_cells": [
+        [
+          1,
+          0
+        ]
+      ],
+      "evidence": [
+        [
+          16,
+          14,
+          2
+        ]
+      ],
+      "first_step": null,
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 2
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 1,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "85553715a52ae3ab",
+  "score": 1378.6,
+  "seed": 202,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "Four members of the forestry crew need to be assigned to tasks from first to last, ensuring the most efficient operation.\n\nLineup to order: Logger Finn, Forester Alex, and Rigger Sam.\n\nClues:\n- Forester Alex is before Logger Finn.\n- Logger Finn follows right after Rigger Sam.\n\nWhat is the complete order from first to last?",
+  "response": "Forester Alex, Rigger Sam, Logger Finn",
+  "hints": [
+    "Consider who must be at the very beginning or the very end of the assignment sequence.",
+    "The clue that Rigger Sam is immediately before Logger Finn helps determine the sequence. This means Forester Alex is in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Logger Finn",
+      "Forester Alex",
+      "Rigger Sam"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Forester Alex",
+        "y": "Logger Finn"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Logger Finn",
+        "y": "Rigger Sam"
+      }
+    ],
+    "solution": [
+      "Forester Alex",
+      "Rigger Sam",
+      "Logger Finn"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Forester Alex",
+      "fixed_slot": "1st",
+      "partial_assignment": "Forester Alex is in the 1st position",
+      "intermediate_value": "Forester Alex",
+      "entity_positions": {
+        "Forester Alex": "1st",
+        "Rigger Sam": "2nd",
+        "Logger Finn": "3rd"
+      },
+      "supporting_clues": [
+        "Forester Alex is before Logger Finn.",
+        "Logger Finn is immediately after Rigger Sam."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 19.5,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "immediately_after"
+      ],
+      "has_immediate": true,
+      "has_exclusion": false,
+      "decay_factor": 1.2,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Forester Alex is before Logger Finn.",
+      "Logger Finn follows right after Rigger Sam."
+    ],
+    "scenario_intro": "Four members of the forestry crew need to be assigned to tasks from first to last, ensuring the most efficient operation.",
+    "theme_title": "Forestry Crew Assignment",
+    "entity_mapping": {
+      "P1": "Logger Finn",
+      "P2": "Forester Alex",
+      "P3": "Rigger Sam"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P3",
+      "P1"
+    ],
+    "canonical_response": "P2, P3, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1025.0,
+  "seed": 104,
+  "theme": {
+    "setting": "Oceanography, Urban Planning, Competitive Gaming, Logging Operations",
+    "title": "Forestry Crew Assignment",
+    "scenario_intro": "Four members of the forestry crew need to be assigned to tasks from first to last, ensuring the most efficient operation.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Logger Finn",
+      "P2": "Forester Alex",
+      "P3": "Rigger Sam"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

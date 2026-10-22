@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The wildland firefighting crew needs to be assigned their positions from first to last for the upcoming high-risk patrol. Determine the correct order of the firefighters.\n\nLineup to order: Ranger Eva, Firefighter Liam, Captain Noah, and Chief Anya.\n\nClues:\n- Chief Anya is not in the 2nd position.\n- Firefighter Liam is not in the 3rd position.\n- Ranger Eva is before Firefighter Liam.\n- Firefighter Liam follows right after Captain Noah.\n\nWhat is the complete order from first to last?",
+  "response": "Chief Anya, Ranger Eva, Captain Noah, Firefighter Liam",
+  "hints": [
+    "Look closely at the clues involving Chief Anya: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Chief Anya to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Ranger Eva",
+      "Firefighter Liam",
+      "Captain Noah",
+      "Chief Anya"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Chief Anya",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Firefighter Liam",
+        "k": 3
+      },
+      {
+        "type": "before",
+        "x": "Ranger Eva",
+        "y": "Firefighter Liam"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Firefighter Liam",
+        "y": "Captain Noah"
+      }
+    ],
+    "solution": [
+      "Chief Anya",
+      "Ranger Eva",
+      "Captain Noah",
+      "Firefighter Liam"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Chief Anya",
+      "fixed_slot": "1st",
+      "partial_assignment": "Chief Anya is in the 1st position",
+      "intermediate_value": "Chief Anya",
+      "entity_positions": {
+        "Chief Anya": "1st",
+        "Ranger Eva": "2nd",
+        "Captain Noah": "3rd",
+        "Firefighter Liam": "4th"
+      },
+      "supporting_clues": [
+        "Chief Anya is not 2nd.",
+        "Firefighter Liam is not 3rd."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 36.3,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 2.925,
+      "near_miss_factor": 1.875
+    },
+    "themed_clues": [
+      "Chief Anya is not in the 2nd position.",
+      "Firefighter Liam is not in the 3rd position.",
+      "Ranger Eva is before Firefighter Liam.",
+      "Firefighter Liam follows right after Captain Noah."
+    ],
+    "scenario_intro": "The wildland firefighting crew needs to be assigned their positions from first to last for the upcoming high-risk patrol. Determine the correct order of the firefighters.",
+    "theme_title": "Wildland Firefighter Crew",
+    "entity_mapping": {
+      "P1": "Ranger Eva",
+      "P2": "Firefighter Liam",
+      "P3": "Captain Noah",
+      "P4": "Chief Anya"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P4",
+      "P1",
+      "P3",
+      "P2"
+    ],
+    "canonical_response": "P4, P1, P3, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1501.8,
+  "seed": 207,
+  "theme": {
+    "setting": "Urban Planning Development, Microchip Fabrication Process, Deep-Sea Trench Exploration, Wildland Firefighter Crew",
+    "title": "Wildland Firefighter Crew",
+    "scenario_intro": "The wildland firefighting crew needs to be assigned their positions from first to last for the upcoming high-risk patrol. Determine the correct order of the firefighters.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Ranger Eva",
+      "P2": "Firefighter Liam",
+      "P3": "Captain Noah",
+      "P4": "Chief Anya"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

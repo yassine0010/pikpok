@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "A machine prints these numbers: 35, 47, 59, 71, 83, 95, ?. What does it print next?",
+  "response": "107",
+  "hints": [
+    "Notice the consistent change in value from one number to the next.",
+    "The difference between 35 and 47 is 12. Check if this same difference holds for the next pair of numbers."
+  ],
+  "solution_data": {
+    "family": "arithmetic",
+    "variant": "up",
+    "tier": 1,
+    "mode": "next",
+    "terms": [
+      35,
+      47,
+      59,
+      71,
+      83,
+      95,
+      107
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "start 35, add 12",
+    "expr": "start 35, add 12",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "35 and 47",
+      "first_difference": 12,
+      "first_step": "35 to 47 (diff 12)",
+      "preceding_term": 95,
+      "intermediate_value": 12
+    },
+    "difficulty_metrics": {
+      "raw_score": 7.08,
+      "tier": 1,
+      "variant": "up",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.525,
+      "step_var_factor": 0.0,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 984.9,
+  "seed": 102,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

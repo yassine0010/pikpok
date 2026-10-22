@@ -1,0 +1,221 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "The investigation is underway within the orbital satellite maintenance facility to locate a critical component. The target is believed to be in one of four sectors.\nPossible locations: Sector 1, Sector 2, Sector 3, or Sector 4.\n\nStatements:\n- Technician Anya: \"The calibration tool is in Sector 2 or Sector 3.\"\n- Engineer Ben: \"The calibration tool is in neither Sector 1 nor Sector 2.\"\n- Analyst Chloe: \"The calibration tool is not in Sector 2.\"\n- Operator David: \"Analyst Chloe's statement is false.\"\n\nRULE: Exactly 1 of these statements is false (all others are true).\n\nWhere is the calibration tool?",
+  "response": "Sector 3",
+  "hints": [
+    "Technician Anya and Operator David directly contradict each other, meaning exactly one of them must be telling the truth regarding the calibration tool's location.",
+    "If the calibration tool were in Sector 2, Technician Anya would be TRUE, Engineer Ben FALSE, Analyst Chloe FALSE, and Operator David TRUE. Testing Sector 2 results in two false claims (Engineer Ben and Analyst Chloe are false), which violates the rule that exactly one claim must be false. Therefore, Sector 2 is ruled out."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Sector 2",
+            "Sector 3"
+          ]
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 2"
+          ]
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector 2"
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "ref",
+          "target_id": "s3",
+          "target_speaker": "Analyst Chloe",
+          "claims_true": false
+        },
+        "speaker": "Operator David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly_false",
+      "k": 1
+    },
+    "solution": "Sector 3",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 2",
+      "elimination_reason": "Testing Sector 2 results in 2 false claims (Engineer Ben, Analyst Chloe are false) instead of exactly 1 false claim.",
+      "intermediate_value": "Sector 2",
+      "candidate_counts": {
+        "Sector 1": 3,
+        "Sector 2": 2,
+        "Sector 3": 1,
+        "Sector 4": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Operator David"
+      ],
+      "elim_cand_false_speakers": [
+        "Engineer Ben",
+        "Analyst Chloe"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": false
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": false
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": false,
+        "Analyst Chloe": false,
+        "Operator David": true
+      },
+      "clue_insight": "Analyst Chloe and Operator David directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Analyst Chloe",
+        "Operator David"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.45,
+      "structural_score": 16,
+      "near_misses": 2,
+      "logic_words": 5,
+      "statement_overlap": 2.25,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 3,
+        "B": 2,
+        "C": 1,
+        "D": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          false,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          false,
+          false,
+          true
+        ],
+        "C": [
+          true,
+          true,
+          true,
+          false
+        ],
+        "D": [
+          false,
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.906,
+      "clause_score": 5.9
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The calibration tool is in Sector 2 or Sector 3.\"",
+      "Engineer Ben: \"The calibration tool is in neither Sector 1 nor Sector 2.\"",
+      "Analyst Chloe: \"The calibration tool is not in Sector 2.\"",
+      "Operator David: \"Analyst Chloe's statement is false.\""
+    ],
+    "scenario_intro": "The investigation is underway within the orbital satellite maintenance facility to locate a critical component. The target is believed to be in one of four sectors.",
+    "theme_title": "orbital maintenance",
+    "item": "calibration tool",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1701.5,
+  "seed": 302,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Quantum Computing Facilities, Orbital Satellite Maintenance",
+    "title": "orbital maintenance",
+    "scenario_intro": "The investigation is underway within the orbital satellite maintenance facility to locate a critical component. The target is believed to be in one of four sectors.",
+    "item": "calibration tool",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

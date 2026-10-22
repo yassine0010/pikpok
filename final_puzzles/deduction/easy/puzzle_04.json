@@ -1,0 +1,169 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "A critical component has gone missing from the high-speed rail network across three zones. The investigation aims to locate the missing signal regulator.\nPossible locations: control room, maintenance shed, or station hub.\n\nClues:\n- (1) The signal regulator is in control room.\n- (2) The signal regulator is in maintenance shed or station hub.\n- (3) The signal regulator is not in station hub.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the signal regulator?",
+  "response": "station hub",
+  "hints": [
+    "Clue (1) and clue (2) directly contradict each other, meaning exactly one of them must be true. This relationship is key to narrowing down the possibilities.",
+    "Under control room (control room), clue (1) is true and clue (2) is false. Clue (3) is also true. This results in two true clues (clue (1) and clue (3)), which violates the rule that exactly one clue must be true. Therefore, control room (control room) cannot be the location of the signal regulator."
+  ],
+  "solution_data": {
+    "candidates": [
+      "control room",
+      "maintenance shed",
+      "station hub"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "control room"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "maintenance shed",
+            "station hub"
+          ]
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "station hub"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "station hub",
+    "intermediate_trace": {
+      "eliminated_candidate": "control room",
+      "elimination_reason": "Testing control room results in 2 true clues (clue (1), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "control room",
+      "candidate_counts": {
+        "control room": 2,
+        "maintenance shed": 2,
+        "station hub": 1
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (2)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": false
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": false,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (1) and clue (2) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.52,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.33,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 2,
+        "C": 1
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true
+        ],
+        "B": [
+          false,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.8
+    },
+    "themed_clues": [
+      "(1) The signal regulator is in control room.",
+      "(2) The signal regulator is in maintenance shed or station hub.",
+      "(3) The signal regulator is not in station hub."
+    ],
+    "scenario_intro": "A critical component has gone missing from the high-speed rail network across three zones. The investigation aims to locate the missing signal regulator.",
+    "theme_title": "rail network",
+    "item": "signal regulator",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1078.2,
+  "seed": 104,
+  "theme": {
+    "setting": "Wildland Firefighter Crew, Aqueduct Repair Crew, Apiary Bee Colony Order, Jousting Knight Lineup, Extreme Weather Forecasting, Ancient Manuscript Preservation, Volcano Monitoring Expedition, Apiary Bee Handler Schedule, Forest Firefighting Crew Deployment, High-Speed Rail Network",
+    "title": "rail network",
+    "scenario_intro": "A critical component has gone missing from the high-speed rail network across three zones. The investigation aims to locate the missing signal regulator.",
+    "item": "signal regulator",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

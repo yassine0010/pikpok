@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "A machine prints these numbers: 25, 36, 49, 64, 81, 100, ?. What does it print next?",
+  "response": "121",
+  "hints": [
+    "Consider if the numbers in the sequence are related to perfect squares.",
+    "The numbers 25 and 36 are the squares of 5 and 6, respectively. See if this pattern holds for the other numbers in the sequence and use it to find the next term."
+  ],
+  "solution_data": {
+    "family": "special",
+    "variant": "squares",
+    "tier": 1,
+    "mode": "next",
+    "terms": [
+      25,
+      36,
+      49,
+      64,
+      81,
+      100,
+      121
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "square numbers",
+    "expr": "square numbers",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "25 and 36",
+      "first_difference": 11,
+      "preceding_term": 100,
+      "intermediate_value": 36
+    },
+    "difficulty_metrics": {
+      "raw_score": 7.82,
+      "tier": 1,
+      "variant": "squares",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.9,
+      "magnitude_factor": 1.565,
+      "step_var_factor": 0.301,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1050.7,
+  "seed": 106,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

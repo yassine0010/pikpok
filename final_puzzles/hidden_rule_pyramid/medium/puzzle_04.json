@@ -1,0 +1,117 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "medium",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "27",
+  "hints": [
+    "Check whether the relation changes depending on whether the two cells are even or odd.",
+    "The empty box built from the pair 5 and 17 comes to 12."
+  ],
+  "solution_data": {
+    "rule_id": "p4",
+    "rule_kind": "uniform",
+    "rule_label": "parity4",
+    "archetype": "uniform_compound",
+    "direction": "forward",
+    "height": 4,
+    "rows": [
+      [
+        17,
+        12,
+        5,
+        7
+      ],
+      [
+        5,
+        17,
+        2
+      ],
+      [
+        12,
+        15
+      ],
+      [
+        27
+      ]
+    ],
+    "question_cell": [
+      3,
+      0
+    ],
+    "hidden_cells": [
+      [
+        2,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "blank_class": 1,
+    "witness_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 27,
+    "difficulty_metrics": {
+      "rule_complexity": 3.5,
+      "chain_depth": 2,
+      "height": 4,
+      "scarcity_log2": 4.248,
+      "magnitude": 1.447,
+      "backward": false,
+      "n_witnesses": 4,
+      "raw_score": 7.245
+    },
+    "intermediate_trace": {
+      "hint_form": "first_step",
+      "hint1_key": "parity",
+      "schedule_kind": "uniform",
+      "evidence_cells": [],
+      "evidence": [],
+      "first_step": {
+        "cell": [
+          2,
+          0
+        ],
+        "pair": [
+          5,
+          17
+        ],
+        "value": 12
+      },
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 12
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 3,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "b9ad1ee060d9ff8c",
+  "score": 1436.3,
+  "seed": 204,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

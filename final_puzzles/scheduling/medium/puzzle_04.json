@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The engineers must finalize the order of track inspection teams, from first to last, ensuring all routes are covered efficiently.\n\nLineup to order: Engineer Anya, Inspector Ben, Technician Chloe, and Supervisor David.\n\nClues:\n- Inspector Ben arrives earlier than Technician Chloe.\n- Engineer Anya is not in the 2nd position.\n- Inspector Ben is not placed 2nd.\n- Engineer Anya is not placed 4th.\n- Supervisor David is not placed 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Inspector Ben, Technician Chloe, Engineer Anya, Supervisor David",
+  "hints": [
+    "Look closely at the clues involving Inspector Ben: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Inspector Ben to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Engineer Anya",
+      "Inspector Ben",
+      "Technician Chloe",
+      "Supervisor David"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Inspector Ben",
+        "y": "Technician Chloe"
+      },
+      {
+        "type": "not_position",
+        "x": "Engineer Anya",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Inspector Ben",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Engineer Anya",
+        "k": 4
+      },
+      {
+        "type": "not_position",
+        "x": "Supervisor David",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Inspector Ben",
+      "Technician Chloe",
+      "Engineer Anya",
+      "Supervisor David"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Inspector Ben",
+      "fixed_slot": "1st",
+      "partial_assignment": "Inspector Ben is in the 1st position",
+      "intermediate_value": "Inspector Ben",
+      "entity_positions": {
+        "Inspector Ben": "1st",
+        "Technician Chloe": "2nd",
+        "Engineer Anya": "3rd",
+        "Supervisor David": "4th"
+      },
+      "supporting_clues": [
+        "Inspector Ben is before Technician Chloe.",
+        "Inspector Ben is not 2nd."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 34.95,
+      "num_entities": 4,
+      "num_constraints": 5,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 2.25,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Inspector Ben arrives earlier than Technician Chloe.",
+      "Engineer Anya is not in the 2nd position.",
+      "Inspector Ben is not placed 2nd.",
+      "Engineer Anya is not placed 4th.",
+      "Supervisor David is not placed 2nd."
+    ],
+    "scenario_intro": "The engineers must finalize the order of track inspection teams, from first to last, ensuring all routes are covered efficiently.",
+    "theme_title": "High-Speed Rail Network",
+    "entity_mapping": {
+      "P1": "Engineer Anya",
+      "P2": "Inspector Ben",
+      "P3": "Technician Chloe",
+      "P4": "Supervisor David"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P3",
+      "P1",
+      "P4"
+    ],
+    "canonical_response": "P2, P3, P1, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1452.7,
+  "seed": 204,
+  "theme": {
+    "setting": "Urban Planning Commission, Classical Music Symphony, Artisan Cheese Making, High-Speed Rail Network",
+    "title": "High-Speed Rail Network",
+    "scenario_intro": "The engineers must finalize the order of track inspection teams, from first to last, ensuring all routes are covered efficiently.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Engineer Anya",
+      "P2": "Inspector Ben",
+      "P3": "Technician Chloe",
+      "P4": "Supervisor David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

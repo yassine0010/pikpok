@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "Four expert locksmiths are competing in the annual Master Locksmith Challenge, demonstrating their skills in a timed event. Determine their order from first to last.\n\nLineup to order: Apprentice Kai, Journeyman Leo, Master Anya, and Locksmith Finn.\n\nClues:\n- Journeyman Leo is immediately after Master Anya.\n- Journeyman Leo is positioned ahead of Apprentice Kai.\n- Locksmith Finn is not placed 4th.\n- Master Anya is not placed 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Master Anya, Journeyman Leo, Locksmith Finn, Apprentice Kai",
+  "hints": [
+    "Master Anya must immediately precede Journeyman Leo, forming a fixed block. This block dictates their combined presence in the lineup.",
+    "The clue 'Master Anya is immediately before Journeyman Leo' establishes their direct succession. With 'Master Anya is not 2nd' and 'Journeyman Leo is before Apprentice Kai', Master Anya is confirmed in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Apprentice Kai",
+      "Journeyman Leo",
+      "Master Anya",
+      "Locksmith Finn"
+    ],
+    "constraints": [
+      {
+        "type": "immediately_after",
+        "x": "Journeyman Leo",
+        "y": "Master Anya"
+      },
+      {
+        "type": "before",
+        "x": "Journeyman Leo",
+        "y": "Apprentice Kai"
+      },
+      {
+        "type": "not_position",
+        "x": "Locksmith Finn",
+        "k": 4
+      },
+      {
+        "type": "not_position",
+        "x": "Master Anya",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Master Anya",
+      "Journeyman Leo",
+      "Locksmith Finn",
+      "Apprentice Kai"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Master Anya",
+      "fixed_slot": "1st",
+      "partial_assignment": "Master Anya is in the 1st position",
+      "intermediate_value": "Master Anya",
+      "entity_positions": {
+        "Master Anya": "1st",
+        "Journeyman Leo": "2nd",
+        "Locksmith Finn": "3rd",
+        "Apprentice Kai": "4th"
+      },
+      "supporting_clues": [
+        "Journeyman Leo is immediately after Master Anya.",
+        "Master Anya is not 2nd."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 34.48,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 0.9,
+      "near_miss_factor": 2.083
+    },
+    "themed_clues": [
+      "Journeyman Leo is immediately after Master Anya.",
+      "Journeyman Leo is positioned ahead of Apprentice Kai.",
+      "Locksmith Finn is not placed 4th.",
+      "Master Anya is not placed 2nd."
+    ],
+    "scenario_intro": "Four expert locksmiths are competing in the annual Master Locksmith Challenge, demonstrating their skills in a timed event. Determine their order from first to last.",
+    "theme_title": "Master Locksmith Challenge",
+    "entity_mapping": {
+      "P1": "Apprentice Kai",
+      "P2": "Journeyman Leo",
+      "P3": "Master Anya",
+      "P4": "Locksmith Finn"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    "canonical_response": "P3, P2, P4, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1435.6,
+  "seed": 206,
+  "theme": {
+    "setting": "Urban Planning Department, Medieval Siege Warfare, Classical Music Composition, Professional Locksmithing",
+    "title": "Master Locksmith Challenge",
+    "scenario_intro": "Four expert locksmiths are competing in the annual Master Locksmith Challenge, demonstrating their skills in a timed event. Determine their order from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Apprentice Kai",
+      "P2": "Journeyman Leo",
+      "P3": "Master Anya",
+      "P4": "Locksmith Finn"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

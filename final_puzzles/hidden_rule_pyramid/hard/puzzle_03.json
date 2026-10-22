@@ -1,0 +1,146 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "hard",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "2",
+  "hints": [
+    "Test every candidate relation on all the complete triples, including ones far apart in the picture; a relation that fits only some of them is not the rule.",
+    "Compare the pair 7 and 3, which builds 0, with the pair 1 and 8, which builds 8."
+  ],
+  "solution_data": {
+    "rule_id": "alt_level[add_m10|max]",
+    "rule_kind": "alt_level",
+    "rule_label": "last digit of sum on odd levels, larger on even levels",
+    "archetype": "scheduled",
+    "direction": "forward",
+    "height": 5,
+    "rows": [
+      [
+        7,
+        3,
+        19,
+        20,
+        9
+      ],
+      [
+        0,
+        2,
+        9,
+        9
+      ],
+      [
+        2,
+        9,
+        9
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        8
+      ]
+    ],
+    "question_cell": [
+      2,
+      0
+    ],
+    "hidden_cells": [
+      [
+        2,
+        0
+      ]
+    ],
+    "blank_class": 0,
+    "witness_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        4,
+        0
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 2,
+    "difficulty_metrics": {
+      "rule_complexity": 5.0,
+      "chain_depth": 1,
+      "height": 5,
+      "scarcity_log2": 3.17,
+      "magnitude": 1.322,
+      "backward": false,
+      "n_witnesses": 8,
+      "raw_score": 7.967
+    },
+    "intermediate_trace": {
+      "hint_form": "contrast",
+      "hint1_key": "scheduled",
+      "schedule_kind": "scheduled",
+      "evidence_cells": [
+        [
+          1,
+          0
+        ],
+        [
+          4,
+          0
+        ]
+      ],
+      "evidence": [
+        [
+          7,
+          3,
+          0
+        ],
+        [
+          1,
+          8,
+          8
+        ]
+      ],
+      "first_step": null,
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 0
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 1,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "48c48afc73867190",
+  "score": 1747.8,
+  "seed": 303,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

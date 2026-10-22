@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "What number comes next? 3, 6, 10, 15, 21, 28, ?",
+  "response": "36",
+  "hints": [
+    "Observe how the difference between consecutive terms changes.",
+    "The difference between the first two terms is 3. The difference between the next pair of terms is 4. Continue this pattern of differences to find the next difference."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "triangular",
+    "tier": 2,
+    "mode": "next",
+    "terms": [
+      3,
+      6,
+      10,
+      15,
+      21,
+      28,
+      36
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "triangular numbers",
+    "expr": "triangular numbers",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "3 and 6",
+      "first_difference": 3,
+      "first_step": "3 to 6 (diff 3)",
+      "preceding_term": 28,
+      "intermediate_value": 3
+    },
+    "difficulty_metrics": {
+      "raw_score": 15.22,
+      "tier": 2,
+      "variant": "triangular",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.6,
+      "magnitude_factor": 1.176,
+      "step_var_factor": 0.394,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1336.6,
+  "seed": 206,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

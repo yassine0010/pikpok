@@ -1,0 +1,81 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "hard",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (19, 17, 13) -> 77; (18, 25, 22) -> 55; (4, 23, 13) -> 41. Find the top corner for (?, 16, 10) -> 31.",
+  "response": "5",
+  "hints": [
+    "A relationship between two corner values is established, then the third corner is incorporated. Verify this relationship across all complete triangles before applying it to the final one.",
+    "A pair of corner values are combined, then modified by a constant value, either before or after the third corner's involvement.",
+    "Undoing the last step on the last triangle leaves 30, which is the value the two other corners make together."
+  ],
+  "solution_data": {
+    "rule_id": "H03",
+    "rule_expr": "(left - right) * top + 1",
+    "rule_ops": [
+      "sub",
+      "mul",
+      "add"
+    ],
+    "archetype": "inverse_deep",
+    "unknown": "top",
+    "orientation": "up",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 19,
+        "left": 17,
+        "right": 13,
+        "center": 77
+      },
+      {
+        "top": 18,
+        "left": 25,
+        "right": 22,
+        "center": 55
+      },
+      {
+        "top": 4,
+        "left": 23,
+        "right": 13,
+        "center": 41
+      }
+    ],
+    "query": {
+      "top": null,
+      "left": 16,
+      "right": 10,
+      "center": 31
+    },
+    "difficulty_metrics": {
+      "raw_score": 6.668,
+      "n_ops": 3,
+      "op_kinds": 3,
+      "const_used": 1,
+      "special_ops": 0,
+      "inverse": 1,
+      "examples_shown": 3,
+      "max_value": 77
+    },
+    "intermediate_trace": {
+      "kind": "inverse_undo_outer",
+      "expr": "undo_outer",
+      "slots": [],
+      "value": 30
+    },
+    "response_value": 5,
+    "tier": "hard"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "37543e2f8e30ab39ce1c84117746515b83d1145d8b8b26960632fd975be81e4e",
+  "score": 1887.4,
+  "seed": 303,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

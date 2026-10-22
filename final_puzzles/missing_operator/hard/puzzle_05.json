@@ -1,0 +1,110 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "hard",
+  "question": "Find the missing operators: ( 4 + 9 ) ? ( 11 ? 6 ) = 221\nAllowed operators: +, -, *, /, ^\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "*, +",
+  "hints": [
+    "Begin by simplifying the expression within the first set of parentheses. Then, focus on the second set of parentheses, considering how the operands within it must combine to a value that, when used with the result of the first set, can ultimately produce the final target number.",
+    "The expression inside the first parentheses, ( 4 + 9 ), simplifies to 13. Now consider the second set of parentheses, ( 11 ? 6 ). The operation here needs to result in a value that, when combined with 13 using the outer operator, yields 221. Think about how 11 and 6 can combine to form a number that, when used with 13, can reach 221."
+  ],
+  "solution_data": {
+    "template": "( {a} + {b} ) ? ( {c} ? {d} ) = {r}",
+    "operands": [
+      4,
+      9,
+      11,
+      6
+    ],
+    "operators": [
+      "+",
+      "*",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "^"
+    ],
+    "result": 221,
+    "archetype": "parentheses_both",
+    "missing_indices": [
+      1,
+      2
+    ],
+    "intermediate_trace": {
+      "first_pair": "11 and 6",
+      "target_pair": "11 and 6",
+      "target_subtotal": "17",
+      "target_result": 221,
+      "intermediate_value": "17",
+      "approx_magnitude": "close to 17",
+      "num_missing": 2,
+      "missing_indices": [
+        1,
+        2
+      ],
+      "prior_fixed_desc": "Evaluating the visible first parentheses (4 + 9 = 13)",
+      "safe_fixed_pairs": [
+        "4 and 9"
+      ],
+      "fixed_pairs": [
+        "4 and 9"
+      ],
+      "visible_fixed_ops": [
+        "'+' between 4 and 9"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "+",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "Once the second bracket is evaluated, determine the outer connecting operator to reach 221.",
+      "target_slot_desc": "the operator inside the second parentheses (11 ? 6)",
+      "precedence_note": "Parentheses must be evaluated before the outer connecting operator.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": false,
+          "subtotal": "13",
+          "operand": "9"
+        },
+        {
+          "step": 2,
+          "is_missing": true,
+          "subtotal": "17",
+          "operand": "6"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 11 and 6 evaluates to 17"
+    },
+    "difficulty_metrics": {
+      "raw_score": 46.09,
+      "search_space": 25,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "parentheses_both",
+      "search_factor": 3.525,
+      "transition_factor": 1.5,
+      "operand_mag_factor": 1.359,
+      "target_scale_factor": 1.408
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1831.1,
+  "seed": 305,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "The esteemed curator needs to arrange three unique artifacts for the upcoming 'Treasures of Time' exhibition. We must determine the display order from first to last.\n\nLineup to order: Conservator Anya, Archivist Ben, and Historian Chloe.\n\nClues:\n- Conservator Anya is positioned ahead of Historian Chloe.\n- Conservator Anya is immediately after Archivist Ben.\n\nWhat is the complete order from first to last?",
+  "response": "Archivist Ben, Conservator Anya, Historian Chloe",
+  "hints": [
+    "Consider the artifact that must appear before another, and the one that must be directly beside it. This will help you place the first and last items.",
+    "Archivist Ben must be immediately before Conservator Anya. This constraint places Archivist Ben in the first position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Conservator Anya",
+      "Archivist Ben",
+      "Historian Chloe"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Conservator Anya",
+        "y": "Historian Chloe"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Conservator Anya",
+        "y": "Archivist Ben"
+      }
+    ],
+    "solution": [
+      "Archivist Ben",
+      "Conservator Anya",
+      "Historian Chloe"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Conservator Anya",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Conservator Anya is in the 2nd position",
+      "intermediate_value": "Conservator Anya",
+      "entity_positions": {
+        "Archivist Ben": "1st",
+        "Conservator Anya": "2nd",
+        "Historian Chloe": "3rd"
+      },
+      "supporting_clues": [
+        "Conservator Anya is before Historian Chloe.",
+        "Conservator Anya is immediately after Archivist Ben."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 19.5,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "immediately_after"
+      ],
+      "has_immediate": true,
+      "has_exclusion": false,
+      "decay_factor": 1.2,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Conservator Anya is positioned ahead of Historian Chloe.",
+      "Conservator Anya is immediately after Archivist Ben."
+    ],
+    "scenario_intro": "The esteemed curator needs to arrange three unique artifacts for the upcoming 'Treasures of Time' exhibition. We must determine the display order from first to last.",
+    "theme_title": "Gallery Exhibit Assembly",
+    "entity_mapping": {
+      "P1": "Conservator Anya",
+      "P2": "Archivist Ben",
+      "P3": "Historian Chloe"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P1",
+      "P3"
+    ],
+    "canonical_response": "P2, P1, P3"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1025.0,
+  "seed": 101,
+  "theme": {
+    "setting": "Urban Planning, Forestry Management, Stock Market Analysis, Museum Curation",
+    "title": "Gallery Exhibit Assembly",
+    "scenario_intro": "The esteemed curator needs to arrange three unique artifacts for the upcoming 'Treasures of Time' exhibition. We must determine the display order from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Conservator Anya",
+      "P2": "Archivist Ben",
+      "P3": "Historian Chloe"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}

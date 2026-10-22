@@ -1,0 +1,96 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "medium",
+  "question": "Find the missing operators to balance both sides: 16 ? 9 = 2 ? 5\nAllowed operators: +, -, *, /\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "-, +",
+  "hints": [
+    "To find the missing operators, first determine the value that both sides of the equation must equal. Focus on the side where all the numbers and operations are visible to find this target value.",
+    "The left side of the equation must equal the right side. Since the left side is 16 ? 9, and the right side is 2 ? 5, let's consider the right side first. The operator between 2 and 5 needs to result in the same value as the left side. Think about which operator, when applied to 2 and 5, would create a smaller result."
+  ],
+  "solution_data": {
+    "template": "{a} ? {b} = {c} ? {d}",
+    "operands": [
+      16,
+      9,
+      2,
+      5
+    ],
+    "operators": [
+      "-",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "result": 7,
+    "archetype": "balanced_eq",
+    "missing_indices": [
+      0,
+      1
+    ],
+    "intermediate_trace": {
+      "first_pair": "16 and 9",
+      "target_pair": "16 and 9",
+      "target_subtotal": "7",
+      "target_result": 7,
+      "intermediate_value": "7",
+      "approx_magnitude": "close to 7",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        1
+      ],
+      "prior_fixed_desc": null,
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [],
+      "first_step_direction": "smaller",
+      "true_first_op": "-",
+      "scale_type": "reduction",
+      "scale_guidance": "The target result is smaller than the primary starting numbers, indicating downward reduction.",
+      "subsequent_goal": "With the left side equaling 7, determine which operator combines 2 and 5 to balance both sides at 7.",
+      "target_slot_desc": "the operator between 16 and 9",
+      "precedence_note": "Evaluate each side independently to reach a balanced target.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "7",
+          "operand": "9"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 16 and 9 evaluates to 7"
+    },
+    "difficulty_metrics": {
+      "raw_score": 42.42,
+      "search_space": 16,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": false,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "balanced_eq",
+      "search_factor": 3.066,
+      "transition_factor": 0.0,
+      "operand_mag_factor": 1.307,
+      "target_scale_factor": 0.542
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1600.0,
+  "seed": 205,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

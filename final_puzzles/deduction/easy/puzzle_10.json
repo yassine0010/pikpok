@@ -1,0 +1,166 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The high-speed rail network requires immediate attention to locate a critical component across three zones. We must find its exact position before the next service begins.\nPossible locations: control room, maintenance shed, or station hub.\n\nClues:\n- (1) The signal relay is not in control room.\n- (2) The signal relay is in maintenance shed.\n- (3) The signal relay is not in maintenance shed.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the signal relay?",
+  "response": "control room",
+  "hints": [
+    "Clue (2) and clue (3) directly contradict each other, meaning exactly one of them must be true. This relationship is key to solving the puzzle.",
+    "Let's examine the possibility of the signal relay being in the maintenance shed (maintenance shed). If it were there, clue (1) would be true, clue (2) would be true, and clue (3) would be false. This scenario results in two true clues, which contradicts the rule that exactly one clue is true. Therefore, the maintenance shed (maintenance shed) cannot be the location of the signal relay."
+  ],
+  "solution_data": {
+    "candidates": [
+      "control room",
+      "maintenance shed",
+      "station hub"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "control room"
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "maintenance shed"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "maintenance shed"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "control room",
+    "intermediate_trace": {
+      "eliminated_candidate": "maintenance shed",
+      "elimination_reason": "Testing maintenance shed results in 2 true clues (clue (1), clue (2) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "maintenance shed",
+      "candidate_counts": {
+        "control room": 1,
+        "maintenance shed": 2,
+        "station hub": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (2)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (3)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": true
+        },
+        {
+          "speaker": "clue (3)",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": true,
+        "clue (3)": false
+      },
+      "clue_insight": "Clue (2) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.25,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.0,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          false,
+          true
+        ],
+        "B": [
+          true,
+          true,
+          false
+        ],
+        "C": [
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.5
+    },
+    "themed_clues": [
+      "(1) The signal relay is not in control room.",
+      "(2) The signal relay is in maintenance shed.",
+      "(3) The signal relay is not in maintenance shed."
+    ],
+    "scenario_intro": "The high-speed rail network requires immediate attention to locate a critical component across three zones. We must find its exact position before the next service begins.",
+    "theme_title": "rail network",
+    "item": "signal relay",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1061.5,
+  "seed": 110,
+  "theme": {
+    "setting": "Volcano Monitoring Expedition, Apiary Bee Handler Schedule, Forest Firefighting Crew Deployment, High-Speed Rail Network",
+    "title": "rail network",
+    "scenario_intro": "The high-speed rail network requires immediate attention to locate a critical component across three zones. We must find its exact position before the next service begins.",
+    "item": "signal relay",
+    "entity_mapping": {
+      "A": "control room",
+      "B": "maintenance shed",
+      "C": "station hub"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

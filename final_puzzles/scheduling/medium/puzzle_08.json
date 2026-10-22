@@ -1,0 +1,131 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "A group of beekeepers needs to be scheduled for hive inspections, from first to last. The order is crucial for maintaining colony health and honey production.\n\nLineup to order: Apiarist Rowan, Queen Breeder Silas, Honey Harvester Finnian, and Pollination Consultant Jasper.\n\nClues:\n- Apiarist Rowan arrives earlier than Pollination Consultant Jasper.\n- Apiarist Rowan is not 1st.\n- Honey Harvester Finnian is not in the 3rd position.\n- Apiarist Rowan is before Honey Harvester Finnian.\n\nWhat is the complete order from first to last?",
+  "response": "Queen Breeder Silas, Apiarist Rowan, Pollination Consultant Jasper, Honey Harvester Finnian",
+  "hints": [
+    "Apiarist Rowan must perform their inspection immediately before Honey Harvester Finnian, creating a two-person inspection block.",
+    "The clues that Apiarist Rowan is before Honey Harvester Finnian, and Apiarist Rowan is not first, restrict Honey Harvester Finnian's possible positions. Based on the solved intermediate milestone, Honey Harvester Finnian is confirmed to be in the 4th position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Apiarist Rowan",
+      "Queen Breeder Silas",
+      "Honey Harvester Finnian",
+      "Pollination Consultant Jasper"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Apiarist Rowan",
+        "y": "Pollination Consultant Jasper"
+      },
+      {
+        "type": "not_position",
+        "x": "Apiarist Rowan",
+        "k": 1
+      },
+      {
+        "type": "not_position",
+        "x": "Honey Harvester Finnian",
+        "k": 3
+      },
+      {
+        "type": "before",
+        "x": "Apiarist Rowan",
+        "y": "Honey Harvester Finnian"
+      }
+    ],
+    "solution": [
+      "Queen Breeder Silas",
+      "Apiarist Rowan",
+      "Pollination Consultant Jasper",
+      "Honey Harvester Finnian"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Honey Harvester Finnian",
+      "fixed_slot": "4th",
+      "partial_assignment": "Honey Harvester Finnian is in the 4th position",
+      "intermediate_value": "Honey Harvester Finnian",
+      "entity_positions": {
+        "Queen Breeder Silas": "1st",
+        "Apiarist Rowan": "2nd",
+        "Pollination Consultant Jasper": "3rd",
+        "Honey Harvester Finnian": "4th"
+      },
+      "supporting_clues": [
+        "Honey Harvester Finnian is not 3rd.",
+        "Apiarist Rowan is before Honey Harvester Finnian."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 33.9,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 1.8,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Apiarist Rowan arrives earlier than Pollination Consultant Jasper.",
+      "Apiarist Rowan is not 1st.",
+      "Honey Harvester Finnian is not in the 3rd position.",
+      "Apiarist Rowan is before Honey Harvester Finnian."
+    ],
+    "scenario_intro": "A group of beekeepers needs to be scheduled for hive inspections, from first to last. The order is crucial for maintaining colony health and honey production.",
+    "theme_title": "Commercial Beekeeping Apiary",
+    "entity_mapping": {
+      "P1": "Apiarist Rowan",
+      "P2": "Queen Breeder Silas",
+      "P3": "Honey Harvester Finnian",
+      "P4": "Pollination Consultant Jasper"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P1",
+      "P4",
+      "P3"
+    ],
+    "canonical_response": "P2, P1, P4, P3"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1414.5,
+  "seed": 208,
+  "theme": {
+    "setting": "Urban Planning Zoning, Quantum Physics Experiment, Antique Clock Restoration, Commercial Beekeeping Apiary",
+    "title": "Commercial Beekeeping Apiary",
+    "scenario_intro": "A group of beekeepers needs to be scheduled for hive inspections, from first to last. The order is crucial for maintaining colony health and honey production.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Apiarist Rowan",
+      "P2": "Queen Breeder Silas",
+      "P3": "Honey Harvester Finnian",
+      "P4": "Pollination Consultant Jasper"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

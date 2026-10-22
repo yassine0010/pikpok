@@ -1,0 +1,270 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "During an exploratory mission within the lunar lava tubes, a vital atmospheric regulator has gone missing. The investigation must pinpoint its location among five potential chambers.\nPossible locations: Chamber 1, Chamber 2, Chamber 3, Chamber 4, or Chamber 5.\n\nStatements:\n- Technician Anya: \"If the regulator unit is not in Chamber 2, then it is in Chamber 1.\"\n- Geologist Ben: \"If the regulator unit is not in Chamber 3, then it is in Chamber 2.\"\n- Scientist Chloe: \"The regulator unit is not in Chamber 3.\"\n- Pilot David: \"The regulator unit is in Chamber 3 or Chamber 4.\"\n- Explorer Eva: \"Scientist Chloe's statement is true.\"\n\nRULE: Exactly 1 of these statements is false (all others are true).\n\nWhere is the regulator unit?",
+  "response": "Chamber 2",
+  "hints": [
+    "Compare the reports from Technician Anya and Geologist Ben: analyze whether their claims can both be true simultaneously.",
+    "If the target were at Chamber 1, this would result in 2 true claims, which contradicts the rule requiring exactly 1 true claim, ruling out Chamber 1."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Chamber 1",
+      "Chamber 2",
+      "Chamber 3",
+      "Chamber 4",
+      "Chamber 5"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Chamber 2"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Chamber 1"
+          }
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Chamber 3"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Chamber 2"
+          }
+        },
+        "speaker": "Geologist Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Chamber 3"
+        },
+        "speaker": "Scientist Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Chamber 3",
+            "Chamber 4"
+          ]
+        },
+        "speaker": "Pilot David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "ref",
+          "target_id": "s3",
+          "target_speaker": "Scientist Chloe",
+          "claims_true": true
+        },
+        "speaker": "Explorer Eva"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly_false",
+      "k": 1
+    },
+    "solution": "Chamber 2",
+    "intermediate_trace": {
+      "eliminated_candidate": "Chamber 1",
+      "elimination_reason": "Testing Chamber 1 results in 2 false claims (Geologist Ben, Pilot David are false) instead of exactly 1 false claim.",
+      "intermediate_value": "Chamber 1",
+      "candidate_counts": {
+        "Chamber 1": 2,
+        "Chamber 2": 1,
+        "Chamber 3": 3,
+        "Chamber 4": 2,
+        "Chamber 5": 3
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Scientist Chloe",
+        "Explorer Eva"
+      ],
+      "elim_cand_false_speakers": [
+        "Geologist Ben",
+        "Pilot David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Geologist Ben",
+          "true": false
+        },
+        {
+          "speaker": "Scientist Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Pilot David",
+          "true": false
+        },
+        {
+          "speaker": "Explorer Eva",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Geologist Ben": false,
+        "Scientist Chloe": true,
+        "Pilot David": false,
+        "Explorer Eva": true
+      },
+      "clue_insight": "Scientist Chloe and Explorer Eva always share the same truth value (they must be either both true or both false together).",
+      "interaction_type": "equivalent",
+      "interaction_speakers": [
+        "Scientist Chloe",
+        "Explorer Eva"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 26.43,
+      "structural_score": 20,
+      "near_misses": 2,
+      "logic_words": 8,
+      "statement_overlap": 1.8,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 2,
+        "E": 3
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true,
+          false,
+          true
+        ],
+        "B": [
+          true,
+          true,
+          true,
+          false,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false,
+          true,
+          false
+        ],
+        "D": [
+          false,
+          false,
+          true,
+          true,
+          true
+        ],
+        "E": [
+          false,
+          false,
+          true,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.871,
+      "clause_score": 8.9
+    },
+    "speakers": [
+      "Technician Anya",
+      "Geologist Ben",
+      "Scientist Chloe",
+      "Pilot David",
+      "Explorer Eva"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"If the regulator unit is not in Chamber 2, then it is in Chamber 1.\"",
+      "Geologist Ben: \"If the regulator unit is not in Chamber 3, then it is in Chamber 2.\"",
+      "Scientist Chloe: \"The regulator unit is not in Chamber 3.\"",
+      "Pilot David: \"The regulator unit is in Chamber 3 or Chamber 4.\"",
+      "Explorer Eva: \"Scientist Chloe's statement is true.\""
+    ],
+    "scenario_intro": "During an exploratory mission within the lunar lava tubes, a vital atmospheric regulator has gone missing. The investigation must pinpoint its location among five potential chambers.",
+    "theme_title": "Lunar Lava Tubes",
+    "item": "regulator unit",
+    "entity_mapping": {
+      "A": "Chamber 1",
+      "B": "Chamber 2",
+      "C": "Chamber 3",
+      "D": "Chamber 4",
+      "E": "Chamber 5",
+      "Alice": "Technician Anya",
+      "Bob": "Geologist Ben",
+      "Carol": "Scientist Chloe",
+      "Dave": "Pilot David",
+      "Eve": "Explorer Eva"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "B",
+    "canonical_response": "B"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1803.7,
+  "seed": 308,
+  "theme": {
+    "setting": "Deep-Sea Hydrothermal Vents, Antarctic Ice Core Laboratories, Superconducting Super Collider Facilities, Lunar Lava Tube Exploration",
+    "title": "Lunar Lava Tubes",
+    "scenario_intro": "During an exploratory mission within the lunar lava tubes, a vital atmospheric regulator has gone missing. The investigation must pinpoint its location among five potential chambers.",
+    "item": "regulator unit",
+    "entity_mapping": {
+      "A": "Chamber 1",
+      "B": "Chamber 2",
+      "C": "Chamber 3",
+      "D": "Chamber 4",
+      "E": "Chamber 5",
+      "Alice": "Technician Anya",
+      "Bob": "Geologist Ben",
+      "Carol": "Scientist Chloe",
+      "Dave": "Pilot David",
+      "Eve": "Explorer Eva"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

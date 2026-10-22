@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "medium",
+  "question": "Find the missing operators: 8 ? 5 + 2 ? 17 = 32\nAllowed operators: +, -, *, /\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+, +",
+  "hints": [
+    "The fixed operation between 5 and 2 does not need to be evaluated first. Standard order of operations dictates that the missing operator between 8 and 5 must be resolved before considering the fixed operation.",
+    "The first missing operator, between 8 and 5, needs to produce a value around 13. After that, consider the operator between the result (which should be close to 13) and 17. This second operator must combine with 13 and 17 to reach the final value of 32."
+  ],
+  "solution_data": {
+    "template": "{a} ? {b} + {c} ? {d} = {r}",
+    "operands": [
+      8,
+      5,
+      2,
+      17
+    ],
+    "operators": [
+      "+",
+      "+",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "result": 32,
+    "archetype": "flat",
+    "missing_indices": [
+      0,
+      2
+    ],
+    "intermediate_trace": {
+      "first_pair": "8 and 5",
+      "target_pair": "8 and 5",
+      "target_subtotal": "13",
+      "target_result": 32,
+      "intermediate_value": "13",
+      "approx_magnitude": "close to 13",
+      "num_missing": 2,
+      "missing_indices": [
+        0,
+        2
+      ],
+      "prior_fixed_desc": "",
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'+' between 5 and 2"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "+",
+      "scale_type": "moderate",
+      "scale_guidance": "The target result is close in magnitude to the operands, indicating modest step-by-step adjustments.",
+      "subsequent_goal": "Carrying 13 forward to reach 15, determine which operator completes the equation to reach 32.",
+      "target_slot_desc": "the operator between 8 and 5",
+      "precedence_note": "Standard order of operations applies.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "13",
+          "operand": ""
+        },
+        {
+          "step": 2,
+          "is_missing": false,
+          "subtotal": "15",
+          "operand": ""
+        },
+        {
+          "step": 3,
+          "is_missing": true,
+          "subtotal": "32",
+          "operand": ""
+        }
+      ],
+      "reasoning_nudge": "The target operation between 8 and 5 evaluates to 13"
+    },
+    "difficulty_metrics": {
+      "raw_score": 29.28,
+      "search_space": 16,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": false,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "flat",
+      "search_factor": 3.066,
+      "transition_factor": 0.0,
+      "operand_mag_factor": 1.299,
+      "target_scale_factor": 0.911
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1325.0,
+  "seed": 206,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_06.png"
+}

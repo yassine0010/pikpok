@@ -1,0 +1,172 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "The investigation is occurring at a remote weather station across three outposts. The objective is to locate the missing atmospheric sensor.\nPossible locations: Outpost Alpha, Outpost Beta, or Outpost Gamma.\n\nClues:\n- (1) The atmospheric sensor is in Outpost Beta or Outpost Gamma.\n- (2) The atmospheric sensor is in Outpost Alpha or Outpost Gamma.\n- (3) The atmospheric sensor is in Outpost Beta.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the atmospheric sensor?",
+  "response": "Outpost Alpha",
+  "hints": [
+    "Clue (1) and clue (3) cannot both be true, as they make mutually exclusive claims about the item's location. Clue (2) and clue (3) directly contradict each other, meaning exactly one of them must be true.",
+    "If the atmospheric sensor were in outpost beta (outpost beta), then clue (1) would be true and clue (3) would also be true. This would result in 2 true clues. This violates the rule that exactly 1 clue is true, so the atmospheric sensor cannot be in outpost beta."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Outpost Alpha",
+      "Outpost Beta",
+      "Outpost Gamma"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Outpost Beta",
+            "Outpost Gamma"
+          ]
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Outpost Alpha",
+            "Outpost Gamma"
+          ]
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Outpost Beta"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Outpost Alpha",
+    "intermediate_trace": {
+      "eliminated_candidate": "Outpost Beta",
+      "elimination_reason": "Testing Outpost Beta results in 2 true clues (clue (1), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "Outpost Beta",
+      "candidate_counts": {
+        "Outpost Alpha": 1,
+        "Outpost Beta": 2,
+        "Outpost Gamma": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (2)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": false
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": false,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (2) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.79,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.67,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          false,
+          true
+        ],
+        "C": [
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 2.1
+    },
+    "themed_clues": [
+      "(1) The atmospheric sensor is in Outpost Beta or Outpost Gamma.",
+      "(2) The atmospheric sensor is in Outpost Alpha or Outpost Gamma.",
+      "(3) The atmospheric sensor is in Outpost Beta."
+    ],
+    "scenario_intro": "The investigation is occurring at a remote weather station across three outposts. The objective is to locate the missing atmospheric sensor.",
+    "theme_title": "weather station",
+    "item": "atmospheric sensor",
+    "entity_mapping": {
+      "A": "Outpost Alpha",
+      "B": "Outpost Beta",
+      "C": "Outpost Gamma"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1094.8,
+  "seed": 109,
+  "theme": {
+    "setting": "Archeological Excavation, High-Altitude Observatories, Rare Manuscript Restoration, Weather Station",
+    "title": "weather station",
+    "scenario_intro": "The investigation is occurring at a remote weather station across three outposts. The objective is to locate the missing atmospheric sensor.",
+    "item": "atmospheric sensor",
+    "entity_mapping": {
+      "A": "Outpost Alpha",
+      "B": "Outpost Beta",
+      "C": "Outpost Gamma"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

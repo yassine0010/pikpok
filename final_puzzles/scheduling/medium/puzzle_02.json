@@ -1,0 +1,131 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The esteemed judges need to see the four talented groomers present their show-stopping canine creations in a specific order, from first to last.\n\nLineup to order: Stylist Finn, Stylist Anya, Stylist Charles, and Stylist Beatrice.\n\nClues:\n- Stylist Finn arrives earlier than Stylist Charles.\n- Stylist Anya is before Stylist Charles.\n- Stylist Finn is not placed 2nd.\n- Stylist Charles is not in the 4th position.\n\nWhat is the complete order from first to last?",
+  "response": "Stylist Finn, Stylist Anya, Stylist Charles, Stylist Beatrice",
+  "hints": [
+    "Look closely at the clues involving Stylist Beatrice: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Stylist Beatrice to 4th to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Stylist Finn",
+      "Stylist Anya",
+      "Stylist Charles",
+      "Stylist Beatrice"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Stylist Finn",
+        "y": "Stylist Charles"
+      },
+      {
+        "type": "before",
+        "x": "Stylist Anya",
+        "y": "Stylist Charles"
+      },
+      {
+        "type": "not_position",
+        "x": "Stylist Finn",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Stylist Charles",
+        "k": 4
+      }
+    ],
+    "solution": [
+      "Stylist Finn",
+      "Stylist Anya",
+      "Stylist Charles",
+      "Stylist Beatrice"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Stylist Beatrice",
+      "fixed_slot": "4th",
+      "partial_assignment": "Stylist Beatrice is in the 4th position",
+      "intermediate_value": "Stylist Beatrice",
+      "entity_positions": {
+        "Stylist Finn": "1st",
+        "Stylist Anya": "2nd",
+        "Stylist Charles": "3rd",
+        "Stylist Beatrice": "4th"
+      },
+      "supporting_clues": [
+        "Stylist Finn is before Stylist Charles.",
+        "Stylist Anya is before Stylist Charles."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 34.05,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 1.95,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Stylist Finn arrives earlier than Stylist Charles.",
+      "Stylist Anya is before Stylist Charles.",
+      "Stylist Finn is not placed 2nd.",
+      "Stylist Charles is not in the 4th position."
+    ],
+    "scenario_intro": "The esteemed judges need to see the four talented groomers present their show-stopping canine creations in a specific order, from first to last.",
+    "theme_title": "Canine Styling Showcase",
+    "entity_mapping": {
+      "P1": "Stylist Finn",
+      "P2": "Stylist Anya",
+      "P3": "Stylist Charles",
+      "P4": "Stylist Beatrice"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_response": "P1, P2, P3, P4"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1420.0,
+  "seed": 202,
+  "theme": {
+    "setting": "Urban Planning, Quantum Physics, Classical Music Composition, Professional Dog Grooming",
+    "title": "Canine Styling Showcase",
+    "scenario_intro": "The esteemed judges need to see the four talented groomers present their show-stopping canine creations in a specific order, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Stylist Finn",
+      "P2": "Stylist Anya",
+      "P3": "Stylist Charles",
+      "P4": "Stylist Beatrice"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

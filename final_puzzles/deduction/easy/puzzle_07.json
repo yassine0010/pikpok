@@ -1,0 +1,169 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "easy",
+  "question": "An urgent search is underway within the dusty library archives to locate a specific missing artifact across three distinct zones.\nPossible locations: West Wing, Reading Room, or Scriptorium.\n\nClues:\n- (1) The ancient folio is in Reading Room or Scriptorium.\n- (2) The ancient folio is not in Reading Room.\n- (3) The ancient folio is in Reading Room.\n\nRULE: Exactly 1 of these clues is true (all others are false).\n\nWhere is the ancient folio?",
+  "response": "West Wing",
+  "hints": [
+    "Clue (2) and clue (3) directly contradict each other, meaning exactly one of them must be true.",
+    "When testing the Reading Room (Reading Room), clue (1) is true and clue (3) is true. This results in 2 true clues, contradicting the rule that exactly 1 clue is true. Therefore, the Reading Room (Reading Room) is ruled out."
+  ],
+  "solution_data": {
+    "candidates": [
+      "West Wing",
+      "Reading Room",
+      "Scriptorium"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Reading Room",
+            "Scriptorium"
+          ]
+        }
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Reading Room"
+        }
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Reading Room"
+        }
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "West Wing",
+    "intermediate_trace": {
+      "eliminated_candidate": "Reading Room",
+      "elimination_reason": "Testing Reading Room results in 2 true clues (clue (1), clue (3) are true) instead of exactly 1 true clue.",
+      "intermediate_value": "Reading Room",
+      "candidate_counts": {
+        "West Wing": 1,
+        "Reading Room": 2,
+        "Scriptorium": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "clue (1)",
+        "clue (3)"
+      ],
+      "elim_cand_false_speakers": [
+        "clue (2)"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "clue (1)",
+          "true": true
+        },
+        {
+          "speaker": "clue (2)",
+          "true": false
+        },
+        {
+          "speaker": "clue (3)",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "clue (1)": true,
+        "clue (2)": false,
+        "clue (3)": true
+      },
+      "clue_insight": "Clue (2) and clue (3) directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "clue (2)",
+        "clue (3)"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 12.52,
+      "structural_score": 9,
+      "near_misses": 2,
+      "logic_words": 2,
+      "statement_overlap": 1.33,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 1,
+        "B": 2,
+        "C": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          false,
+          true
+        ],
+        "C": [
+          true,
+          true,
+          false
+        ]
+      },
+      "mean_entropy": 0.918,
+      "clause_score": 1.8
+    },
+    "themed_clues": [
+      "(1) The ancient folio is in Reading Room or Scriptorium.",
+      "(2) The ancient folio is not in Reading Room.",
+      "(3) The ancient folio is in Reading Room."
+    ],
+    "scenario_intro": "An urgent search is underway within the dusty library archives to locate a specific missing artifact across three distinct zones.",
+    "theme_title": "archive search",
+    "item": "ancient folio",
+    "entity_mapping": {
+      "A": "West Wing",
+      "B": "Reading Room",
+      "C": "Scriptorium"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1078.2,
+  "seed": 107,
+  "theme": {
+    "setting": "Jousting Knight Lineup, Extreme Weather Forecasting, Ancient Manuscript Preservation, Volcano Monitoring Expedition, Apiary Bee Handler Schedule, Forest Firefighting Crew Deployment, High-Speed Rail Network, Aqueduct Repair, Library Archives, Rail Network",
+    "title": "archive search",
+    "scenario_intro": "An urgent search is underway within the dusty library archives to locate a specific missing artifact across three distinct zones.",
+    "item": "ancient folio",
+    "entity_mapping": {
+      "A": "West Wing",
+      "B": "Reading Room",
+      "C": "Scriptorium"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

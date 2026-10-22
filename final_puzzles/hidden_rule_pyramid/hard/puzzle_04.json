@@ -1,0 +1,128 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "hard",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "16",
+  "hints": [
+    "Test every candidate relation on all the complete triples, including ones far apart in the picture; a relation that fits only some of them is not the rule.",
+    "The empty box built from the pair 15 and 2 comes to 2."
+  ],
+  "solution_data": {
+    "rule_id": "alt_level[min|add_n1]",
+    "rule_kind": "alt_level",
+    "rule_label": "smaller on odd levels, sum minus 1 on even levels",
+    "archetype": "scheduled",
+    "direction": "forward",
+    "height": 5,
+    "rows": [
+      [
+        14,
+        17,
+        15,
+        2,
+        8
+      ],
+      [
+        14,
+        15,
+        2,
+        2
+      ],
+      [
+        28,
+        16,
+        3
+      ],
+      [
+        16,
+        3
+      ],
+      [
+        18
+      ]
+    ],
+    "question_cell": [
+      2,
+      1
+    ],
+    "hidden_cells": [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "blank_class": 2,
+    "witness_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        4,
+        0
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 16,
+    "difficulty_metrics": {
+      "rule_complexity": 5.0,
+      "chain_depth": 2,
+      "height": 5,
+      "scarcity_log2": 3.585,
+      "magnitude": 1.462,
+      "backward": false,
+      "n_witnesses": 5,
+      "raw_score": 8.925
+    },
+    "intermediate_trace": {
+      "hint_form": "first_step",
+      "hint1_key": "scheduled",
+      "schedule_kind": "uniform",
+      "evidence_cells": [],
+      "evidence": [],
+      "first_step": {
+        "cell": [
+          1,
+          2
+        ],
+        "pair": [
+          15,
+          2
+        ],
+        "value": 2
+      },
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 2
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 1,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "b6d71c74bcf67850",
+  "score": 1851.4,
+  "seed": 304,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

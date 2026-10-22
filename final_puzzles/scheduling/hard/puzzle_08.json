@@ -1,0 +1,147 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "Five crucial train engineers must be scheduled for their shifts, ensuring the high-speed rail network operates smoothly from first to last.\n\nLineup to order: Engineer Anya, Engineer David, Engineer Ben, Engineer Chloe, and Conductor Marcus.\n\nClues:\n- Engineer Ben is not 3rd.\n- Engineer Chloe comes directly after Engineer Ben.\n- Engineer Anya is before Engineer Ben.\n- Engineer Chloe is positioned ahead of Engineer David.\n- Conductor Marcus is positioned ahead of Engineer David.\n\nWhat is the complete order from first to last?",
+  "response": "Engineer Anya, Engineer Ben, Engineer Chloe, Conductor Marcus, Engineer David",
+  "hints": [
+    "Look closely at the clues involving Engineer Ben: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Engineer Ben to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Engineer Anya",
+      "Engineer David",
+      "Engineer Ben",
+      "Engineer Chloe",
+      "Conductor Marcus"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Engineer Ben",
+        "k": 3
+      },
+      {
+        "type": "immediately_after",
+        "x": "Engineer Chloe",
+        "y": "Engineer Ben"
+      },
+      {
+        "type": "before",
+        "x": "Engineer Anya",
+        "y": "Engineer Ben"
+      },
+      {
+        "type": "before",
+        "x": "Engineer Chloe",
+        "y": "Engineer David"
+      },
+      {
+        "type": "before",
+        "x": "Conductor Marcus",
+        "y": "Engineer David"
+      }
+    ],
+    "solution": [
+      "Engineer Anya",
+      "Engineer Ben",
+      "Engineer Chloe",
+      "Conductor Marcus",
+      "Engineer David"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Engineer Ben",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Engineer Ben is in the 2nd position",
+      "intermediate_value": "Engineer Ben",
+      "entity_positions": {
+        "Engineer Anya": "1st",
+        "Engineer Ben": "2nd",
+        "Engineer Chloe": "3rd",
+        "Conductor Marcus": "4th",
+        "Engineer David": "5th"
+      },
+      "supporting_clues": [
+        "Engineer Ben is not 3rd.",
+        "Engineer Chloe is immediately after Engineer Ben.",
+        "Engineer Anya is before Engineer Ben."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 49.06,
+      "num_entities": 5,
+      "num_constraints": 5,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 1.875,
+      "near_miss_factor": 1.083
+    },
+    "themed_clues": [
+      "Engineer Ben is not 3rd.",
+      "Engineer Chloe comes directly after Engineer Ben.",
+      "Engineer Anya is before Engineer Ben.",
+      "Engineer Chloe is positioned ahead of Engineer David.",
+      "Conductor Marcus is positioned ahead of Engineer David."
+    ],
+    "scenario_intro": "Five crucial train engineers must be scheduled for their shifts, ensuring the high-speed rail network operates smoothly from first to last.",
+    "theme_title": "High-Speed Rail Network Dispatch",
+    "entity_mapping": {
+      "P1": "Engineer Anya",
+      "P2": "Engineer David",
+      "P3": "Engineer Ben",
+      "P4": "Engineer Chloe",
+      "P5": "Conductor Marcus"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P1",
+      "P3",
+      "P4",
+      "P5",
+      "P2"
+    ],
+    "canonical_response": "P1, P3, P4, P5, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1801.7,
+  "seed": 308,
+  "theme": {
+    "setting": "Urban Planning Department, Ancient Manuscript Restoration, Professional Dog Grooming Competition, High-Speed Rail Network",
+    "title": "High-Speed Rail Network Dispatch",
+    "scenario_intro": "Five crucial train engineers must be scheduled for their shifts, ensuring the high-speed rail network operates smoothly from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Engineer Anya",
+      "P2": "Engineer David",
+      "P3": "Engineer Ben",
+      "P4": "Engineer Chloe",
+      "P5": "Conductor Marcus"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

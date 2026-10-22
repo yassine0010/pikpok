@@ -1,0 +1,117 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "Four brave wildland firefighters are preparing to tackle a new blaze. Your task is to determine the order in which they will be deployed, from first to last.\n\nLineup to order: Ranger Eva, Scout Liam, and Captain Noah.\n\nClues:\n- Captain Noah is not placed 2nd.\n- Captain Noah is positioned ahead of Scout Liam.\n- Scout Liam is not placed 2nd.\n\nWhat is the complete order from first to last?",
+  "response": "Captain Noah, Ranger Eva, Scout Liam",
+  "hints": [
+    "Consider who cannot be in the middle position, and who must go before another. This will help narrow down the possibilities for the first and last spots.",
+    "The clue 'Captain Noah is before Scout Liam' is key to positioning. Based on the available slots and exclusions, Captain Noah is confirmed to be in the 1st position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Ranger Eva",
+      "Scout Liam",
+      "Captain Noah"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Captain Noah",
+        "k": 2
+      },
+      {
+        "type": "before",
+        "x": "Captain Noah",
+        "y": "Scout Liam"
+      },
+      {
+        "type": "not_position",
+        "x": "Scout Liam",
+        "k": 2
+      }
+    ],
+    "solution": [
+      "Captain Noah",
+      "Ranger Eva",
+      "Scout Liam"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Captain Noah",
+      "fixed_slot": "1st",
+      "partial_assignment": "Captain Noah is in the 1st position",
+      "intermediate_value": "Captain Noah",
+      "entity_positions": {
+        "Captain Noah": "1st",
+        "Ranger Eva": "2nd",
+        "Scout Liam": "3rd"
+      },
+      "supporting_clues": [
+        "Captain Noah is not 2nd.",
+        "Captain Noah is before Scout Liam."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.6,
+      "num_entities": 3,
+      "num_constraints": 3,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 2.1,
+      "near_miss_factor": 2.5
+    },
+    "themed_clues": [
+      "Captain Noah is not placed 2nd.",
+      "Captain Noah is positioned ahead of Scout Liam.",
+      "Scout Liam is not placed 2nd."
+    ],
+    "scenario_intro": "Four brave wildland firefighters are preparing to tackle a new blaze. Your task is to determine the order in which they will be deployed, from first to last.",
+    "theme_title": "Wildland Firefighter Crew",
+    "entity_mapping": {
+      "P1": "Ranger Eva",
+      "P2": "Scout Liam",
+      "P3": "Captain Noah"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P1",
+      "P2"
+    ],
+    "canonical_response": "P3, P1, P2"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1130.0,
+  "seed": 110,
+  "theme": {
+    "setting": "Urban Planning Development, Quantum Physics Research, Historical Linguistics Study, Wildland Firefighting Dispatch",
+    "title": "Wildland Firefighter Crew",
+    "scenario_intro": "Four brave wildland firefighters are preparing to tackle a new blaze. Your task is to determine the order in which they will be deployed, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Ranger Eva",
+      "P2": "Scout Liam",
+      "P3": "Captain Noah"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

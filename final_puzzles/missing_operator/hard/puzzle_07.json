@@ -1,0 +1,101 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "hard",
+  "question": "Find the missing operators to balance both sides: 14 + 3 ? 2 = 16 ? 4\nAllowed operators: +, -, *, /, ^\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "*, +",
+  "hints": [
+    "To solve this, first determine the value of the side with all known numbers and operators. This will give you the target value that the other side must also equal.",
+    "The operator between 3 and 2 on the left side needs to be determined. The left side evaluates to 20. Consider how 16 and 4 can be combined to also reach 20."
+  ],
+  "solution_data": {
+    "template": "{a} + {b} ? {c} = {d} ? {e}",
+    "operands": [
+      14,
+      3,
+      2,
+      16,
+      4
+    ],
+    "operators": [
+      "+",
+      "*",
+      "+"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "^"
+    ],
+    "result": 20,
+    "archetype": "balanced_eq",
+    "missing_indices": [
+      1,
+      2
+    ],
+    "intermediate_trace": {
+      "first_pair": "3 and 2",
+      "target_pair": "3 and 2",
+      "target_subtotal": "6",
+      "target_result": 20,
+      "intermediate_value": "6",
+      "approx_magnitude": "close to 6",
+      "num_missing": 2,
+      "missing_indices": [
+        1,
+        2
+      ],
+      "prior_fixed_desc": null,
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'+' between 14 and 3"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "*",
+      "scale_type": "moderate",
+      "scale_guidance": "The target result is close in magnitude to the operands, indicating modest step-by-step adjustments.",
+      "subsequent_goal": "With the left side equaling 20, determine which operator combines 16 and 4 to balance both sides at 20.",
+      "target_slot_desc": "the operator between 3 and 2",
+      "precedence_note": "Higher-precedence operations bind first.",
+      "is_precedence_out_of_order": true,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "6",
+          "operand": "3"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 3 and 2 evaluates to 6"
+    },
+    "difficulty_metrics": {
+      "raw_score": 46.37,
+      "search_space": 25,
+      "num_operands": 5,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": false,
+      "archetype": "balanced_eq",
+      "search_factor": 3.525,
+      "transition_factor": 1.5,
+      "operand_mag_factor": 1.255,
+      "target_scale_factor": 0.793
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1839.1,
+  "seed": 307,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

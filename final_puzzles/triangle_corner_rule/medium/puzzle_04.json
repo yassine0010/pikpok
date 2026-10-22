@@ -1,0 +1,89 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "medium",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (1, 7, 18) -> 25; (7, 17, 4) -> 3; (17, 13, 4) -> 1; (5, 14, 11) -> 5. Find the center for (17, 18, 16).",
+  "response": "2",
+  "hints": [
+    "Examine a complete triangle to see how two of its corner values connect to the center value, then verify this connection in the other triangles.",
+    "One corner determines the size of equal parts, and the remaining two corners are combined before being separated into those parts.",
+    "Combining the left and right corners of the last triangle gives 34."
+  ],
+  "solution_data": {
+    "rule_id": "M30",
+    "rule_expr": "(left + right) // top",
+    "rule_ops": [
+      "add",
+      "div"
+    ],
+    "archetype": "forward_compound",
+    "unknown": "center",
+    "orientation": "up",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 1,
+        "left": 7,
+        "right": 18,
+        "center": 25
+      },
+      {
+        "top": 7,
+        "left": 17,
+        "right": 4,
+        "center": 3
+      },
+      {
+        "top": 17,
+        "left": 13,
+        "right": 4,
+        "center": 1
+      },
+      {
+        "top": 5,
+        "left": 14,
+        "right": 11,
+        "center": 5
+      }
+    ],
+    "query": {
+      "top": 17,
+      "left": 18,
+      "right": 16,
+      "center": null
+    },
+    "difficulty_metrics": {
+      "raw_score": 3.924,
+      "n_ops": 2,
+      "op_kinds": 2,
+      "const_used": 0,
+      "special_ops": 1,
+      "inverse": 0,
+      "examples_shown": 4,
+      "max_value": 25
+    },
+    "intermediate_trace": {
+      "kind": "forward_first_op",
+      "expr": "left and right",
+      "slots": [
+        "left",
+        "right"
+      ],
+      "value": 34
+    },
+    "response_value": 2,
+    "tier": "medium"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "89babdc7c91a4ee9ecc00ae85f3ba2dafe8e0550930391f6d5d84cc220ee4291",
+  "score": 1231.0,
+  "seed": 204,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

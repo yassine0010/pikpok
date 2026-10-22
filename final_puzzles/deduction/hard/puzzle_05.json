@@ -1,0 +1,265 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "Investigating an anomaly within the orbital satellite maintenance sector, we must pinpoint the location of a critical component across four distinct arms.\nPossible locations: Arm 1, Arm 2, Arm 3, Arm 4, or Unknown.\n\nStatements:\n- Technician Anya: \"The orbital scanner is in Arm 2 or Unknown.\"\n- Engineer Ben: \"Technician Anya's statement is true.\"\n- Analyst Chloe: \"The orbital scanner is in neither Arm 3 nor Unknown.\"\n- Operator David: \"The orbital scanner is in Arm 4.\"\n- Director Eve: \"If the orbital scanner is not in Arm 4, then it is in Arm 2.\"\n\nRULE: Exactly 3 of these statements are true (all others are false).\n\nWhere is the orbital scanner?",
+  "response": "Arm 4",
+  "hints": [
+    "Compare the reports from Technician Anya and Engineer Ben: analyze whether their claims can both be true simultaneously.",
+    "If the target were at Arm 2, this would result in 4 true claims, which contradicts the rule requiring exactly 3 true claims, ruling out Arm 2."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Arm 1",
+      "Arm 2",
+      "Arm 3",
+      "Arm 4",
+      "Unknown"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Arm 2",
+            "Unknown"
+          ]
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "ref",
+          "target_id": "s1",
+          "target_speaker": "Technician Anya",
+          "claims_true": true
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Arm 3",
+            "Unknown"
+          ]
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Arm 4"
+        },
+        "speaker": "Operator David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Arm 4"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Arm 2"
+          }
+        },
+        "speaker": "Director Eve"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 3
+    },
+    "solution": "Arm 4",
+    "intermediate_trace": {
+      "eliminated_candidate": "Arm 2",
+      "elimination_reason": "Testing Arm 2 results in 4 true claims (Technician Anya, Engineer Ben, Analyst Chloe, Director Eve are true) instead of exactly 3 true claims.",
+      "intermediate_value": "Arm 2",
+      "candidate_counts": {
+        "Arm 1": 1,
+        "Arm 2": 4,
+        "Arm 3": 0,
+        "Arm 4": 3,
+        "Unknown": 2
+      },
+      "expected_count": 3,
+      "elim_cand_count": 4,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Engineer Ben",
+        "Analyst Chloe",
+        "Director Eve"
+      ],
+      "elim_cand_false_speakers": [
+        "Operator David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": true
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Operator David",
+          "true": false
+        },
+        {
+          "speaker": "Director Eve",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": true,
+        "Analyst Chloe": true,
+        "Operator David": false,
+        "Director Eve": true
+      },
+      "clue_insight": "Technician Anya and Engineer Ben always share the same truth value (they must be either both true or both false together).",
+      "interaction_type": "equivalent",
+      "interaction_speakers": [
+        "Technician Anya",
+        "Engineer Ben"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 24.26,
+      "structural_score": 18,
+      "near_misses": 2,
+      "logic_words": 6,
+      "statement_overlap": 2.2,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 1,
+        "B": 4,
+        "C": 0,
+        "D": 3,
+        "E": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          false,
+          true,
+          false,
+          false
+        ],
+        "B": [
+          true,
+          true,
+          true,
+          false,
+          true
+        ],
+        "C": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "D": [
+          false,
+          false,
+          true,
+          true,
+          true
+        ],
+        "E": [
+          true,
+          true,
+          false,
+          false,
+          false
+        ]
+      },
+      "mean_entropy": 0.921,
+      "clause_score": 8.0
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David",
+      "Director Eve"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The orbital scanner is in Arm 2 or Unknown.\"",
+      "Engineer Ben: \"Technician Anya's statement is true.\"",
+      "Analyst Chloe: \"The orbital scanner is in neither Arm 3 nor Unknown.\"",
+      "Operator David: \"The orbital scanner is in Arm 4.\"",
+      "Director Eve: \"If the orbital scanner is not in Arm 4, then it is in Arm 2.\""
+    ],
+    "scenario_intro": "Investigating an anomaly within the orbital satellite maintenance sector, we must pinpoint the location of a critical component across four distinct arms.",
+    "theme_title": "Orbital Scanner",
+    "item": "orbital scanner",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "E": "Unknown",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Director Eve"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "D",
+    "canonical_response": "D"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1759.2,
+  "seed": 305,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Botanical Arboretums, Orbital Satellite Maintenance",
+    "title": "Orbital Scanner",
+    "scenario_intro": "Investigating an anomaly within the orbital satellite maintenance sector, we must pinpoint the location of a critical component across four distinct arms.",
+    "item": "orbital scanner",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "E": "Unknown",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David",
+      "Eve": "Director Eve"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

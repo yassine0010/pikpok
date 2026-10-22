@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "Find the missing number in the sequence: 16, 25, 36, 49, ?, 81",
+  "response": "64",
+  "hints": [
+    "Observe how the differences between consecutive terms are changing.",
+    "The difference between 16 and 25 is 9. The difference between 25 and 36 is 11. Can you see how the difference is increasing?"
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "shifted_square",
+    "tier": 2,
+    "mode": "middle",
+    "terms": [
+      16,
+      25,
+      36,
+      49,
+      64,
+      81
+    ],
+    "target_index": 4,
+    "missing_position": 4,
+    "rule": "(n+3)^2 + 0",
+    "expr": "(n+3)^2 + 0",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "16 and 25",
+      "first_difference": 9,
+      "first_step": "16 to 25 (diff 9)",
+      "preceding_term": 49,
+      "intermediate_value": 9
+    },
+    "difficulty_metrics": {
+      "raw_score": 16.74,
+      "tier": 2,
+      "variant": "shifted_square",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.435,
+      "step_var_factor": 0.303,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1430.2,
+  "seed": 205,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_05.png"
+}

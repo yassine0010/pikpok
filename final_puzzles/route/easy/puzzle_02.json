@@ -1,0 +1,96 @@
+{
+  "puzzle_type": "route",
+  "difficulty": "easy",
+  "question": "Find the shortest route from S to E in the fewest moves.\nOne move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column).\n..S##\n...##\n.....\n.###.\n...E.",
+  "response": "7",
+  "hints": [
+    "The direct path to E is blocked by a wall structure. Look for an open corridor leading away from S.",
+    "From start cell S at row 1, col 3, move down toward row 2, col 3."
+  ],
+  "solution_data": {
+    "grid": [
+      "..S##",
+      "...##",
+      ".....",
+      ".###.",
+      "...E."
+    ],
+    "start": [
+      0,
+      2
+    ],
+    "end": [
+      4,
+      3
+    ],
+    "moves": "4-neighbors",
+    "cell_cost": null,
+    "min_distance": 7,
+    "checkpoints": [],
+    "arrows": [],
+    "gates": [],
+    "mud": [],
+    "rule_text": "One move = one step up, down, left or right. Walls (#) block your path. Coordinates are 1-indexed (row 1 is top row, column 1 is leftmost column).",
+    "description": "Find the shortest route from S to E",
+    "title": "Warehouse Logistics",
+    "theme": "warehouse",
+    "intermediate_trace": {
+      "start": [
+        1,
+        3
+      ],
+      "start_desc": "start cell S at row 1, col 3",
+      "waypoint": [
+        1,
+        2
+      ],
+      "waypoint_desc": "row 2, col 3",
+      "first_move_direction": "down",
+      "optimal_first_moves": [
+        {
+          "direction": "down",
+          "cell": [
+            2,
+            3
+          ],
+          "desc": "row 2, col 3"
+        }
+      ],
+      "step_number": 1,
+      "intermediate_value": "(2, 3)",
+      "focus_desc": "row 2, col 3",
+      "rule_impact_deltas": {},
+      "verified_wall_fact": "a wall at row 1, col 4 blocks direct passage"
+    },
+    "difficulty_metrics": {
+      "raw_score": 15.78,
+      "area": 25,
+      "walls": 7,
+      "num_mud": 0,
+      "detour": 0,
+      "detour_ratio": 0.875,
+      "num_checkpoints": 0,
+      "num_arrows": 0,
+      "num_gates": 0,
+      "turn_count": 3,
+      "branching_forks": 2
+    },
+    "rule_analysis": {
+      "plain_distance": 7,
+      "constrained_distance": 7
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 879.1,
+  "seed": 102,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

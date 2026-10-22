@@ -1,0 +1,160 @@
+{
+  "puzzle_type": "hidden_rule_pyramid",
+  "difficulty": "medium",
+  "question": "Every cell outside the longest row is built from the two cells it touches in the next-longer row, by one hidden rule. Find the number that replaces the question mark.",
+  "response": "2",
+  "hints": [
+    "Check whether results stop growing and wrap around once they reach a fixed limit.",
+    "The empty box built from the pair 20 and 8 comes to 7."
+  ],
+  "solution_data": {
+    "rule_id": "prod_m9",
+    "rule_kind": "uniform",
+    "rule_label": "product mod 9",
+    "archetype": "uniform_compound",
+    "direction": "forward",
+    "height": 6,
+    "rows": [
+      [
+        20,
+        8,
+        1,
+        8,
+        12,
+        4
+      ],
+      [
+        7,
+        8,
+        8,
+        6,
+        3
+      ],
+      [
+        2,
+        1,
+        3,
+        0
+      ],
+      [
+        2,
+        3,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        0
+      ]
+    ],
+    "question_cell": [
+      2,
+      0
+    ],
+    "hidden_cells": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "blank_class": 3,
+    "witness_cells": [
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        5,
+        0
+      ]
+    ],
+    "n_consistent_rules": 1,
+    "answer": 2,
+    "difficulty_metrics": {
+      "rule_complexity": 3.0,
+      "chain_depth": 3,
+      "height": 6,
+      "scarcity_log2": 5.209,
+      "magnitude": 1.322,
+      "backward": false,
+      "n_witnesses": 10,
+      "raw_score": 8.481
+    },
+    "intermediate_trace": {
+      "hint_form": "first_step",
+      "hint1_key": "modular",
+      "schedule_kind": "uniform",
+      "evidence_cells": [],
+      "evidence": [],
+      "first_step": {
+        "cell": [
+          1,
+          0
+        ],
+        "pair": [
+          20,
+          8
+        ],
+        "value": 7
+      },
+      "witness_branch": null,
+      "question_branch": null,
+      "milestone_value": 7
+    }
+  },
+  "generation_data": {
+    "model": "procedural",
+    "attempts": 2,
+    "enricher": "deterministic_hints_only"
+  },
+  "fingerprint": "077eadb00a4ac33f",
+  "score": 1566.4,
+  "seed": 203,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

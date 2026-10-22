@@ -1,0 +1,112 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "hard",
+  "question": "Find the missing operators: 12 + 5 ? 7 ? 2 = 66\nAllowed operators: +, -, *, /, ^\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "+, ^",
+  "hints": [
+    "The fixed operator between 12 and 5 does not necessarily bind first. Higher precedence operations must be evaluated before additions or subtractions, regardless of their position in the expression.",
+    "Consider the operator between 7 and 2. To reach the final value of 66, this operation needs to produce a result that, when combined with the other parts, fits the equation. Think about how combining 7 and 2 might scale to a value around 49, which would then require the operator between 12 and 5 to adjust the overall result to 66."
+  ],
+  "solution_data": {
+    "template": "{a} + {b} ? {c} ? {d} = {r}",
+    "operands": [
+      12,
+      5,
+      7,
+      2
+    ],
+    "operators": [
+      "+",
+      "+",
+      "^"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/",
+      "^"
+    ],
+    "result": 66,
+    "archetype": "power_focus",
+    "missing_indices": [
+      1,
+      2
+    ],
+    "intermediate_trace": {
+      "first_pair": "7 and 2",
+      "target_pair": "7 and 2",
+      "target_subtotal": "49",
+      "target_result": 66,
+      "intermediate_value": "49",
+      "approx_magnitude": "approximately 50 (near 44-54)",
+      "num_missing": 2,
+      "missing_indices": [
+        1,
+        2
+      ],
+      "prior_fixed_desc": "",
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'+' between 12 and 5"
+      ],
+      "first_step_direction": "larger",
+      "true_first_op": "^",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "After resolving the operator between 7 and 2, determine the remaining missing operator between 5 and 7 to reach 66.",
+      "target_slot_desc": "the operator between 7 and 2 (which binds first by precedence)",
+      "precedence_note": "Order of operations: The operator between 7 and 2 binds first by standard precedence, even though the blank between 5 and 7 appears earlier in reading order.",
+      "is_precedence_out_of_order": true,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "49",
+          "operand": ""
+        },
+        {
+          "step": 2,
+          "is_missing": false,
+          "subtotal": "17",
+          "operand": ""
+        },
+        {
+          "step": 3,
+          "is_missing": true,
+          "subtotal": "66",
+          "operand": ""
+        }
+      ],
+      "reasoning_nudge": "The target operation between 7 and 2 evaluates to 49"
+    },
+    "difficulty_metrics": {
+      "raw_score": 47.4,
+      "search_space": 25,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": false,
+      "has_power": true,
+      "archetype": "power_focus",
+      "search_factor": 3.525,
+      "transition_factor": 0.75,
+      "operand_mag_factor": 1.227,
+      "target_scale_factor": 1.096
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1868.6,
+  "seed": 302,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

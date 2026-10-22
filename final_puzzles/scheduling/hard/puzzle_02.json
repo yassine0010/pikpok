@@ -1,0 +1,145 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "The foreman needs to schedule the five most experienced maintenance workers for a critical aqueduct repair. Determine the order of these workers from first to last.\n\nLineup to order: Foreman Marcus, Engineer Lucia, Mason Titus, Plumber Cassius, and Laborer Julian.\n\nClues:\n- Laborer Julian is not in the 4th position.\n- Engineer Lucia is before Laborer Julian.\n- Engineer Lucia is positioned ahead of Plumber Cassius.\n- Foreman Marcus is not in the 1st position.\n- Foreman Marcus is before Engineer Lucia.\n\nWhat is the complete order from first to last?",
+  "response": "Mason Titus, Foreman Marcus, Engineer Lucia, Plumber Cassius, Laborer Julian",
+  "hints": [
+    "Foreman Marcus is not the first worker, and Engineer Lucia must precede both Laborer Julian and Plumber Cassius, while also being preceded by Foreman Marcus. This significantly narrows down where each worker can be placed in the repair sequence.",
+    "Since Laborer Julian cannot be fourth and must come after Engineer Lucia, and Engineer Lucia must come after Foreman Marcus, this establishes Laborer Julian's position. Laborer Julian is confirmed to be in the 5th position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Foreman Marcus",
+      "Engineer Lucia",
+      "Mason Titus",
+      "Plumber Cassius",
+      "Laborer Julian"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Laborer Julian",
+        "k": 4
+      },
+      {
+        "type": "before",
+        "x": "Engineer Lucia",
+        "y": "Laborer Julian"
+      },
+      {
+        "type": "before",
+        "x": "Engineer Lucia",
+        "y": "Plumber Cassius"
+      },
+      {
+        "type": "not_position",
+        "x": "Foreman Marcus",
+        "k": 1
+      },
+      {
+        "type": "before",
+        "x": "Foreman Marcus",
+        "y": "Engineer Lucia"
+      }
+    ],
+    "solution": [
+      "Mason Titus",
+      "Foreman Marcus",
+      "Engineer Lucia",
+      "Plumber Cassius",
+      "Laborer Julian"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Laborer Julian",
+      "fixed_slot": "5th",
+      "partial_assignment": "Laborer Julian is in the 5th position",
+      "intermediate_value": "Laborer Julian",
+      "entity_positions": {
+        "Mason Titus": "1st",
+        "Foreman Marcus": "2nd",
+        "Engineer Lucia": "3rd",
+        "Plumber Cassius": "4th",
+        "Laborer Julian": "5th"
+      },
+      "supporting_clues": [
+        "Laborer Julian is not 4th.",
+        "Engineer Lucia is before Laborer Julian."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 48.68,
+      "num_entities": 5,
+      "num_constraints": 5,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 2.85,
+      "near_miss_factor": 1.625
+    },
+    "themed_clues": [
+      "Laborer Julian is not in the 4th position.",
+      "Engineer Lucia is before Laborer Julian.",
+      "Engineer Lucia is positioned ahead of Plumber Cassius.",
+      "Foreman Marcus is not in the 1st position.",
+      "Foreman Marcus is before Engineer Lucia."
+    ],
+    "scenario_intro": "The foreman needs to schedule the five most experienced maintenance workers for a critical aqueduct repair. Determine the order of these workers from first to last.",
+    "theme_title": "Aqueduct Repair Crew",
+    "entity_mapping": {
+      "P1": "Foreman Marcus",
+      "P2": "Engineer Lucia",
+      "P3": "Mason Titus",
+      "P4": "Plumber Cassius",
+      "P5": "Laborer Julian"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P1",
+      "P2",
+      "P4",
+      "P5"
+    ],
+    "canonical_response": "P3, P1, P2, P4, P5"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1790.9,
+  "seed": 302,
+  "theme": {
+    "setting": "Industrial Revolution Factory Floor, Medieval Alchemy Lab, Modern Art Gallery Exhibition, Ancient Roman Aqueduct Maintenance",
+    "title": "Aqueduct Repair Crew",
+    "scenario_intro": "The foreman needs to schedule the five most experienced maintenance workers for a critical aqueduct repair. Determine the order of these workers from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Foreman Marcus",
+      "P2": "Engineer Lucia",
+      "P3": "Mason Titus",
+      "P4": "Plumber Cassius",
+      "P5": "Laborer Julian"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

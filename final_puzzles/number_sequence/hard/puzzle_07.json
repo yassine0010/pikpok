@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "hard",
+  "question": "One number is hidden in the sequence: 17, 28, ?, 26, 25, 24, 29. What is it?",
+  "response": "21",
+  "hints": [
+    "Consider if the rule applied to generate the next number changes with each step.",
+    "The transition from 17 to 28 involves adding 11. See if this pattern of alternating operations continues for the subsequent numbers."
+  ],
+  "solution_data": {
+    "family": "composite",
+    "variant": "interleave",
+    "tier": 3,
+    "mode": "middle",
+    "terms": [
+      17,
+      28,
+      21,
+      26,
+      25,
+      24,
+      29
+    ],
+    "target_index": 2,
+    "missing_position": 2,
+    "rule": "two interleaved lines: +4 and -2",
+    "expr": "two interleaved lines: +4 and -2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "17 and 28",
+      "first_difference": 11,
+      "first_step": "17 to 28 (diff 11)",
+      "preceding_term": 28,
+      "intermediate_value": 11
+    },
+    "difficulty_metrics": {
+      "raw_score": 28.96,
+      "tier": 3,
+      "variant": "interleave",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 2.7,
+      "magnitude_factor": 1.108,
+      "step_var_factor": 2.5,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1909.3,
+  "seed": 307,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_07.png"
+}

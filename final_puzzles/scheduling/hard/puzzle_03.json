@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "The wildfire is spreading rapidly, and the incident commander needs to deploy the firefighting crews in the optimal sequence from first to last to establish containment lines. Determine the correct order of deployment for the five crews.\n\nLineup to order: Crew Chief Anya, Ranger Ben, Scout Chloe, Captain David, and Spotter Elias.\n\nClues:\n- Ranger Ben is not 5th.\n- Scout Chloe comes directly after Spotter Elias.\n- Scout Chloe is before Ranger Ben.\n- Captain David arrives earlier than Spotter Elias.\n\nWhat is the complete order from first to last?",
+  "response": "Captain David, Spotter Elias, Scout Chloe, Ranger Ben, Crew Chief Anya",
+  "hints": [
+    "Look closely at the clues involving Captain David: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Captain David to 1st to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Crew Chief Anya",
+      "Ranger Ben",
+      "Scout Chloe",
+      "Captain David",
+      "Spotter Elias"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Ranger Ben",
+        "k": 5
+      },
+      {
+        "type": "immediately_after",
+        "x": "Scout Chloe",
+        "y": "Spotter Elias"
+      },
+      {
+        "type": "before",
+        "x": "Scout Chloe",
+        "y": "Ranger Ben"
+      },
+      {
+        "type": "before",
+        "x": "Captain David",
+        "y": "Spotter Elias"
+      }
+    ],
+    "solution": [
+      "Captain David",
+      "Spotter Elias",
+      "Scout Chloe",
+      "Ranger Ben",
+      "Crew Chief Anya"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Captain David",
+      "fixed_slot": "1st",
+      "partial_assignment": "Captain David is in the 1st position",
+      "intermediate_value": "Captain David",
+      "entity_positions": {
+        "Captain David": "1st",
+        "Spotter Elias": "2nd",
+        "Scout Chloe": "3rd",
+        "Ranger Ben": "4th",
+        "Crew Chief Anya": "5th"
+      },
+      "supporting_clues": [
+        "Captain David is before Spotter Elias.",
+        "Ranger Ben is not 5th."
+      ],
+      "eliminated_slots": [
+        "2nd",
+        "3rd",
+        "4th",
+        "5th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 48.69,
+      "num_entities": 5,
+      "num_constraints": 4,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 1.815,
+      "near_miss_factor": 1.375
+    },
+    "themed_clues": [
+      "Ranger Ben is not 5th.",
+      "Scout Chloe comes directly after Spotter Elias.",
+      "Scout Chloe is before Ranger Ben.",
+      "Captain David arrives earlier than Spotter Elias."
+    ],
+    "scenario_intro": "The wildfire is spreading rapidly, and the incident commander needs to deploy the firefighting crews in the optimal sequence from first to last to establish containment lines. Determine the correct order of deployment for the five crews.",
+    "theme_title": "Forest Firefighting Crew Deployment",
+    "entity_mapping": {
+      "P1": "Crew Chief Anya",
+      "P2": "Ranger Ben",
+      "P3": "Scout Chloe",
+      "P4": "Captain David",
+      "P5": "Spotter Elias"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P4",
+      "P5",
+      "P3",
+      "P2",
+      "P1"
+    ],
+    "canonical_response": "P4, P5, P3, P2, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1791.1,
+  "seed": 303,
+  "theme": {
+    "setting": "Urban Planning Simulation, Quantum Computing Algorithm Design, Ancient Manuscript Restoration, Forest Firefighting Crew Deployment",
+    "title": "Forest Firefighting Crew Deployment",
+    "scenario_intro": "The wildfire is spreading rapidly, and the incident commander needs to deploy the firefighting crews in the optimal sequence from first to last to establish containment lines. Determine the correct order of deployment for the five crews.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Crew Chief Anya",
+      "P2": "Ranger Ben",
+      "P3": "Scout Chloe",
+      "P4": "Captain David",
+      "P5": "Spotter Elias"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

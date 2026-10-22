@@ -1,0 +1,63 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "hard",
+  "question": "What number comes next? -1, 2, 7, 14, 23, 34, ?",
+  "response": "47",
+  "hints": [
+    "Observe how the differences between consecutive terms are changing.",
+    "The difference between the first two terms is 3. The difference between the next pair of terms is 5. Can you see how the difference is growing?"
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "quadratic",
+    "tier": 3,
+    "mode": "next",
+    "terms": [
+      -1,
+      2,
+      7,
+      14,
+      23,
+      34,
+      47
+    ],
+    "target_index": 6,
+    "missing_position": 6,
+    "rule": "1n^2+0n+-2",
+    "expr": "1n^2+0n+-2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "-1 and 2",
+      "first_difference": 3,
+      "first_step": "-1 to 2 (diff 3)",
+      "preceding_term": 34,
+      "intermediate_value": 3
+    },
+    "difficulty_metrics": {
+      "raw_score": 23.38,
+      "tier": 3,
+      "variant": "quadratic",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.261,
+      "step_var_factor": 0.569,
+      "term_factor": 1.05
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1661.3,
+  "seed": 309,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

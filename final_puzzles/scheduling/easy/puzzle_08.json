@@ -1,0 +1,111 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "easy",
+  "question": "Four talented groomers are preparing their prize-winning pooches for the annual Canine Styling Showcase. Determine the order in which they will present their dogs, from first to last.\n\nLineup to order: Stylist Jasper, Groomer Eliza, and Handler Mateo.\n\nClues:\n- Handler Mateo is before Stylist Jasper.\n- Handler Mateo is not placed 1st.\n\nWhat is the complete order from first to last?",
+  "response": "Groomer Eliza, Handler Mateo, Stylist Jasper",
+  "hints": [
+    "Consider who cannot be the very first keeper on duty. The keeper who is not first must be before another keeper.",
+    "The clues stating that Sam is not first and Sam is before Finn restrict Sam to the middle position. This fixes Sam to the 2nd position."
+  ],
+  "solution_data": {
+    "entities": [
+      "Stylist Jasper",
+      "Groomer Eliza",
+      "Handler Mateo"
+    ],
+    "constraints": [
+      {
+        "type": "before",
+        "x": "Handler Mateo",
+        "y": "Stylist Jasper"
+      },
+      {
+        "type": "not_position",
+        "x": "Handler Mateo",
+        "k": 1
+      }
+    ],
+    "solution": [
+      "Groomer Eliza",
+      "Handler Mateo",
+      "Stylist Jasper"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Handler Mateo",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Handler Mateo is in the 2nd position",
+      "intermediate_value": "Handler Mateo",
+      "entity_positions": {
+        "Groomer Eliza": "1st",
+        "Handler Mateo": "2nd",
+        "Stylist Jasper": "3rd"
+      },
+      "supporting_clues": [
+        "Handler Mateo is before Stylist Jasper.",
+        "Handler Mateo is not 1st."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 21.1,
+      "num_entities": 3,
+      "num_constraints": 2,
+      "permutation_space": 6,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 1.2,
+      "near_miss_factor": 3.5
+    },
+    "themed_clues": [
+      "Handler Mateo is before Stylist Jasper.",
+      "Handler Mateo is not placed 1st."
+    ],
+    "scenario_intro": "Four talented groomers are preparing their prize-winning pooches for the annual Canine Styling Showcase. Determine the order in which they will present their dogs, from first to last.",
+    "theme_title": "Canine Styling Showcase",
+    "entity_mapping": {
+      "P1": "Stylist Jasper",
+      "P2": "Groomer Eliza",
+      "P3": "Handler Mateo"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P3",
+      "P1"
+    ],
+    "canonical_response": "P2, P3, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1105.0,
+  "seed": 108,
+  "theme": {
+    "setting": "Urban Planning Development, Classical Music Composition, High-Frequency Trading Algorithms, Professional Dog Grooming Show",
+    "title": "Canine Styling Showcase",
+    "scenario_intro": "Four talented groomers are preparing their prize-winning pooches for the annual Canine Styling Showcase. Determine the order in which they will present their dogs, from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Stylist Jasper",
+      "P2": "Groomer Eliza",
+      "P3": "Handler Mateo"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

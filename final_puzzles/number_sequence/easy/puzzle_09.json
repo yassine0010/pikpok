@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "Find the missing number in the sequence: 75, 73, ?, 69, 67, 65",
+  "response": "71",
+  "hints": [
+    "Notice how the difference between consecutive numbers changes.",
+    "The difference between 75 and 73 is -2. Check if this same difference applies to the other visible numbers in the sequence."
+  ],
+  "solution_data": {
+    "family": "arithmetic",
+    "variant": "down",
+    "tier": 1,
+    "mode": "middle",
+    "terms": [
+      75,
+      73,
+      71,
+      69,
+      67,
+      65
+    ],
+    "target_index": 2,
+    "missing_position": 2,
+    "rule": "start 75, subtract 2",
+    "expr": "start 75, subtract 2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "75 and 73",
+      "first_difference": -2,
+      "first_step": "75 to 73 (diff -2)",
+      "preceding_term": 73,
+      "intermediate_value": -2
+    },
+    "difficulty_metrics": {
+      "raw_score": 8.41,
+      "tier": 1,
+      "variant": "down",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.411,
+      "step_var_factor": 0.0,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1103.1,
+  "seed": 109,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

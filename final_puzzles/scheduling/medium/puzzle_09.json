@@ -1,0 +1,131 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "The master beekeeper needs to arrange the healthy bee colonies for observation, from first to last, to track their nectar collection progress.\n\nLineup to order: Queen Bee Beatrice, Worker Colony Alpha, Drone Colony Gamma, and Forager Hive Delta.\n\nClues:\n- Forager Hive Delta is not in the 4th position.\n- Drone Colony Gamma is not 3rd.\n- Worker Colony Alpha is not in the 3rd position.\n- Worker Colony Alpha comes directly after Drone Colony Gamma.\n\nWhat is the complete order from first to last?",
+  "response": "Drone Colony Gamma, Worker Colony Alpha, Forager Hive Delta, Queen Bee Beatrice",
+  "hints": [
+    "Look closely at the clues involving Worker Colony Alpha: examine how the ordering conditions limit where this element can be placed.",
+    "Start by assigning Worker Colony Alpha to 2nd to anchor the sequence before placing relative items."
+  ],
+  "solution_data": {
+    "entities": [
+      "Queen Bee Beatrice",
+      "Worker Colony Alpha",
+      "Drone Colony Gamma",
+      "Forager Hive Delta"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Forager Hive Delta",
+        "k": 4
+      },
+      {
+        "type": "not_position",
+        "x": "Drone Colony Gamma",
+        "k": 3
+      },
+      {
+        "type": "not_position",
+        "x": "Worker Colony Alpha",
+        "k": 3
+      },
+      {
+        "type": "immediately_after",
+        "x": "Worker Colony Alpha",
+        "y": "Drone Colony Gamma"
+      }
+    ],
+    "solution": [
+      "Drone Colony Gamma",
+      "Worker Colony Alpha",
+      "Forager Hive Delta",
+      "Queen Bee Beatrice"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Worker Colony Alpha",
+      "fixed_slot": "2nd",
+      "partial_assignment": "Worker Colony Alpha is in the 2nd position",
+      "intermediate_value": "Worker Colony Alpha",
+      "entity_positions": {
+        "Drone Colony Gamma": "1st",
+        "Worker Colony Alpha": "2nd",
+        "Forager Hive Delta": "3rd",
+        "Queen Bee Beatrice": "4th"
+      },
+      "supporting_clues": [
+        "Worker Colony Alpha is not 3rd.",
+        "Worker Colony Alpha is immediately after Drone Colony Gamma."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 36.73,
+      "num_entities": 4,
+      "num_constraints": 4,
+      "permutation_space": 24,
+      "constraint_types": [
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 3.225,
+      "near_miss_factor": 2.708
+    },
+    "themed_clues": [
+      "Forager Hive Delta is not in the 4th position.",
+      "Drone Colony Gamma is not 3rd.",
+      "Worker Colony Alpha is not in the 3rd position.",
+      "Worker Colony Alpha comes directly after Drone Colony Gamma."
+    ],
+    "scenario_intro": "The master beekeeper needs to arrange the healthy bee colonies for observation, from first to last, to track their nectar collection progress.",
+    "theme_title": "Apiary Bee Colony Order",
+    "entity_mapping": {
+      "P1": "Queen Bee Beatrice",
+      "P2": "Worker Colony Alpha",
+      "P3": "Drone Colony Gamma",
+      "P4": "Forager Hive Delta"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    "canonical_response": "P3, P2, P4, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1517.5,
+  "seed": 209,
+  "theme": {
+    "setting": "Commercial Real Estate Development, Quantum Physics Research, Ancient Manuscript Restoration, Urban Beekeeping Apiary Management",
+    "title": "Apiary Bee Colony Order",
+    "scenario_intro": "The master beekeeper needs to arrange the healthy bee colonies for observation, from first to last, to track their nectar collection progress.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Queen Bee Beatrice",
+      "P2": "Worker Colony Alpha",
+      "P3": "Drone Colony Gamma",
+      "P4": "Forager Hive Delta"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

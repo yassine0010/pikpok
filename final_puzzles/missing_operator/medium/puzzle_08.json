@@ -1,0 +1,99 @@
+{
+  "puzzle_type": "missing_operator",
+  "difficulty": "medium",
+  "question": "Find the missing operators: 18 / ( 8 ? 3 ) ? 20 = 72\nAllowed operators: +, -, *, /\nStandard order of operations applies; ^ means exponentiation.",
+  "response": "-, *",
+  "hints": [
+    "Focus on the expression within the parentheses first, as it needs to be evaluated before the operations outside. Consider how the fixed operation outside the parentheses might interact with the result of the parenthetical expression.",
+    "The first missing operator is between 8 and 3. To reach a value of 5, this operator needs to adjust the operands significantly downwards. After resolving the parentheses, consider how the remaining operations and operands can combine to reach the final target of 72."
+  ],
+  "solution_data": {
+    "template": "{a} / ( {b} ? {c} ) ? {d} = {r}",
+    "operands": [
+      18,
+      8,
+      3,
+      20
+    ],
+    "operators": [
+      "/",
+      "-",
+      "*"
+    ],
+    "allowed_ops": [
+      "+",
+      "-",
+      "*",
+      "/"
+    ],
+    "result": 72,
+    "archetype": "parentheses_right",
+    "missing_indices": [
+      1,
+      2
+    ],
+    "intermediate_trace": {
+      "first_pair": "8 and 3",
+      "target_pair": "8 and 3",
+      "target_subtotal": "5",
+      "target_result": 72,
+      "intermediate_value": "5",
+      "approx_magnitude": "close to 5",
+      "num_missing": 2,
+      "missing_indices": [
+        1,
+        2
+      ],
+      "prior_fixed_desc": null,
+      "safe_fixed_pairs": [],
+      "fixed_pairs": [],
+      "visible_fixed_ops": [
+        "'/' between 18 and 8"
+      ],
+      "first_step_direction": "smaller",
+      "true_first_op": "-",
+      "scale_type": "large_scale",
+      "scale_guidance": "The target result is significantly larger than the individual operands, indicating substantial upward scaling.",
+      "subsequent_goal": "With the parenthetical term resolved, determine the remaining operations to reach 72.",
+      "target_slot_desc": "the operator inside the parentheses (8 ? 3)",
+      "precedence_note": "Parentheses must be resolved before the outer operations.",
+      "is_precedence_out_of_order": false,
+      "running_steps": [
+        {
+          "step": 1,
+          "is_missing": true,
+          "subtotal": "5",
+          "operand": "3"
+        }
+      ],
+      "reasoning_nudge": "The target operation between 8 and 3 evaluates to 5"
+    },
+    "difficulty_metrics": {
+      "raw_score": 37.04,
+      "search_space": 16,
+      "num_operands": 4,
+      "num_missing": 2,
+      "has_pemdas_mix": true,
+      "has_division": true,
+      "has_power": false,
+      "archetype": "parentheses_right",
+      "search_factor": 3.066,
+      "transition_factor": 1.5,
+      "operand_mag_factor": 1.559,
+      "target_scale_factor": 1.118
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1600.0,
+  "seed": 208,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

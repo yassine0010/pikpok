@@ -1,0 +1,220 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "medium",
+  "question": "A critical component has gone missing from the satellite during maintenance across four orbital arms. It must be located before the next orbital pass.\nPossible locations: Arm 1, Arm 2, Arm 3, or Arm 4.\n\nStatements:\n- Technician Anya: \"The power conduit is in neither Arm 1 nor Arm 3.\"\n- Engineer Ben: \"The power conduit is in Arm 1 or Arm 2.\"\n- Analyst Chloe: \"The power conduit is not in Arm 4.\"\n- Director David: \"The power conduit is in Arm 4.\"\n\nRULE: Exactly 1 of these statements is true (all others are false).\n\nWhere is the power conduit?",
+  "response": "Arm 3",
+  "hints": [
+    "Technician Anya and Director David make claims that directly contradict each other, meaning exactly one of them must be true.",
+    "Under Arm 1, Technician Anya's claim is false, and Engineer Ben's claim is true. Analyst Chloe's claim is also true, and Director David's claim is false. This results in 2 true claims (Engineer Ben, Analyst Chloe) instead of the required 1 true claim, eliminating Arm 1 as the location for the power conduit."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Arm 1",
+      "Arm 2",
+      "Arm 3",
+      "Arm 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Arm 1",
+            "Arm 3"
+          ]
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "in",
+          "var": "loc",
+          "val": [
+            "Arm 1",
+            "Arm 2"
+          ]
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Arm 4"
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Arm 4"
+        },
+        "speaker": "Director David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 1
+    },
+    "solution": "Arm 3",
+    "intermediate_trace": {
+      "eliminated_candidate": "Arm 1",
+      "elimination_reason": "Testing Arm 1 results in 2 true claims (Engineer Ben, Analyst Chloe are true) instead of exactly 1 true claim.",
+      "intermediate_value": "Arm 1",
+      "candidate_counts": {
+        "Arm 1": 2,
+        "Arm 2": 3,
+        "Arm 3": 1,
+        "Arm 4": 2
+      },
+      "expected_count": 1,
+      "elim_cand_count": 2,
+      "elim_cand_true_speakers": [
+        "Engineer Ben",
+        "Analyst Chloe"
+      ],
+      "elim_cand_false_speakers": [
+        "Technician Anya",
+        "Director David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": false
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": true
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Director David",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": false,
+        "Engineer Ben": true,
+        "Analyst Chloe": true,
+        "Director David": false
+      },
+      "clue_insight": "Analyst Chloe and Director David directly contradict each other: exactly one of them must always be true.",
+      "interaction_type": "contradictory",
+      "interaction_speakers": [
+        "Analyst Chloe",
+        "Director David"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 16.21,
+      "structural_score": 12,
+      "near_misses": 2,
+      "logic_words": 4,
+      "statement_overlap": 1.75,
+      "rule_complexity_bonus": 0,
+      "candidate_counts": {
+        "A": 2,
+        "B": 3,
+        "C": 1,
+        "D": 2
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          true,
+          true,
+          false
+        ],
+        "C": [
+          false,
+          false,
+          true,
+          false
+        ],
+        "D": [
+          true,
+          false,
+          false,
+          true
+        ]
+      },
+      "mean_entropy": 0.906,
+      "clause_score": 3.6
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Director David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The power conduit is in neither Arm 1 nor Arm 3.\"",
+      "Engineer Ben: \"The power conduit is in Arm 1 or Arm 2.\"",
+      "Analyst Chloe: \"The power conduit is not in Arm 4.\"",
+      "Director David: \"The power conduit is in Arm 4.\""
+    ],
+    "scenario_intro": "A critical component has gone missing from the satellite during maintenance across four orbital arms. It must be located before the next orbital pass.",
+    "theme_title": "Orbital Watch",
+    "item": "power conduit",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "C",
+    "canonical_response": "C"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1497.7,
+  "seed": 204,
+  "theme": {
+    "setting": "High-Speed Rail Network Dispatch, Deep Sea Sonar Mapping, Botanical Arboretums, Satellite Maintenance",
+    "title": "Orbital Watch",
+    "scenario_intro": "A critical component has gone missing from the satellite during maintenance across four orbital arms. It must be located before the next orbital pass.",
+    "item": "power conduit",
+    "entity_mapping": {
+      "A": "Arm 1",
+      "B": "Arm 2",
+      "C": "Arm 3",
+      "D": "Arm 4",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

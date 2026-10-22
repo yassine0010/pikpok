@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "easy",
+  "question": "What number comes next? 98, 94, 90, 86, 82, ?",
+  "response": "78",
+  "hints": [
+    "Notice how the difference between consecutive numbers changes.",
+    "The difference between 98 and 94 is -4. Check if this same difference holds for the next pairs of numbers."
+  ],
+  "solution_data": {
+    "family": "arithmetic",
+    "variant": "down",
+    "tier": 1,
+    "mode": "next",
+    "terms": [
+      98,
+      94,
+      90,
+      86,
+      82,
+      78
+    ],
+    "target_index": 5,
+    "missing_position": 5,
+    "rule": "start 98, subtract 4",
+    "expr": "start 98, subtract 4",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "98 and 94",
+      "first_difference": -4,
+      "first_step": "98 to 94 (diff -4)",
+      "preceding_term": 82,
+      "intermediate_value": -4
+    },
+    "difficulty_metrics": {
+      "raw_score": 6.9,
+      "tier": 1,
+      "variant": "down",
+      "mode": "next",
+      "mode_bonus": 0.0,
+      "variant_weight": 0.5,
+      "magnitude_factor": 1.497,
+      "step_var_factor": 0.0,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 968.9,
+  "seed": 104,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

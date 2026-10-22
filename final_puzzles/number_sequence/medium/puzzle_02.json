@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "One number is hidden in the sequence: 64, 32, 16, 8, ?, 2. What is it?",
+  "response": "4",
+  "hints": [
+    "Examine how each number relates to the next by a consistent scaling factor.",
+    "The first two numbers, 64 and 32, show a relationship where one is half of the other. See if this same relationship holds true for the other visible pairs in the sequence."
+  ],
+  "solution_data": {
+    "family": "geometric",
+    "variant": "down",
+    "tier": 2,
+    "mode": "middle",
+    "terms": [
+      64,
+      32,
+      16,
+      8,
+      4,
+      2
+    ],
+    "target_index": 4,
+    "missing_position": 4,
+    "rule": "divide by 2",
+    "expr": "divide by 2",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": true,
+    "intermediate_trace": {
+      "first_pair": "64 and 32",
+      "first_difference": -32,
+      "growth_factor": 0.5,
+      "preceding_term": 8,
+      "intermediate_value": 0.5
+    },
+    "difficulty_metrics": {
+      "raw_score": 18.08,
+      "tier": 2,
+      "variant": "down",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 1.0,
+      "magnitude_factor": 1.36,
+      "step_var_factor": 1.221,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1512.6,
+  "seed": 202,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_02.png"
+}

@@ -1,0 +1,268 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "The vital sensor array has gone offline in one of four sectors of the orbital satellite. Your mission is to pinpoint its exact location before critical systems fail.\nPossible locations: Sector A, Sector B, Sector C, Sector D, or Sector E.\n\nStatements:\n- Technician Anya: \"The sensor array is in Sector E.\"\n- Engineer Ben: \"If the sensor array is in Sector D, then it is in Sector B.\"\n- Analyst Chloe: \"If the sensor array is not in Sector B, then it is in Sector E.\"\n- Director David: \"The sensor array is not in Sector C.\"\n- Operator David: \"The sensor array is in neither Sector A nor Sector C.\"\n\nRULE: Exactly 1 of these statements is false (all others are true).\n\nWhere is the sensor array?",
+  "response": "Sector B",
+  "hints": [
+    "Technician Anya and Director David's statements provide direct assertions about the sensor array's location. Analyzing these claims in conjunction with Engineer Ben's conditional statement can help eliminate possibilities.",
+    "If the sensor array were in Sector E, Technician Anya's claim would be true. Engineer Ben's claim would also be true. Analyst Chloe's claim would be true. Director David's claim would be true. Operator Eve's claim would be true. This scenario results in zero false claims, which contradicts the rule that exactly one claim must be false. Therefore, the sensor array cannot be in Sector E."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector A",
+      "Sector B",
+      "Sector C",
+      "Sector D",
+      "Sector E"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "eq",
+          "var": "loc",
+          "val": "Sector E"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Sector D"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Sector B"
+          }
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector B"
+          },
+          "consequent": {
+            "op": "eq",
+            "var": "loc",
+            "val": "Sector E"
+          }
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector C"
+        },
+        "speaker": "Director David"
+      },
+      {
+        "id": "s5",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector A",
+            "Sector C"
+          ]
+        },
+        "speaker": "Operator David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly_false",
+      "k": 1
+    },
+    "solution": "Sector B",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector E",
+      "elimination_reason": "Testing Sector E results in 0 false claims (no claims are false) instead of exactly 1 false claim.",
+      "intermediate_value": "Sector E",
+      "candidate_counts": {
+        "Sector A": 3,
+        "Sector B": 1,
+        "Sector C": 4,
+        "Sector D": 3,
+        "Sector E": 0
+      },
+      "expected_count": 1,
+      "elim_cand_count": 0,
+      "elim_cand_true_speakers": [
+        "Technician Anya",
+        "Engineer Ben",
+        "Analyst Chloe",
+        "Director David",
+        "Operator David"
+      ],
+      "elim_cand_false_speakers": [],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": true
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": true
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": true
+        },
+        {
+          "speaker": "Director David",
+          "true": true
+        },
+        {
+          "speaker": "Operator David",
+          "true": true
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": true,
+        "Engineer Ben": true,
+        "Analyst Chloe": true,
+        "Director David": true,
+        "Operator David": true
+      },
+      "clue_insight": "Engineer Ben and Director David together cover all possibilities, so at least one of them must always be true.",
+      "interaction_type": "exhaustive",
+      "interaction_speakers": [
+        "Engineer Ben",
+        "Director David"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 23.77,
+      "structural_score": 18,
+      "near_misses": 1,
+      "logic_words": 8,
+      "statement_overlap": 2.4,
+      "rule_complexity_bonus": 3,
+      "candidate_counts": {
+        "A": 3,
+        "B": 1,
+        "C": 4,
+        "D": 3,
+        "E": 0
+      },
+      "statement_evals": {
+        "A": [
+          false,
+          true,
+          false,
+          true,
+          false
+        ],
+        "B": [
+          false,
+          true,
+          true,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "D": [
+          false,
+          false,
+          false,
+          true,
+          true
+        ],
+        "E": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "mean_entropy": 0.822,
+      "clause_score": 7.5
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Director David",
+      "Operator David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The sensor array is in Sector E.\"",
+      "Engineer Ben: \"If the sensor array is in Sector D, then it is in Sector B.\"",
+      "Analyst Chloe: \"If the sensor array is not in Sector B, then it is in Sector E.\"",
+      "Director David: \"The sensor array is not in Sector C.\"",
+      "Operator David: \"The sensor array is in neither Sector A nor Sector C.\""
+    ],
+    "scenario_intro": "The vital sensor array has gone offline in one of four sectors of the orbital satellite. Your mission is to pinpoint its exact location before critical systems fail.",
+    "theme_title": "Orbital Watch",
+    "item": "sensor array",
+    "entity_mapping": {
+      "A": "Sector A",
+      "B": "Sector B",
+      "C": "Sector C",
+      "D": "Sector D",
+      "E": "Sector E",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David",
+      "Eve": "Operator David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "canonical_solution": "B",
+    "canonical_response": "B"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1749.1,
+  "seed": 304,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Botanical Arboretums, Orbital Satellite Maintenance",
+    "title": "Orbital Watch",
+    "scenario_intro": "The vital sensor array has gone offline in one of four sectors of the orbital satellite. Your mission is to pinpoint its exact location before critical systems fail.",
+    "item": "sensor array",
+    "entity_mapping": {
+      "A": "Sector A",
+      "B": "Sector B",
+      "C": "Sector C",
+      "D": "Sector D",
+      "E": "Sector E",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Director David",
+      "Eve": "Operator David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_04.png"
+}

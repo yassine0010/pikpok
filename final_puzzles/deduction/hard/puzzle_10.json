@@ -1,0 +1,228 @@
+{
+  "puzzle_type": "deduction",
+  "difficulty": "hard",
+  "question": "We are investigating the location of a critical component within the orbital satellite maintenance bays across five sectors. The faulty component has been misplaced, and we need to pinpoint its exact location.\nPossible locations: Sector 1, Sector 2, Sector 3, or Sector 4.\n\nStatements:\n- Technician Anya: \"The defective sensor is not in Sector 3.\"\n- Engineer Ben: \"If the defective sensor is not in Sector 2, then it is not in Sector 1.\"\n- Analyst Chloe: \"Technician Anya's statement is true.\"\n- Operator David: \"The defective sensor is in neither Sector 1 nor Sector 3.\"\n\nRULE: Exactly 2 of these statements are true (all others are false).\n\nWhere is the defective sensor?",
+  "response": "Sector 1",
+  "hints": [
+    "Compare the reports from Technician Anya and Engineer Ben: analyze whether their claims can both be true simultaneously.",
+    "If the target were at Sector 3, this would result in 1 true claims, which contradicts the rule requiring exactly 2 true claims, ruling out Sector 3."
+  ],
+  "solution_data": {
+    "candidates": [
+      "Sector 1",
+      "Sector 2",
+      "Sector 3",
+      "Sector 4"
+    ],
+    "statements": [
+      {
+        "id": "s1",
+        "pred": {
+          "op": "ne",
+          "var": "loc",
+          "val": "Sector 3"
+        },
+        "speaker": "Technician Anya"
+      },
+      {
+        "id": "s2",
+        "pred": {
+          "op": "conditional",
+          "antecedent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 2"
+          },
+          "consequent": {
+            "op": "ne",
+            "var": "loc",
+            "val": "Sector 1"
+          }
+        },
+        "speaker": "Engineer Ben"
+      },
+      {
+        "id": "s3",
+        "pred": {
+          "op": "ref",
+          "target_id": "s1",
+          "target_speaker": "Technician Anya",
+          "claims_true": true
+        },
+        "speaker": "Analyst Chloe"
+      },
+      {
+        "id": "s4",
+        "pred": {
+          "op": "neither_nor",
+          "var": "loc",
+          "val": [
+            "Sector 1",
+            "Sector 3"
+          ]
+        },
+        "speaker": "Operator David"
+      }
+    ],
+    "truth_rule": {
+      "kind": "exactly",
+      "k": 2
+    },
+    "solution": "Sector 1",
+    "intermediate_trace": {
+      "eliminated_candidate": "Sector 3",
+      "elimination_reason": "Testing Sector 3 results in 1 true claim (only Engineer Ben is true) instead of exactly 2 true claims.",
+      "intermediate_value": "Sector 3",
+      "candidate_counts": {
+        "Sector 1": 2,
+        "Sector 2": 4,
+        "Sector 3": 1,
+        "Sector 4": 4
+      },
+      "expected_count": 2,
+      "elim_cand_count": 1,
+      "elim_cand_true_speakers": [
+        "Engineer Ben"
+      ],
+      "elim_cand_false_speakers": [
+        "Technician Anya",
+        "Analyst Chloe",
+        "Operator David"
+      ],
+      "elim_cand_truth_table": [
+        {
+          "speaker": "Technician Anya",
+          "true": false
+        },
+        {
+          "speaker": "Engineer Ben",
+          "true": true
+        },
+        {
+          "speaker": "Analyst Chloe",
+          "true": false
+        },
+        {
+          "speaker": "Operator David",
+          "true": false
+        }
+      ],
+      "elim_cand_evals": {
+        "Technician Anya": false,
+        "Engineer Ben": true,
+        "Analyst Chloe": false,
+        "Operator David": false
+      },
+      "clue_insight": "Technician Anya and Analyst Chloe always share the same truth value (they must be either both true or both false together).",
+      "interaction_type": "equivalent",
+      "interaction_speakers": [
+        "Technician Anya",
+        "Analyst Chloe"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 20.78,
+      "structural_score": 15,
+      "near_misses": 1,
+      "logic_words": 7,
+      "statement_overlap": 2.25,
+      "rule_complexity_bonus": 2,
+      "candidate_counts": {
+        "A": 2,
+        "B": 4,
+        "C": 1,
+        "D": 4
+      },
+      "statement_evals": {
+        "A": [
+          true,
+          false,
+          true,
+          false
+        ],
+        "B": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "C": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "D": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "mean_entropy": 0.858,
+      "clause_score": 7.4
+    },
+    "speakers": [
+      "Technician Anya",
+      "Engineer Ben",
+      "Analyst Chloe",
+      "Operator David"
+    ],
+    "themed_clues": [
+      "Technician Anya: \"The defective sensor is not in Sector 3.\"",
+      "Engineer Ben: \"If the defective sensor is not in Sector 2, then it is not in Sector 1.\"",
+      "Analyst Chloe: \"Technician Anya's statement is true.\"",
+      "Operator David: \"The defective sensor is in neither Sector 1 nor Sector 3.\""
+    ],
+    "scenario_intro": "We are investigating the location of a critical component within the orbital satellite maintenance bays across five sectors. The faulty component has been misplaced, and we need to pinpoint its exact location.",
+    "theme_title": "Satellite Servicing",
+    "item": "defective sensor",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    },
+    "canonical_candidates": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "canonical_solution": "A",
+    "canonical_response": "A"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1687.8,
+  "seed": 310,
+  "theme": {
+    "setting": "High-Altitude Observatories, Rare Manuscript Restoration, Botanical Arboretums, Orbital Satellite Maintenance",
+    "title": "Satellite Servicing",
+    "scenario_intro": "We are investigating the location of a critical component within the orbital satellite maintenance bays across five sectors. The faulty component has been misplaced, and we need to pinpoint its exact location.",
+    "item": "defective sensor",
+    "entity_mapping": {
+      "A": "Sector 1",
+      "B": "Sector 2",
+      "C": "Sector 3",
+      "D": "Sector 4",
+      "E": "Sector 5",
+      "Alice": "Technician Anya",
+      "Bob": "Engineer Ben",
+      "Carol": "Analyst Chloe",
+      "Dave": "Operator David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_10.png"
+}

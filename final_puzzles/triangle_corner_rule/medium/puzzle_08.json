@@ -1,0 +1,83 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "medium",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (10, 13, 4) -> 19; (5, 5, 16) -> 16; (14, 4, 10) -> 20. Find the center for (9, 10, 2).",
+  "response": "17",
+  "hints": [
+    "Consider a single triangle and see if the relationship between any two corner values produces the center value. Then, verify this relationship with the other triangles.",
+    "The process involves a comparison between two corner values to determine the next step.",
+    "Combining the left and right corners of the last triangle gives 8."
+  ],
+  "solution_data": {
+    "rule_id": "M09",
+    "rule_expr": "absdiff(left, right) + top",
+    "rule_ops": [
+      "absdiff",
+      "add"
+    ],
+    "archetype": "forward_compound",
+    "unknown": "center",
+    "orientation": "down",
+    "result_style": "center",
+    "examples": [
+      {
+        "top": 10,
+        "left": 13,
+        "right": 4,
+        "center": 19
+      },
+      {
+        "top": 5,
+        "left": 5,
+        "right": 16,
+        "center": 16
+      },
+      {
+        "top": 14,
+        "left": 4,
+        "right": 10,
+        "center": 20
+      }
+    ],
+    "query": {
+      "top": 9,
+      "left": 10,
+      "right": 2,
+      "center": null
+    },
+    "difficulty_metrics": {
+      "raw_score": 4.297,
+      "n_ops": 2,
+      "op_kinds": 2,
+      "const_used": 0,
+      "special_ops": 1,
+      "inverse": 0,
+      "examples_shown": 3,
+      "max_value": 20
+    },
+    "intermediate_trace": {
+      "kind": "forward_first_op",
+      "expr": "left and right",
+      "slots": [
+        "left",
+        "right"
+      ],
+      "value": 8
+    },
+    "response_value": 17,
+    "tier": "medium"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "07a470874aa0b73b7f529e499a3c49963648ba39f89554613dd0b9da878009bb",
+  "score": 1324.2,
+  "seed": 208,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_08.png"
+}

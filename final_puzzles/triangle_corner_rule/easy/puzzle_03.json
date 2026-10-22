@@ -1,0 +1,83 @@
+{
+  "puzzle_type": "triangle_corner_rule",
+  "difficulty": "easy",
+  "question": "Each triangle follows the same hidden rule. (top, left, right) -> center: (8, 6, 11) -> 82; (3, 4, 10) -> 26; (1, 1, 4) -> 3. Find the center for (10, 9, 5).",
+  "response": "41",
+  "hints": [
+    "Examine a single triangle to see how two corner values can be combined to relate to the center value, then verify this relationship in the other triangles.",
+    "The result of combining two of the corner values is then used with the remaining corner value.",
+    "Combining the right and top corners of the last triangle gives 50."
+  ],
+  "solution_data": {
+    "rule_id": "E15",
+    "rule_expr": "(top * right) - left",
+    "rule_ops": [
+      "mul",
+      "sub"
+    ],
+    "archetype": "forward_basic",
+    "unknown": "center",
+    "orientation": "up",
+    "result_style": "caption",
+    "examples": [
+      {
+        "top": 8,
+        "left": 6,
+        "right": 11,
+        "center": 82
+      },
+      {
+        "top": 3,
+        "left": 4,
+        "right": 10,
+        "center": 26
+      },
+      {
+        "top": 1,
+        "left": 1,
+        "right": 4,
+        "center": 3
+      }
+    ],
+    "query": {
+      "top": 10,
+      "left": 9,
+      "right": 5,
+      "center": null
+    },
+    "difficulty_metrics": {
+      "raw_score": 3.876,
+      "n_ops": 2,
+      "op_kinds": 2,
+      "const_used": 0,
+      "special_ops": 0,
+      "inverse": 0,
+      "examples_shown": 3,
+      "max_value": 82
+    },
+    "intermediate_trace": {
+      "kind": "forward_first_op",
+      "expr": "top and right",
+      "slots": [
+        "right",
+        "top"
+      ],
+      "value": 50
+    },
+    "response_value": 41,
+    "tier": "easy"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": "17a51289aab88ecac41eba3a70fe0e7d0758078dbe11267668327550b59897c7",
+  "score": 1200.0,
+  "seed": 103,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

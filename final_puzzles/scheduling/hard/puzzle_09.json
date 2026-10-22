@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "hard",
+  "question": "The esteemed beekeeper needs to arrange her hive handlers for a critical honey harvest inspection. Determine the order of the handlers from first to last.\n\nLineup to order: Handler Beatrice, Handler Alpha, Handler Gamma, Handler Delta, and Handler Rowan.\n\nClues:\n- Handler Delta is not 1st.\n- Handler Gamma follows right after Handler Rowan.\n- Handler Rowan follows right after Handler Delta.\n- Handler Rowan is before Handler Beatrice.\n\nWhat is the complete order from first to last?",
+  "response": "Handler Alpha, Handler Delta, Handler Rowan, Handler Gamma, Handler Beatrice",
+  "hints": [
+    "Handler Delta cannot be the first handler. This, along with the sequence of Handler Rowan immediately following Handler Delta, and Handler Gamma immediately following Handler Rowan, restricts their possible positions significantly.",
+    "Handler Beatrice is confirmed as the last handler. Handler Delta is not first, and the three-handler sequence (Handler Delta, Handler Rowan, Handler Gamma) must be placed before Handler Beatrice, narrowing down the possibilities for Handler Delta and Handler Rowan."
+  ],
+  "solution_data": {
+    "entities": [
+      "Handler Beatrice",
+      "Handler Alpha",
+      "Handler Gamma",
+      "Handler Delta",
+      "Handler Rowan"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Handler Delta",
+        "k": 1
+      },
+      {
+        "type": "immediately_after",
+        "x": "Handler Gamma",
+        "y": "Handler Rowan"
+      },
+      {
+        "type": "immediately_after",
+        "x": "Handler Rowan",
+        "y": "Handler Delta"
+      },
+      {
+        "type": "before",
+        "x": "Handler Rowan",
+        "y": "Handler Beatrice"
+      }
+    ],
+    "solution": [
+      "Handler Alpha",
+      "Handler Delta",
+      "Handler Rowan",
+      "Handler Gamma",
+      "Handler Beatrice"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Handler Beatrice",
+      "fixed_slot": "5th",
+      "partial_assignment": "Handler Beatrice is in the 5th position",
+      "intermediate_value": "Handler Beatrice",
+      "entity_positions": {
+        "Handler Alpha": "1st",
+        "Handler Delta": "2nd",
+        "Handler Rowan": "3rd",
+        "Handler Gamma": "4th",
+        "Handler Beatrice": "5th"
+      },
+      "supporting_clues": [
+        "Handler Rowan is before Handler Beatrice.",
+        "Handler Delta is not 1st."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "3rd",
+        "4th"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 48.03,
+      "num_entities": 5,
+      "num_constraints": 4,
+      "permutation_space": 120,
+      "constraint_types": [
+        "before",
+        "immediately_after",
+        "not_position"
+      ],
+      "has_immediate": true,
+      "has_exclusion": true,
+      "decay_factor": 1.785,
+      "near_miss_factor": 0.75
+    },
+    "themed_clues": [
+      "Handler Delta is not 1st.",
+      "Handler Gamma follows right after Handler Rowan.",
+      "Handler Rowan follows right after Handler Delta.",
+      "Handler Rowan is before Handler Beatrice."
+    ],
+    "scenario_intro": "The esteemed beekeeper needs to arrange her hive handlers for a critical honey harvest inspection. Determine the order of the handlers from first to last.",
+    "theme_title": "Apiary Bee Handler Schedule",
+    "entity_mapping": {
+      "P1": "Handler Beatrice",
+      "P2": "Handler Alpha",
+      "P3": "Handler Gamma",
+      "P4": "Handler Delta",
+      "P5": "Handler Rowan"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ],
+    "canonical_solution": [
+      "P2",
+      "P4",
+      "P5",
+      "P3",
+      "P1"
+    ],
+    "canonical_response": "P2, P4, P5, P3, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1772.3,
+  "seed": 309,
+  "theme": {
+    "setting": "Marine Biology, Deep-sea, Culinary Arts, Commercial Beekeeping Apiary",
+    "title": "Apiary Bee Handler Schedule",
+    "scenario_intro": "The esteemed beekeeper needs to arrange her hive handlers for a critical honey harvest inspection. Determine the order of the handlers from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Handler Beatrice",
+      "P2": "Handler Alpha",
+      "P3": "Handler Gamma",
+      "P4": "Handler Delta",
+      "P5": "Handler Rowan"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_09.png"
+}

@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "scheduling",
+  "difficulty": "medium",
+  "question": "Four esteemed chess players are preparing for the final round of the tournament, and the officials need to arrange them in the order they will be introduced from first to last.\n\nLineup to order: Grandmaster Anya, Master Ben, Player Charles, and Rookie David.\n\nClues:\n- Rookie David is not 2nd.\n- Player Charles is not in the 2nd position.\n- Master Ben is before Rookie David.\n- Rookie David is not 4th.\n- Player Charles is not in the 4th position.\n\nWhat is the complete order from first to last?",
+  "response": "Player Charles, Master Ben, Rookie David, Grandmaster Anya",
+  "hints": [
+    "Master Ben must be immediately followed by Player Charles, forming a two-person block. Rookie David cannot be in the second or fourth position.",
+    "The sequence Master Ben then Player Charles creates a contiguous block. Combining this with the information that Player Charles is not second or fourth, and Rookie David is not second or fourth, places Grandmaster Anya in the fourth slot."
+  ],
+  "solution_data": {
+    "entities": [
+      "Grandmaster Anya",
+      "Master Ben",
+      "Player Charles",
+      "Rookie David"
+    ],
+    "constraints": [
+      {
+        "type": "not_position",
+        "x": "Rookie David",
+        "k": 2
+      },
+      {
+        "type": "not_position",
+        "x": "Player Charles",
+        "k": 2
+      },
+      {
+        "type": "before",
+        "x": "Master Ben",
+        "y": "Rookie David"
+      },
+      {
+        "type": "not_position",
+        "x": "Rookie David",
+        "k": 4
+      },
+      {
+        "type": "not_position",
+        "x": "Player Charles",
+        "k": 4
+      }
+    ],
+    "solution": [
+      "Player Charles",
+      "Master Ben",
+      "Rookie David",
+      "Grandmaster Anya"
+    ],
+    "intermediate_trace": {
+      "fixed_entity": "Grandmaster Anya",
+      "fixed_slot": "4th",
+      "partial_assignment": "Grandmaster Anya is in the 4th position",
+      "intermediate_value": "Grandmaster Anya",
+      "entity_positions": {
+        "Player Charles": "1st",
+        "Master Ben": "2nd",
+        "Rookie David": "3rd",
+        "Grandmaster Anya": "4th"
+      },
+      "supporting_clues": [
+        "Rookie David is not 2nd.",
+        "Player Charles is not 2nd."
+      ],
+      "eliminated_slots": [
+        "1st",
+        "2nd",
+        "3rd"
+      ]
+    },
+    "difficulty_metrics": {
+      "raw_score": 35.57,
+      "num_entities": 4,
+      "num_constraints": 5,
+      "permutation_space": 24,
+      "constraint_types": [
+        "before",
+        "not_position"
+      ],
+      "has_immediate": false,
+      "has_exclusion": true,
+      "decay_factor": 3.075,
+      "near_miss_factor": 2.292
+    },
+    "themed_clues": [
+      "Rookie David is not 2nd.",
+      "Player Charles is not in the 2nd position.",
+      "Master Ben is before Rookie David.",
+      "Rookie David is not 4th.",
+      "Player Charles is not in the 4th position."
+    ],
+    "scenario_intro": "Four esteemed chess players are preparing for the final round of the tournament, and the officials need to arrange them in the order they will be introduced from first to last.",
+    "theme_title": "Grandmaster Chess Match",
+    "entity_mapping": {
+      "P1": "Grandmaster Anya",
+      "P2": "Master Ben",
+      "P3": "Player Charles",
+      "P4": "Rookie David"
+    },
+    "canonical_entities": [
+      "P1",
+      "P2",
+      "P3",
+      "P4"
+    ],
+    "canonical_solution": [
+      "P3",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    "canonical_response": "P3, P2, P4, P1"
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1475.3,
+  "seed": 203,
+  "theme": {
+    "setting": "Urban Planning Bureau, Aerospace Engineering Lab, Ancient Coin Numismatics, Professional Chess Tournament",
+    "title": "Grandmaster Chess Match",
+    "scenario_intro": "Four esteemed chess players are preparing for the final round of the tournament, and the officials need to arrange them in the order they will be introduced from first to last.",
+    "item": "",
+    "entity_mapping": {
+      "P1": "Grandmaster Anya",
+      "P2": "Master Ben",
+      "P3": "Player Charles",
+      "P4": "Rookie David"
+    }
+  },
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_03.png"
+}

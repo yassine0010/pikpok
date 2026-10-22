@@ -1,0 +1,62 @@
+{
+  "puzzle_type": "number_sequence",
+  "difficulty": "medium",
+  "question": "One number is hidden in the sequence: 1, 3, 6, ?, 15, 21. What is it?",
+  "response": "10",
+  "hints": [
+    "Observe how the difference between consecutive terms changes.",
+    "The difference between the first two terms (1 and 3) is 2. The difference between the next pair (3 and 6) is 3. Continue this pattern of differences to find the next difference."
+  ],
+  "solution_data": {
+    "family": "polynomial",
+    "variant": "triangular",
+    "tier": 2,
+    "mode": "middle",
+    "terms": [
+      1,
+      3,
+      6,
+      10,
+      15,
+      21
+    ],
+    "target_index": 3,
+    "missing_position": 3,
+    "rule": "triangular numbers",
+    "expr": "triangular numbers",
+    "variable": "n",
+    "start_index": 1,
+    "lookup": false,
+    "intermediate_trace": {
+      "first_pair": "1 and 3",
+      "first_difference": 2,
+      "first_step": "1 to 3 (diff 2)",
+      "preceding_term": 6,
+      "intermediate_value": 2
+    },
+    "difficulty_metrics": {
+      "raw_score": 16.53,
+      "tier": 2,
+      "variant": "triangular",
+      "mode": "middle",
+      "mode_bonus": 1.6,
+      "variant_weight": 0.6,
+      "magnitude_factor": 1.007,
+      "step_var_factor": 0.424,
+      "term_factor": 0.9
+    }
+  },
+  "generation_data": {
+    "model": "google/gemini-2.5-flash-lite",
+    "provider": "openrouter",
+    "llm_provider": "openrouter"
+  },
+  "fingerprint": null,
+  "score": 1417.2,
+  "seed": 201,
+  "theme": null,
+  "parent_id": null,
+  "origin": "generated",
+  "transformation": null,
+  "image_path": "puzzle_01.png"
+}
