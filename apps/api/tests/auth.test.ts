@@ -13,7 +13,7 @@ afterAll(async () => {
 const runId = `${Date.now()}${Math.floor(Math.random() * 10000)}`;
 const uniqueEmail = (label: string) => `${label}-${runId}@example.com`;
 
-const USER_KEYS = ['age', 'displayName', 'email', 'id', 'level', 'streak', 'xp'];
+const USER_KEYS = ['age', 'displayName', 'email', 'id', 'level', 'solvedCount', 'streak', 'xp'];
 
 describe('GET /health', () => {
   it('returns 200 ok without a token', async () => {
@@ -49,6 +49,7 @@ describe('POST /auth/signup', () => {
     expect(body.user.xp).toBe(0);
     expect(body.user.streak).toBe(0);
     expect(body.user.level).toBe(1);
+    expect(body.user.solvedCount).toBe(0); // fresh account, no solves
     expect(body.user.id).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
     );

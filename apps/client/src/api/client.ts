@@ -28,6 +28,8 @@ export interface ApiUser {
   xp: number;
   streak: number;
   level: number;
+  /** M6 — total puzzles the user has ever solved (all-time, not session). */
+  solvedCount: number;
 }
 
 export interface SignupInput {
@@ -137,6 +139,7 @@ function normalizeUser(raw: Partial<ApiUser> | null | undefined): ApiUser {
     xp: Number(raw?.xp ?? 0),
     streak: Number(raw?.streak ?? 0),
     level: Number(raw?.level ?? 1),
+    solvedCount: Number(raw?.solvedCount ?? 0),
   };
 }
 

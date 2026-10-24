@@ -38,6 +38,9 @@ function CustomTabBar({ state, descriptors, navigateToTab, navigation }: CustomT
           if (route.name === 'feed') {
             iconName = isFocused ? 'compass' : 'compass-outline';
             label = 'Feed';
+          } else if (route.name === 'daily') {
+            iconName = isFocused ? 'sparkles' : 'sparkles-outline';
+            label = 'Daily';
           } else if (route.name === 'leaderboard') {
             iconName = isFocused ? 'trophy' : 'trophy-outline';
             label = 'Ranking';
@@ -98,6 +101,12 @@ export default function TabLayout() {
         name="feed"
         options={{
           title: 'Feed',
+        }}
+      />
+      <Tabs.Screen
+        name="daily"
+        options={{
+          title: 'Daily',
         }}
       />
       <Tabs.Screen

@@ -19,6 +19,8 @@ export interface User {
   xp: number;
   streak: number;
   level: number;
+  /** M6 — all-time solved total, synced from the answer endpoint's echo. */
+  solvedCount: number;
 }
 
 interface AuthContextType {
@@ -30,6 +32,10 @@ interface AuthContextType {
   signup: (input: SignupInput) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (patch: ProfilePatch) => Promise<void>;
+  /** M6 — merges the authoritative XP totals echoed by the puzzle-answer
+   * endpoint into the signed-in user. PURE local state: no API call, no token
+   * read; a no-op while signed out. */
+  syncXp: (update: { xp: number; streak: number; level: number; solvedCount: number }) => void;
 }
 
 /** Maps the API user onto the shape the screens already consume. */
@@ -42,6 +48,7 @@ function toUser(apiUser: ApiUser): User {
     xp: apiUser.xp,
     streak: apiUser.streak,
     level: apiUser.level,
+    solvedCount: apiUser.solvedCount,
   };
 }
 
@@ -115,6 +122,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // M6 — pure local merge of the server's authoritative totals (see
+  // PuzzleCard's answer flow). Immutably replaces the five XP-family fields on
+  // the current user; does nothing when signed out.
+  const syncXp = (update: { xp: number; streak: number; level: number; solvedCount: number }) => {
+    setUser((current) =>
+      current
+        ? {
+            ...current,
+            xp: update.xp,
+            streak: update.streak,
+            level: update.level,
+            solvedCount: update.solvedCount,
+          }
+        : current
+    );
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -125,6 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signup,
         logout,
         updateProfile,
+        syncXp,
       }}
     >
       {children}

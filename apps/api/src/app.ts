@@ -2,13 +2,16 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
+import { mkdirSync } from 'node:fs';
 import { config } from './config.js';
 import { ApiError } from './errors.js';
 import { registerAuth } from './middleware/auth.js';
 import { authRoutes } from './routes/auth.js';
 import { healthRoutes } from './routes/health.js';
 import { leaderboardRoutes } from './routes/leaderboard.js';
+import { puzzleRoutes } from './routes/puzzles.js';
 import { profileRoutes } from './routes/profile.js';
 
 interface ErrorBody {
@@ -70,6 +73,15 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
     sign: { expiresIn: config.jwtExpiresIn },
   });
 
+  // M5: public static puzzle images at /puzzles/images/ (auth hook allowlists
+  // that exact prefix). The root dir is created on boot so startup never
+  // depends on a prior importer run.
+  mkdirSync(config.puzzlesPublicDir, { recursive: true });
+  await app.register(fastifyStatic, {
+    root: config.puzzlesPublicDir,
+    prefix: '/puzzles/images/',
+  });
+
   // Consistent JSON errors: `{ error: { code, message, details? } }`.
   app.setErrorHandler((error, request, reply) => {
     if (error instanceof ApiError) {
@@ -121,6 +133,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   await app.register(profileRoutes);
   // Requires auth by default (not on the public allowlist).
   await app.register(leaderboardRoutes);
+  await app.register(puzzleRoutes);
 
   await app.ready();
   return app;

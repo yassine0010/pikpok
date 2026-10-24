@@ -1,5 +1,20 @@
-/** Columns selected whenever a full user row is needed. */
-export const USER_COLUMNS = 'id, email, display_name, age, xp, streak';
+/**
+ * Columns selected whenever a full user row is needed. `solved_count` is a
+ * per-row scalar subquery (COUNT of this user's puzzles that have actually
+ * been solved — `first_solved_at` is set), so it stays correct wherever the
+ * user row is read. PostgreSQL 16 allows this subquery inside
+ * INSERT/UPDATE ... RETURNING too, so signup/patch flow through unchanged.
+ */
+export const USER_COLUMNS = `id,
+       email,
+       display_name,
+       age,
+       xp,
+       streak,
+       (SELECT COUNT(*)::int
+          FROM user_puzzle_solves s
+         WHERE s.user_id = users.id
+           AND s.first_solved_at IS NOT NULL) AS solved_count`;
 
 /** Raw `users` row as returned by PostgreSQL (snake_case). */
 export interface UserRow {
@@ -9,6 +24,7 @@ export interface UserRow {
   age: number | null;
   xp: number;
   streak: number;
+  solved_count: number;
 }
 
 /** Public JSON shape of a user — camelCase, never includes password_hash. */
@@ -20,6 +36,7 @@ export interface User {
   xp: number;
   streak: number;
   level: number;
+  solvedCount: number;
 }
 
 export function levelFromXp(xp: number): number {
@@ -35,5 +52,6 @@ export function toUser(row: UserRow): User {
     xp: row.xp,
     streak: row.streak,
     level: levelFromXp(row.xp),
+    solvedCount: row.solved_count ?? 0,
   };
 }

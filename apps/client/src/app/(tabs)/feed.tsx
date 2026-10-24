@@ -9,7 +9,6 @@ import {
   LayoutChangeEvent,
   NativeSyntheticEvent,
   NativeScrollEvent,
-  Alert,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
@@ -19,15 +18,15 @@ import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
 import { TopBar } from '@/components/TopBar';
-import { EmptyPuzzleCard } from '@/components/EmptyPuzzleCard';
+import { PuzzleCard } from '@/components/PuzzleCard';
 import { ApiError, formatAuthError } from '@/api/client';
-import { fetchPuzzleFeed, isPuzzleServiceConfigured, type PuzzleCard } from '@/api/puzzles';
+import { fetchPuzzleFeed, type PuzzleCard as PuzzleCardData } from '@/api/puzzles';
 import { getAuthToken } from '@/api/tokenStorage';
 
-/** Matches the puzzle service's documented feed page size. */
+/** Matches the puzzle feed contract's default page size (1..50). */
 const FEED_LIMIT = 20;
 
-type FeedStatus = 'loading' | 'unavailable' | 'empty' | 'error' | 'ready';
+type FeedStatus = 'loading' | 'empty' | 'error' | 'ready';
 
 const PagingList = FlatList as any;
 const AppStatusBar = StatusBar as any;
@@ -37,13 +36,11 @@ export default function FeedScreen() {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<any>(null);
 
-  // Cards come from the future puzzle service (see src/api/puzzles.ts) — the
-  // feed never fabricates puzzle content. Until the service is configured
-  // (the expected state today), the screen stays 'unavailable'.
-  const [status, setStatus] = useState<FeedStatus>(
-    isPuzzleServiceConfigured ? 'loading' : 'unavailable'
-  );
-  const [cards, setCards] = useState<PuzzleCard[]>([]);
+  // Cards come from the main API (see src/api/puzzles.ts) — the feed never
+  // fabricates puzzle content. The API base URL is always configured, so the
+  // only pre-flight condition is having a stored session token.
+  const [status, setStatus] = useState<FeedStatus>('loading');
+  const [cards, setCards] = useState<PuzzleCardData[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   // Guards against out-of-order responses when focus events stack up.
@@ -53,21 +50,27 @@ export default function FeedScreen() {
   const hasDataRef = useRef(false);
 
   /**
-   * Loads the puzzle feed through the M4 integration seam.
+   * Loads the puzzle feed through the M5 API module.
    * - 'block':  show the loading state (first load and retry)
    * - 'quiet':  keep current cards on screen (silent background refresh)
    */
   const runFetch = useCallback(async (presentation: 'block' | 'quiet') => {
-    // Only show a spinner when there is a real service to wait on — the
-    // unconfigured short-circuit is instant, so no loading flash for it.
-    if (presentation === 'block' && isPuzzleServiceConfigured) setStatus('loading');
+    if (presentation === 'block') setStatus('loading');
 
     const seq = ++requestSeqRef.current;
     try {
-      // Best stored token. fetchPuzzleFeed throws PUZZLE_SERVICE_UNAVAILABLE
-      // (no network call) when the puzzle service isn't configured.
-      const token = (await getAuthToken()) ?? '';
-      const feed = await fetchPuzzleFeed(token, FEED_LIMIT);
+      const token = await getAuthToken();
+      if (seq !== requestSeqRef.current) return; // superseded
+      if (!token) {
+        // Auth gating upstream should guarantee a token; a missing/expired
+        // one is just surfaced as the regular error state with friendly copy.
+        hasDataRef.current = false;
+        setCards([]);
+        setErrorMessage('Please sign in to see puzzles.');
+        setStatus('error');
+        return;
+      }
+      const feed = await fetchPuzzleFeed(token, { limit: FEED_LIMIT });
       if (seq !== requestSeqRef.current) return; // superseded
       hasDataRef.current = true;
       setCards(feed.cards);
@@ -77,17 +80,16 @@ export default function FeedScreen() {
       if (seq !== requestSeqRef.current) return; // superseded
       hasDataRef.current = false;
       setCards([]);
-      if (error instanceof ApiError && error.code === 'PUZZLE_SERVICE_UNAVAILABLE') {
-        setErrorMessage('');
-        setStatus('unavailable');
-        return;
+      if (error instanceof ApiError && error.status === 401) {
+        setErrorMessage('Your session has expired. Please sign in again.');
+      } else {
+        setErrorMessage(
+          formatAuthError(
+            error,
+            'Couldn’t load puzzles right now. Please try again.'
+          )
+        );
       }
-      setErrorMessage(
-        formatAuthError(
-          error,
-          'Couldn’t load puzzles right now. Please try again.'
-        )
-      );
       setStatus('error');
     }
   }, []);
@@ -116,10 +118,6 @@ export default function FeedScreen() {
     }
   };
 
-  const handleHint = () => {
-    Alert.alert('Hint', 'Hints aren’t available yet — they’ll connect once the puzzle service is online.');
-  };
-
   const handleSkip = (currentIndex: number) => {
     if (currentIndex < cards.length - 1 && flatListRef.current && containerHeight > 0) {
       flatListRef.current.scrollToOffset({
@@ -129,18 +127,6 @@ export default function FeedScreen() {
     }
   };
 
-  const handleShare = () => {
-    Alert.alert('Share', 'Share functionality will be available in future releases.');
-  };
-
-  // The one render state with real data: empty "Puzzle Card Stage" shells for
-  // each served card — index + LVL from difficulty, no puzzle content. Hint /
-  // Skip / Share stay inert placeholders (no answer UI in this milestone).
-  const pagedCards = cards.map((card, index) => ({
-    id: String(card.id || `card_${index}`),
-    level: card.difficulty,
-  }));
-
   const renderStageState = () => {
     switch (status) {
       case 'loading':
@@ -148,22 +134,6 @@ export default function FeedScreen() {
           <View style={styles.stateCard}>
             <ActivityIndicator size="large" color={Colors.primary[500]} />
             <Text style={styles.stateSubtitle}>Loading puzzles…</Text>
-          </View>
-        );
-      case 'unavailable':
-        return (
-          <View style={styles.stateCard}>
-            <View style={styles.soonPill}>
-              <Ionicons name="time-outline" size={12} color={Colors.tertiary[700]} />
-              <Text style={styles.soonPillText}>Coming Soon</Text>
-            </View>
-            <View style={styles.stateIconCircle}>
-              <Ionicons name="sparkles-outline" size={26} color={Colors.tertiary[600]} />
-            </View>
-            <Text style={styles.stateTitle}>Puzzles are coming soon</Text>
-            <Text style={styles.stateSubtitle}>
-              The puzzle service isn’t connected yet — check back soon.
-            </Text>
           </View>
         );
       case 'empty':
@@ -213,8 +183,10 @@ export default function FeedScreen() {
           containerHeight > 0 && (
             <PagingList
               ref={flatListRef}
-              data={pagedCards}
-              keyExtractor={(item: { id: string }) => item.id}
+              data={cards}
+              keyExtractor={(item: PuzzleCardData, index: number) =>
+                String(item.id || `card_${index}`)
+              }
               pagingEnabled={true}
               snapToInterval={containerHeight}
               snapToAlignment="start"
@@ -227,15 +199,19 @@ export default function FeedScreen() {
                 offset: containerHeight * index,
                 index,
               })}
-              renderItem={({ item, index }: { item: { id: string; level: number }; index: number }) => (
-                <EmptyPuzzleCard
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: PuzzleCardData;
+                index: number;
+              }) => (
+                <PuzzleCard
+                  card={item}
                   cardIndex={index}
-                  totalCards={pagedCards.length}
-                  level={item.level}
+                  totalCards={cards.length}
                   cardHeight={containerHeight}
-                  onHintPress={handleHint}
                   onSkipPress={() => handleSkip(index)}
-                  onSharePress={handleShare}
                 />
               )}
             />
@@ -318,25 +294,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.white,
     fontFamily: Typography.fontFamily.bold,
-  },
-  soonPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: Colors.tertiary[50],
-    borderWidth: 1,
-    borderColor: Colors.tertiary[200],
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginBottom: Spacing.sm,
-  },
-  soonPillText: {
-    fontSize: Typography.fontSize.xs,
-    fontWeight: '700',
-    color: Colors.tertiary[700],
-    fontFamily: Typography.fontFamily.bold,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
 });

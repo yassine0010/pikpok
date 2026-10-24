@@ -16,6 +16,13 @@ const PUBLIC_ROUTES = new Set([
 ]);
 
 /**
+ * Public URL prefixes (M5): static puzzle images carry a relative path the
+ * client prefixes with its API base URL, so they must be served without a
+ * token. Exact public routes stay in the set above; nothing else is opened.
+ */
+const PUBLIC_PREFIXES = ['/puzzles/images/'];
+
+/**
  * Global `onRequest` hook: public allowlist passes through, everything else
  * must carry `Authorization: Bearer <token>`; on success `request.userId`
  * is set from the JWT `sub` claim.
@@ -23,6 +30,14 @@ const PUBLIC_ROUTES = new Set([
 export async function authHook(request: FastifyRequest): Promise<void> {
   const routeKey = `${request.method} ${request.routeOptions.url ?? request.url}`;
   if (PUBLIC_ROUTES.has(routeKey)) return;
+
+  // Static puzzle images are anonymous (see PUBLIC_PREFIXES above).
+  if (
+    (request.method === 'GET' || request.method === 'HEAD') &&
+    PUBLIC_PREFIXES.some((prefix) => request.url.startsWith(prefix))
+  ) {
+    return;
+  }
 
   try {
     const payload = await request.jwtVerify<{ sub?: string }>();

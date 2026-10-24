@@ -15,6 +15,7 @@ import { Spacing } from '@/constants/spacing';
 import { Typography } from '@/constants/typography';
 import { TopBar } from '@/components/TopBar';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '@/context/AuthContext';
 
 const SvgCurve = Svg as any;
 const SvgPath = Path as any;
@@ -26,6 +27,11 @@ const SvgStop = Stop as any;
 export default function StatsScreen() {
   const { width } = useWindowDimensions();
   const chartWidth = Math.min(width - 64, 340);
+
+  // M6 — the three Quick Stat cards are live from the signed-in user context
+  // (synced after every answer, see PuzzleCard). Everything below them stays
+  // an illustrative placeholder until a history API exists.
+  const { user } = useAuth();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -47,7 +53,7 @@ export default function StatsScreen() {
         <View style={styles.metricsRow}>
           {/* Card 1: Solved */}
           <View style={styles.metricCardWhite}>
-            <Text style={styles.solvedValue}>342</Text>
+            <Text style={styles.solvedValue}>{user?.solvedCount ?? 0}</Text>
             <Text style={styles.metricLabel}>SOLVED</Text>
           </View>
 
@@ -55,19 +61,21 @@ export default function StatsScreen() {
           <View style={styles.metricCardCoral}>
             <View style={styles.streakValRow}>
               <Ionicons name="stats-chart" size={16} color="#1A1F36" />
-              <Text style={styles.streakValue}>12</Text>
+              <Text style={styles.streakValue}>{user?.streak ?? 0}</Text>
             </View>
             <Text style={styles.streakLabel}>STREAK</Text>
           </View>
 
           {/* Card 3: Badge */}
           <View style={styles.metricCardWhite}>
-            <Text style={styles.badgeValue}>LVL 7</Text>
+            <Text style={styles.badgeValue}>{`LVL ${user?.level ?? 1}`}</Text>
             <Text style={styles.metricLabel}>BADGE</Text>
           </View>
         </View>
 
-        {/* Weekly Trend Card with Smooth Curve Chart (Matching stats.jpeg) */}
+        {/* Weekly Trend Card with Smooth Curve Chart (Matching stats.jpeg).
+            Illustrative placeholder — no history API yet (M6), so the curve,
+            dots and legend are static sample data, not live metrics. */}
         <View style={styles.trendCard}>
           <View style={styles.trendHeader}>
             <Text style={styles.trendTitle}>Weekly Trend</Text>
